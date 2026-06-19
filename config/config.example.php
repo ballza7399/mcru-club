@@ -12,7 +12,7 @@ return [
         'charset' => 'utf8mb4',
     ],
     // base path ของแอปเมื่อรันใน subfolder เช่น /mcru-club  (เว้นว่าง '' ถ้าอยู่ที่ document root เช่นใน Docker)
-    'base_path' => getenv('APP_BASE_PATH') !== false ? getenv('APP_BASE_PATH') : '/mcru-club',
+    'base_path' => getenv('APP_BASE_PATH') !== false ? getenv('APP_BASE_PATH') : '',
     // debug=true แสดงรายละเอียด error เชิงเทคนิค (เปิดเฉพาะตอน dev), production ให้ false
     'debug' => filter_var(getenv('APP_DEBUG') ?: 'false', FILTER_VALIDATE_BOOL),
 ];

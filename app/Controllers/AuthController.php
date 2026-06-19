@@ -76,7 +76,8 @@ class AuthController extends Controller
             }
         }
 
-        $this->view('auth/register', ['error' => $error], 'auth');
+        $majorsData = (new \App\Models\Faculty)->allWithMajors();
+        $this->view('auth/register', ['error' => $error, 'majorsData' => $majorsData], 'auth');
     }
 
     public function logout(): void

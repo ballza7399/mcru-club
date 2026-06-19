@@ -17,12 +17,33 @@
                 <a class="nav-link dropdown-toggle btn-manage" href="#" role="button" data-bs-toggle="dropdown">
                     <i class="fa-solid fa-gear me-1"></i> จัดการระบบ
                 </a>
-                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
-                    <li><a class="dropdown-item" href="<?= url('clubs/manage') ?>">
+                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="min-width: 240px;">
+                    <li><a class="dropdown-item py-2" href="<?= url('clubs/manage') ?>">
                         <i class="fa-solid fa-layer-group text-primary me-2"></i> จัดการข้อมูลชมรม
                     </a></li>
-                    <li><a class="dropdown-item" href="<?= url('applications/manage') ?>">
+                    <li><a class="dropdown-item py-2" href="<?= url('applications/manage') ?>">
                         <i class="fa-solid fa-user-check text-success me-2"></i> จัดการคำขอสมาชิก
+                    </a></li>
+                    <li><a class="dropdown-item py-2" href="<?= url('clubs/members') ?>">
+                        <i class="fa-solid fa-users text-info me-2"></i> จัดการสมาชิก & ตำแหน่ง
+                    </a></li>
+                    <li><a class="dropdown-item py-2" href="<?= url('roles/manage') ?>">
+                        <i class="fa-solid fa-shield-halved text-warning me-2"></i> จัดการสิทธิ์การใช้งาน
+                    </a></li>
+                    <?php if ($_SESSION['role'] === 'admin'): ?>
+                    <li><a class="dropdown-item py-2" href="<?= url('faculties/manage') ?>">
+                        <i class="fa-solid fa-building-columns text-secondary me-2"></i> จัดการคณะ & สาขาวิชา
+                    </a></li>
+                    <?php endif; ?>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item py-2" href="<?= url('announcements/manage') ?>">
+                        <i class="fa-solid fa-bullhorn text-danger me-2"></i> จัดการข่าวสาร PR
+                    </a></li>
+                    <li><a class="dropdown-item py-2" href="<?= url('events/manage') ?>">
+                        <i class="fa-regular fa-calendar-check text-primary me-2"></i> จัดการปฏิทินกิจกรรม
+                    </a></li>
+                    <li><a class="dropdown-item py-2" href="<?= url('gallery/manage') ?>">
+                        <i class="fa-regular fa-images text-success me-2"></i> จัดการภาพกิจกรรม
                     </a></li>
                 </ul>
             </li>

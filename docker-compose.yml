@@ -15,5 +15,5 @@ services:
       # ⚠️ ต้องเป็น false หรือเอาออกบน production เพราะหลุดข้อมูล internal
       APP_DEBUG: "true"
     volumes:
-      - ./uploads:/var/www/html/uploads
+      - .:/var/www/html
     restart: unless-stopped

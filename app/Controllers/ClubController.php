@@ -106,6 +106,96 @@ class ClubController extends Controller
         $this->redirect('/clubs/manage');
     }
 
+    public function members(): void
+    {
+        $this->requireRole('admin', 'president');
+        
+        $roleModel = new \App\Models\Role;
+        $clubModel = new Club;
+        
+        $userId = $_SESSION['user_id'];
+        $role = $_SESSION['role'];
+        
+        $clubId = isset($_GET['club_id']) ? (int)$_GET['club_id'] : 0;
+        
+        if ($role === 'president') {
+            // Find which club this user is president of
+            $db = \App\Core\Database::instance();
+            $stmt = $db->prepare('SELECT id FROM clubs WHERE president_id = ?');
+            $stmt->execute([$userId]);
+            $myClub = $stmt->fetch();
+            if (!$myClub) {
+                throw new \Exception('คุณไม่ได้เป็นประธานชมรมใด ๆ ในระบบ', 403);
+            }
+            $clubId = (int)$myClub['id'];
+        } else {
+            if ($clubId === 0) {
+                $allClubs = $clubModel->allWithMemberCount();
+                if (!empty($allClubs)) {
+                    $clubId = (int)$allClubs[0]['id'];
+                }
+            }
+        }
+        
+        $club = $clubModel->findWithDetail($clubId);
+        if (!$club) {
+            throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการจัดการสมาชิก', 404);
+        }
+        
+        $members = $roleModel->getClubMembers($clubId);
+        $roles = $roleModel->listClubRoles($clubId);
+        $allClubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
+        
+        $this->view('clubs/members', [
+            'club' => $club,
+            'members' => $members,
+            'roles' => $roles,
+            'allClubsList' => $allClubsList,
+            'currentClubId' => $clubId
+        ]);
+    }
+
+    public function assignRole(): void
+    {
+        $this->requireRole('admin', 'president');
+        
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        $userId = (int)($_POST['user_id'] ?? 0);
+        $roleId = !empty($_POST['role_id']) ? (int)$_POST['role_id'] : null;
+        
+        $roleModel = new \App\Models\Role;
+        $clubModel = new Club;
+        
+        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
+        if (!$canManage) {
+            $this->redirect('/');
+        }
+        
+        $roleModel->assignMemberRole($clubId, $userId, $roleId);
+        $this->flash('อัปเดตบทบาท/ตำแหน่งสมาชิกสำเร็จแล้ว');
+        $this->redirect('/clubs/members?club_id=' . $clubId);
+    }
+
+    public function removeMember(string $clubId, string $userId): void
+    {
+        $this->requireRole('admin', 'president');
+        
+        $cId = (int)$clubId;
+        $uId = (int)$userId;
+        
+        $roleModel = new \App\Models\Role;
+        $clubModel = new Club;
+        
+        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($cId, $_SESSION['user_id']);
+        if (!$canManage) {
+            $this->redirect('/');
+        }
+        
+        $roleModel->removeClubMember($cId, $uId);
+        $this->flash('คัดสมาชิกออกจากชมรมเรียบร้อยแล้ว');
+        $this->redirect('/clubs/members?club_id=' . $cId);
+    }
+
     // --- private helpers ---
 
     /**

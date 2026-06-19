@@ -15,11 +15,29 @@ class User extends Model
     public function findByCredentials(string $loginId, string $password): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, name, role FROM users
-             WHERE (student_id = ? OR email = ?) AND password = ?'
+            'SELECT u.id, u.name, u.password, r.role_key AS role 
+             FROM users u
+             JOIN roles r ON u.role_id = r.id
+             WHERE u.student_id = ? OR u.email = ?'
         );
-        $stmt->execute([$loginId, $loginId, $password]);
-        return $stmt->fetch() ?: null;
+        $stmt->execute([$loginId, $loginId]);
+        $user = $stmt->fetch() ?: null;
+
+        if ($user && password_verify($password, $user['password'])) {
+            unset($user['password']); // Remove hash for safety
+
+            if ($user['role'] === 'student') {
+                // Check if they are a president of any club to grant access to backend management
+                $stmtPres = $this->db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ?');
+                $stmtPres->execute([$user['id']]);
+                if ((int)$stmtPres->fetchColumn() > 0) {
+                    $user['role'] = 'president';
+                }
+            }
+            return $user;
+        }
+
+        return null;
     }
 
     /** ตรวจว่า student_id หรือ email ซ้ำ — คืน 'student_id'|'email'|null */
@@ -36,12 +54,13 @@ class User extends Model
 
     public function create(array $data): bool
     {
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
         $stmt = $this->db->prepare(
-            'INSERT INTO users (student_id, email, password, name, faculty, major, phone)
-             VALUES (?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO users (student_id, email, password, name, faculty, major, phone, role_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, 2)'
         );
         return $stmt->execute([
-            $data['student_id'], $data['email'], $data['password'],
+            $data['student_id'], $data['email'], $hashedPassword,
             $data['name'], $data['faculty'], $data['major'], $data['phone'],
         ]);
     }
@@ -55,9 +74,14 @@ class User extends Model
 
     public function setRole(int $userId, string $role): void
     {
-        $stmt = $this->db->prepare(
-            "UPDATE users SET role = ? WHERE id = ? AND role = 'student'"
-        );
-        $stmt->execute([$role, $userId]);
+        $stmtRole = $this->db->prepare('SELECT id FROM roles WHERE role_key = ?');
+        $stmtRole->execute([$role]);
+        $roleRow = $stmtRole->fetch();
+        if ($roleRow) {
+            $stmt = $this->db->prepare(
+                'UPDATE users SET role_id = ? WHERE id = ?'
+            );
+            $stmt->execute([$roleRow['id'], $userId]);
+        }
     }
 }

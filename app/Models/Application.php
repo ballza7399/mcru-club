@@ -62,7 +62,29 @@ class Application extends Model
 
     public function updateStatus(int $appId, string $status): void
     {
-        $stmt = $this->db->prepare('UPDATE applications SET status = ? WHERE id = ?');
-        $stmt->execute([$status, $appId]);
+        $this->db->beginTransaction();
+        try {
+            $stmt = $this->db->prepare('UPDATE applications SET status = ? WHERE id = ?');
+            $stmt->execute([$status, $appId]);
+
+            if ($status === 'approved') {
+                $stmtFetch = $this->db->prepare('SELECT club_id, user_id FROM applications WHERE id = ?');
+                $stmtFetch->execute([$appId]);
+                $app = $stmtFetch->fetch();
+
+                if ($app) {
+                    $stmtCheck = $this->db->prepare('SELECT COUNT(*) FROM club_members WHERE club_id = ? AND user_id = ?');
+                    $stmtCheck->execute([$app['club_id'], $app['user_id']]);
+                    if ((int)$stmtCheck->fetchColumn() === 0) {
+                        $stmtInsert = $this->db->prepare('INSERT INTO club_members (club_id, user_id, role_id) VALUES (?, ?, 5)');
+                        $stmtInsert->execute([$app['club_id'], $app['user_id']]);
+                    }
+                }
+            }
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
     }
 }

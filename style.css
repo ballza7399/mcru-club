@@ -823,6 +823,180 @@ select.field__control {
 .form-label.fw-bold { color: var(--text-dark); }
 
 /* =========================================
+   Landing Page Extensions
+   ========================================= */
+.hero-section {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-soft) 100%);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(249, 168, 38, 0.15) 0%, transparent 60%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+.stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  min-width: 140px;
+}
+.stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+.news-card {
+  border: none;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out);
+  overflow: hidden;
+}
+.news-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.news-thumb {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.news-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: var(--primary-blue);
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.news-badge-club {
+  background: var(--accent-gold-deep);
+}
+.calendar-item {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border-left: 5px solid var(--primary-blue);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur) var(--ease-out);
+}
+.calendar-item:hover {
+  transform: translateX(5px);
+  box-shadow: var(--shadow);
+}
+.calendar-date-badge {
+  background: var(--surface-alt);
+  color: var(--primary-blue);
+  min-width: 70px;
+  height: 70px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.25rem;
+  font-weight: bold;
+}
+.calendar-date-badge .day {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.calendar-date-badge .month {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.gallery-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  height: 220px;
+  margin-bottom: 1.5rem;
+}
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s var(--ease-out);
+}
+.gallery-card:hover .gallery-img {
+  transform: scale(1.1);
+}
+.gallery-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(11, 44, 92, 0.9) 0%, rgba(11, 44, 92, 0.4) 60%, transparent 100%);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+  transition: opacity var(--dur) var(--ease-out);
+  color: #fff;
+}
+.gallery-card:hover .gallery-card-overlay {
+  opacity: 1;
+}
+.search-container {
+  max-width: 500px;
+  margin: 0 auto 3rem;
+}
+.search-input-group {
+  display: flex;
+  background: var(--surface);
+  border-radius: 50px;
+  padding: 6px 12px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+.search-input-group input {
+  border: none;
+  flex-grow: 1;
+  padding: 8px 16px;
+  border-radius: 50px;
+  outline: none;
+  color: var(--text-dark);
+}
+.search-input-group i {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: var(--text-muted);
+}
+
+/* =========================================
    Reduced motion — ปิด/ลดการเคลื่อนไหวทั้งหมด (a11y, ไม่ optional)
    ========================================= */
 @media (prefers-reduced-motion: reduce) {
