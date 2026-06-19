@@ -1,0 +1,12 @@
+.git
+.gitignore
+.claude
+.htaccess.bak
+# config จริงไม่ต้องเข้า image — container สร้างใหม่จาก config.example.php ผ่าน env vars
+config/config.php
+# uploads ใช้ volume mount แทน
+uploads/
+Dockerfile
+docker-compose.yml
+.dockerignore
+README*.md

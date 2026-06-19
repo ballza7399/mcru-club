@@ -1,0 +1,16 @@
+# บล็อก request ตรงๆ ไปยัง app/ และ config/ (source code / credentials)
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^(app|config)(/|$) - [F,L]
+</IfModule>
+
+# ส่งทุก request ที่ไม่ใช่ไฟล์/โฟลเดอร์จริง เข้า front controller
+RewriteEngine On
+
+# อนุญาตให้เข้าถึงไฟล์จริง (CSS, รูปใน uploads ฯลฯ) ได้ตรงๆ
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ที่เหลือส่งเข้า index.php
+RewriteRule ^ index.php [L]
