@@ -2,6 +2,7 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
+use App\Core\Image;
 use App\Models\Club;
 use App\Models\User;
 use App\Models\Application;
@@ -15,9 +16,7 @@ class ClubController extends Controller
         $club   = (new Club)->findWithDetail($clubId);
 
         if (!$club) {
-            http_response_code(404);
-            echo 'ไม่พบข้อมูล';
-            return;
+            throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการ', 404);
         }
 
         $appStatus = null;
@@ -109,17 +108,15 @@ class ClubController extends Controller
 
     // --- private helpers ---
 
+    /**
+     * อัปโหลดรูป (logo/qr) พร้อมย่อขนาด+บีบอัดผ่าน Image::uploadResized
+     * คืน relative path หรือ '' ถ้าไม่มีไฟล์/ไม่ใช่รูป
+     */
     private function uploadFile(string $field): string
     {
-        if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES[$field])) {
             return '';
         }
-        $dir = BASE_PATH . '/uploads/';
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        $path = 'uploads/' . time() . '_' . $field . '_' . basename($_FILES[$field]['name']);
-        move_uploaded_file($_FILES[$field]['tmp_name'], BASE_PATH . '/' . $path);
-        return $path;
+        return Image::uploadResized($_FILES[$field], $field);
     }
 }

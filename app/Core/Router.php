@@ -52,7 +52,7 @@ class Router
             }
         }
 
-        http_response_code(404);
-        echo '<h1>404 Not Found</h1>';
+        // ไม่ match route ใดเลย — โยน exception code 404 ให้ ErrorHandler แสดงผล
+        throw new \Exception('ไม่พบเส้นทางที่ร้องขอ: ' . $method . ' ' . $uri, 404);
     }
 }

@@ -2,7 +2,6 @@
 namespace App\Core;
 
 use PDO;
-use PDOException;
 
 /**
  * PDO singleton — แทน db.php เดิม
@@ -20,15 +19,12 @@ class Database
 
         $dsn = "mysql:host={$cfg['host']};dbname={$cfg['name']};charset={$cfg['charset']}";
 
-        try {
-            self::$instance = new PDO($dsn, $cfg['user'], $cfg['pass'], [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES   => false,
-            ]);
-        } catch (PDOException $e) {
-            die('Connection failed: ' . $e->getMessage());
-        }
+        // ไม่ catch ที่นี่ — ปล่อย PDOException ไหลขึ้นไปให้ ErrorHandler จัดการรวมศูนย์
+        self::$instance = new PDO($dsn, $cfg['user'], $cfg['pass'], [
+            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES   => false,
+        ]);
 
         return self::$instance;
     }

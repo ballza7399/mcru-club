@@ -59,9 +59,15 @@ class AuthController extends Controller
                 } elseif ($dup === 'email') {
                     $error = 'อีเมลนี้ มีการลงทะเบียนในระบบแล้ว';
                 } else {
-                    $ok = (new User)->create(compact(
-                        'student_id', 'email', 'password', 'name', 'faculty', 'major', 'phone'
-                    ));
+                    $ok = (new User)->create([
+                        'student_id' => $studentId,
+                        'email'      => $email,
+                        'password'   => $password,
+                        'name'       => $name,
+                        'faculty'    => $faculty,
+                        'major'      => $major,
+                        'phone'      => $phone,
+                    ]);
                     if ($ok) {
                         $this->redirect('/auth/login?registered=1');
                     }

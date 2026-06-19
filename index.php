@@ -31,6 +31,9 @@ spl_autoload_register(function (string $class): void {
 
 require BASE_PATH . '/app/Core/helpers.php';
 
+// --- error handling middleware (ติดตั้งให้เร็วที่สุด เพื่อดักทุก error หลังจากนี้) ---
+App\Core\ErrorHandler::register($config['debug'] ?? false);
+
 // --- เชื่อมต่อฐานข้อมูล ---
 App\Core\Database::connect($config['db']);
 

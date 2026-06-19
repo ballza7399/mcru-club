@@ -11,6 +11,9 @@ services:
       DB_PASS: cEBzc3cwcmQ=
       DB_NAME: mcru-club
       APP_BASE_PATH: ""
+      # debug=true แสดง developer exception page เต็ม (path/stack trace/DB error)
+      # ⚠️ ต้องเป็น false หรือเอาออกบน production เพราะหลุดข้อมูล internal
+      APP_DEBUG: "true"
     volumes:
       - ./uploads:/var/www/html/uploads
     restart: unless-stopped

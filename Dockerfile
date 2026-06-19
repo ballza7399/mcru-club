@@ -1,7 +1,11 @@
 FROM php:8.4-apache
 
-# ติดตั้ง PDO MySQL extension (แอปใช้ PDO เชื่อมต่อฐานข้อมูล)
-RUN docker-php-ext-install pdo_mysql
+# ติดตั้ง system libraries สำหรับ GD (รองรับ jpeg/png/webp)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpng-dev libjpeg62-turbo-dev libwebp-dev \
+ && docker-php-ext-configure gd --with-jpeg --with-webp \
+ && docker-php-ext-install gd pdo_mysql \
+ && rm -rf /var/lib/apt/lists/*
 
 # เปิด mod_rewrite สำหรับ .htaccess (front controller routing)
 RUN a2enmod rewrite
