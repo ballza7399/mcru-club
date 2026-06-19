@@ -40,6 +40,7 @@ class AuthController extends Controller
         }
 
         $error = null;
+        $success = false;
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $studentId = trim($_POST['student_id'] ?? '');
@@ -69,15 +70,19 @@ class AuthController extends Controller
                         'phone'      => $phone,
                     ]);
                     if ($ok) {
-                        $this->redirect('/auth/login?registered=1');
+                        $this->redirect('/auth/register?success=1');
                     }
                     $error = 'เกิดข้อผิดพลาดในการลงทะเบียน โปรดลองใหม่อีกครั้ง';
                 }
             }
         }
 
+        if (isset($_GET['success']) && $_GET['success'] === '1') {
+            $success = true;
+        }
+
         $majorsData = (new \App\Models\Faculty)->allWithMajors();
-        $this->view('auth/register', ['error' => $error, 'majorsData' => $majorsData], 'auth');
+        $this->view('auth/register', ['error' => $error, 'success' => $success, 'majorsData' => $majorsData], 'auth');
     }
 
     public function logout(): void

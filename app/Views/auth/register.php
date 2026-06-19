@@ -1,5 +1,6 @@
 <?php
 /** @var string|null $error */
+/** @var bool|null $success */
 /** @var array $majorsData */
 ?>
 <div class="auth-box auth-box--register">
@@ -78,3 +79,26 @@ function updateMajors() {
     }
 }
 </script>
+
+<?php if (isset($success) && $success): ?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    Swal.fire({
+        title: 'สมัครสมาชิกสำเร็จ!',
+        text: 'ระบบกำลังนำคุณไปยังหน้าเข้าสู่ระบบ...',
+        icon: 'success',
+        timer: 2500,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+            Swal.showLoading();
+        },
+        willClose: () => {
+            window.location.href = '<?= url("auth/login") ?>';
+        }
+    });
+});
+</script>
+<?php endif; ?>
