@@ -7,12 +7,16 @@
     <h2 class="text-primary-custom fw-bold mb-2"><?= e($club['club_name']) ?></h2>
     <p class="text-muted fw-bold mb-4">ประธานชมรม: <?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่ระบุ</span>' ?></p>
 
+    <?php
+        $cur = (int) $club['current_members'];
+        $max = (int) $club['max_members'];
+        $ratio = $max > 0 ? $cur / $max : 1;
+        $capState = $isFull ? 'full' : ($ratio >= 0.8 ? 'nearly' : 'open');
+    ?>
     <div class="d-flex justify-content-center mb-4">
-        <div class="border rounded px-4 py-2 bg-light">
-            <span class="text-secondary fw-bold">สถานะรับสมาชิก: </span>
-            <span class="<?= $isFull ? 'text-danger' : 'text-success' ?> fs-5 fw-bold ms-2">
-                <?= (int) $club['current_members'] ?> / <?= (int) $club['max_members'] ?>
-            </span>
+        <div class="capacity-meter capacity-meter--<?= $capState ?>">
+            <span class="capacity-meter__label">สถานะรับสมาชิก</span>
+            <span class="capacity-meter__value"><?= $cur ?> / <?= $max ?></span>
         </div>
     </div>
 

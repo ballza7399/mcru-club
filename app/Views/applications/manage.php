@@ -18,9 +18,9 @@
                     <td><span class="badge bg-light text-dark border px-2 py-1"><?= e($row['club_name']) ?></span></td>
                     <td>
                         <?php match ($row['status']) {
-                            'pending'  => print '<span class="badge bg-warning text-dark">รอตรวจสอบ</span>',
-                            'approved' => print '<span class="badge bg-success">อนุมัติแล้ว</span>',
-                            default    => print '<span class="badge bg-danger">ปฏิเสธ</span>',
+                            'pending'  => print '<span class="status-badge status-badge--pending"><i class="fa-solid fa-clock"></i> รอตรวจสอบ</span>',
+                            'approved' => print '<span class="status-badge status-badge--approved"><i class="fa-solid fa-circle-check"></i> อนุมัติแล้ว</span>',
+                            default    => print '<span class="status-badge status-badge--rejected"><i class="fa-solid fa-circle-xmark"></i> ปฏิเสธ</span>',
                         }; ?>
                     </td>
                     <td>

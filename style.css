@@ -1,19 +1,108 @@
+/* =========================================================
+   MCRU Clubs — Theme
+   ทิศทาง: "Academic Modern" — ทางการแบบสถาบัน แต่ไม่แข็งทื่อ
+   ระบบสี 60-30-10: น้ำเงิน (หลัก) / พื้นขาว-เทา (รอง) / ทอง (เน้น)
+   5 สีมหาวิทยาลัยถูก map เป็นหน้าที่:
+     น้ำเงิน = สถาบัน/หลัก   ทอง = ปัญญา/เน้น/CTA
+     เขียว = เปิดรับ/อนุมัติ  ส้ม = รอ/ใกล้เต็ม   (แดง = ปิด/ปฏิเสธ/ลบ)
+   ========================================================= */
+
 :root {
+  /* --- แบรนด์หลัก (คงเดิม) --- */
   --primary-blue: #0b2c5c;
   --primary-hover: #071d3d;
+  --primary-soft: #1a4980;       /* น้ำเงินอ่อนสำหรับ gradient/hover */
   --accent-gold: #f9a826;
+  --accent-gold-deep: #c9760a;   /* ทองเข้มสำหรับข้อความบนพื้นสว่าง (กัน contrast หลุด) */
+
+  /* --- พื้นผิว & ตัวอักษร --- */
   --bg-light: #f4f7f6;
-  --text-dark: #2d3748;
+  --surface: #ffffff;
+  --surface-alt: #eef2f5;        /* ชั้น neutral ที่สองสำหรับ panel/หัวตาราง */
+  --text-dark: #233143;
+  --text-muted: #586577;         /* เข้มกว่า .text-muted ของ Bootstrap เพื่อผ่าน 4.5:1 */
+  --border: #e2e8f0;
+  --border-strong: #cfd8e3;
+
+  /* --- semantic: bg อ่อน / ink เข้ม (โทน soft-badge แบบ Stripe/Linear) --- */
+  --success: #1f7a52;
+  --success-bg: #e4f3ea;
+  --success-ink: #155d3e;
+  --warning: #b45309;
+  --warning-bg: #fdeedb;
+  --warning-ink: #8a4208;
+  --danger: #c0392b;
+  --danger-bg: #fbe7e4;
+  --danger-ink: #95291d;
+  --info: #1a4980;
+  --info-bg: #e7eef7;
+  --info-ink: #0b2c5c;
+
+  /* --- radius / shadow / motion --- */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 2px 8px rgba(11, 44, 92, 0.05);
+  --shadow: 0 10px 20px rgba(11, 44, 92, 0.06);
+  --shadow-lg: 0 15px 35px rgba(11, 44, 92, 0.1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* ease-out-quart: เนียน ไม่เด้ง */
+  --dur: 0.2s;
+
+  /* --- z-index scale แบบมีความหมาย (อย่าใช้ตัวเลขมั่ว 999/9999) --- */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-toast: 1080;
 }
+
 body {
   background-color: var(--bg-light);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Kanit', "Segoe UI", sans-serif;
   color: var(--text-dark);
 }
+
+/* หัวข้อให้ตัดบรรทัดสมดุล อ่านง่ายทุกขนาดจอ */
+h1, h2, h3, h4, h5 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* แทนที่ .text-muted ดั้งเดิมที่ contrast อ่อนเกินบนพื้น tinted */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+/* focus-visible กลางสำหรับทุก control ที่โต้ตอบได้ (a11y / product state vocab) */
+a:focus-visible,
+button:focus-visible,
+.btn:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.btn-primary-custom:focus-visible,
+.btn-outline-custom:focus-visible {
+  outline: 3px solid rgba(249, 168, 38, 0.55);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   Navbar
+   ========================================= */
 .navbar-custom {
-  background-color: var(--primary-blue);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  padding: 15px 0;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 44, 92, 0.97) 0%,
+    rgba(17, 63, 133, 0.97) 100%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 25px rgba(11, 44, 92, 0.15);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: var(--z-sticky);
 }
 .navbar-custom .navbar-brand {
   font-weight: 800;
@@ -24,152 +113,6 @@ body {
 .navbar-custom .navbar-brand span {
   color: var(--accent-gold);
 }
-.navbar-custom .nav-link {
-  color: rgba(255, 255, 255, 0.85) !important;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: 0.3s;
-}
-.navbar-custom .nav-link:hover {
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.1);
-}
-.dropdown-menu {
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  border: none;
-  padding: 0;
-}
-.dropdown-item {
-  padding: 12px 20px;
-  font-weight: 500;
-  border-bottom: 1px solid #f0f0f0;
-}
-.dropdown-item:hover {
-  background-color: #f8f9fa;
-  color: var(--primary-blue);
-}
-
-.btn-primary-custom {
-  background-color: var(--primary-blue);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 600;
-  transition: 0.3s;
-}
-.btn-primary-custom:hover {
-  background-color: var(--primary-hover);
-  color: #ffffff;
-}
-.btn-outline-custom {
-  border: 2px solid var(--primary-blue);
-  color: var(--primary-blue);
-  background: transparent;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 600;
-  transition: 0.3s;
-  text-align: center;
-  display: inline-block;
-  text-decoration: none;
-}
-.btn-outline-custom:hover {
-  background-color: var(--primary-blue);
-  color: #ffffff;
-}
-
-.card-custom {
-  border: none;
-  border-radius: 16px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.03);
-  transition: 0.3s;
-  background: #ffffff;
-  overflow: hidden;
-}
-.card-custom:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-}
-.text-primary-custom {
-  color: var(--primary-blue) !important;
-}
-
-.club-banner {
-  height: 110px;
-  background: linear-gradient(135deg, var(--primary-blue), #1a4980);
-  position: relative;
-}
-.club-logo-thumb {
-  width: 90px;
-  height: 90px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #fff;
-  margin-top: -45px;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 2;
-}
-.auth-wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.auth-card {
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  display: flex;
-  max-width: 900px;
-  width: 100%;
-}
-.auth-brand {
-  background: linear-gradient(135deg, var(--primary-blue), #1a4980);
-  color: #ffffff;
-  padding: 50px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 45%;
-}
-.auth-form {
-  padding: 50px 40px;
-  width: 55%;
-}
-@media (max-width: 768px) {
-  .auth-card {
-    flex-direction: column;
-  }
-  .auth-brand,
-  .auth-form {
-    width: 100%;
-    padding: 30px;
-  }
-}
-
-/* =========================================
-   อัปเกรดดีไซน์ Navbar (เมนูด้านบน)
-   ========================================= */
-.navbar-custom {
-  background: linear-gradient(
-    135deg,
-    rgba(11, 44, 92, 0.95) 0%,
-    rgba(17, 63, 133, 0.95) 100%
-  );
-  backdrop-filter: blur(10px); /* เอฟเฟกต์กระจกเบลอ */
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 4px 25px rgba(11, 44, 92, 0.15);
-  padding: 12px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .brand-icon {
   display: inline-flex;
   align-items: center;
@@ -181,17 +124,17 @@ body {
   border-radius: 10px;
   font-size: 1.2rem;
 }
-
 .navbar-custom .nav-link {
-  color: rgba(255, 255, 255, 0.75) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
   font-weight: 500;
   padding: 8px 16px;
   border-radius: 10px;
-  transition: all 0.3s ease;
+  transition: color var(--dur) var(--ease-out),
+    background var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
   display: flex;
   align-items: center;
 }
-
 .navbar-custom .nav-link:hover {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.1);
@@ -210,18 +153,26 @@ body {
   color: var(--primary-blue) !important;
 }
 
-/* อนิเมชั่น Dropdown เมนู */
+/* Dropdown */
 .dropdown-menu {
-  animation: fadeInDown 0.3s ease forwards;
+  animation: fadeInDown 0.3s var(--ease-out) forwards;
   border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(11, 44, 92, 0.12);
+  border: none;
   padding: 10px;
+  z-index: var(--z-dropdown);
 }
 .dropdown-item {
   border-radius: 10px;
   padding: 10px 15px;
   margin-bottom: 2px;
-  transition: 0.2s;
+  transition: background var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out);
   font-weight: 500;
+}
+.dropdown-item:hover {
+  background-color: var(--surface-alt);
+  color: var(--primary-blue);
 }
 @keyframes fadeInDown {
   from {
@@ -234,7 +185,7 @@ body {
   }
 }
 
-/* ป้ายแสดงชื่อและยศผู้ใช้งาน (Profile Badge) */
+/* Profile badge */
 .user-profile-badge {
   display: inline-flex;
   align-items: center;
@@ -266,11 +217,11 @@ body {
   font-weight: 600;
 }
 .user-profile-badge .role {
-  color: #a0aec0;
+  color: #c7d2df; /* สว่างขึ้นเพื่อให้อ่านชัดบนพื้นน้ำเงินเข้ม */
   font-size: 0.75rem;
 }
 
-/* ปุ่มออกจากระบบ (มินิมอล) */
+/* ปุ่มออกจากระบบ */
 .btn-logout {
   display: flex;
   align-items: center;
@@ -279,19 +230,21 @@ body {
   height: 42px;
   border-radius: 50%;
   background: rgba(220, 53, 69, 0.15);
-  color: #ff6b6b;
+  color: #ff8585;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: background var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
   border: 1px solid rgba(220, 53, 69, 0.2);
 }
 .btn-logout:hover {
   background: #dc3545;
   color: #ffffff;
-  transform: rotate(10deg) scale(1.1);
+  transform: rotate(8deg) scale(1.08);
   box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* ปรับระยะห่างในมือถือ */
 @media (max-width: 992px) {
   .user-profile-badge {
     width: 100%;
@@ -303,5 +256,593 @@ body {
   .btn-logout {
     width: 100%;
     border-radius: 10px;
+  }
+}
+
+/* =========================================
+   Buttons — ชุด state ครบ (default/hover/active/focus/disabled)
+   ========================================= */
+.btn-primary-custom {
+  background-color: var(--primary-blue);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: background var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.btn-primary-custom:hover {
+  background-color: var(--primary-hover);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(11, 44, 92, 0.22);
+}
+.btn-primary-custom:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+.btn-primary-custom:disabled,
+.btn-primary-custom[disabled] {
+  background-color: var(--border-strong);
+  color: #ffffff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-outline-custom {
+  border: 2px solid var(--primary-blue);
+  color: var(--primary-blue);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: background var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out);
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-outline-custom:hover {
+  background-color: var(--primary-blue);
+  color: #ffffff;
+}
+.btn-outline-custom:active {
+  background-color: var(--primary-hover);
+}
+
+/* ปุ่ม CTA สีทอง (สำหรับ action เด่นพิเศษ เช่น สมัคร) */
+.btn-gold-custom {
+  background-color: var(--accent-gold);
+  color: var(--primary-blue);
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-weight: 700;
+  transition: background var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.btn-gold-custom:hover {
+  background-color: var(--accent-gold-deep);
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(201, 118, 10, 0.3);
+}
+.btn-gold-custom:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+/* =========================================
+   Cards
+   ========================================= */
+.card-custom {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+  background: var(--surface);
+  overflow: hidden;
+}
+.card-custom:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+.text-primary-custom {
+  color: var(--primary-blue) !important;
+}
+
+.club-banner {
+  height: 110px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-soft));
+  position: relative;
+}
+/* ลายเส้นทองบาง ๆ คั่นใต้แบนเนอร์ — รายละเอียดแบบ academic */
+.club-banner::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+}
+.club-logo-thumb {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  margin-top: -45px;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(11, 44, 92, 0.12);
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================================
+   Tables — หัวตารางใช้ neutral ชั้นสอง
+   ========================================= */
+.table > thead.table-light th,
+.table > thead th {
+  background-color: var(--surface-alt);
+  color: var(--text-dark);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-strong);
+}
+.table > tbody > tr {
+  transition: background var(--dur) var(--ease-out);
+}
+.table-hover > tbody > tr:hover {
+  background-color: var(--surface-alt);
+}
+
+/* =========================================
+   Status badges — ระบบ semantic เดียวกันทั้งเว็บ
+   โทน soft: พื้นอ่อน + ตัวอักษรเข้ม (อ่านง่าย ไม่จัดจ้าน)
+   ========================================= */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.status-badge--pending {
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+  border-color: rgba(180, 83, 9, 0.2);
+}
+.status-badge--approved {
+  background: var(--success-bg);
+  color: var(--success-ink);
+  border-color: rgba(31, 122, 82, 0.2);
+}
+.status-badge--rejected {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  border-color: rgba(192, 57, 43, 0.2);
+}
+.status-badge--neutral {
+  background: var(--surface-alt);
+  color: var(--text-muted);
+  border-color: var(--border);
+}
+
+/* badge จำนวนสมาชิก — สื่อความจุด้วยสี (เขียว=ว่าง ส้ม=ใกล้เต็ม แดง=เต็ม) */
+.member-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.member-badge--open {
+  background: var(--success-bg);
+  color: var(--success-ink);
+  border-color: rgba(31, 122, 82, 0.2);
+}
+.member-badge--warn {
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+  border-color: rgba(180, 83, 9, 0.2);
+}
+.member-badge--full {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  border-color: rgba(192, 57, 43, 0.2);
+}
+
+/* card club description text */
+.club-desc {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.55;
+  max-width: 38ch;
+}
+
+/* capacity meter — กล่องสถานะรับสมาชิกในหน้ารายละเอียดชมรม */
+.capacity-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+.capacity-meter__label {
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+.capacity-meter__value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.capacity-meter--open {
+  background: var(--success-bg);
+  border-color: rgba(31, 122, 82, 0.25);
+}
+.capacity-meter--open .capacity-meter__value {
+  color: var(--success-ink);
+}
+.capacity-meter--nearly {
+  background: var(--warning-bg);
+  border-color: rgba(180, 83, 9, 0.25);
+}
+.capacity-meter--nearly .capacity-meter__value {
+  color: var(--warning-ink);
+}
+.capacity-meter--full {
+  background: var(--danger-bg);
+  border-color: rgba(192, 57, 43, 0.25);
+}
+.capacity-meter--full .capacity-meter__value {
+  color: var(--danger-ink);
+}
+
+/* =========================================
+   Alerts — ปรับให้เข้าชุด semantic (ใช้ใน club_detail)
+   ========================================= */
+.alert {
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+}
+.alert-success {
+  background: var(--success-bg);
+  color: var(--success-ink);
+  border-color: rgba(31, 122, 82, 0.25);
+}
+.alert-warning {
+  background: var(--warning-bg);
+  color: var(--warning-ink);
+  border-color: rgba(180, 83, 9, 0.25);
+}
+.alert-danger {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+  border-color: rgba(192, 57, 43, 0.25);
+}
+.alert-info {
+  background: var(--info-bg);
+  color: var(--info-ink);
+  border-color: rgba(26, 73, 128, 0.25);
+}
+
+/* =========================================
+   Auth (login/register) — layout เดิม
+   ========================================= */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.auth-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(11, 44, 92, 0.08);
+  overflow: hidden;
+  display: flex;
+  max-width: 900px;
+  width: 100%;
+}
+.auth-brand {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-soft));
+  color: #ffffff;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 45%;
+}
+.auth-form {
+  padding: 50px 40px;
+  width: 55%;
+}
+@media (max-width: 768px) {
+  .auth-card {
+    flex-direction: column;
+  }
+  .auth-brand,
+  .auth-form {
+    width: 100%;
+    padding: 30px;
+  }
+}
+
+/* =========================================
+   Auth pages (login / register) — รวมศูนย์เข้า style.css
+   ใช้ระบบสีแบรนด์เดียวกับทั้งเว็บ (เลิกใช้ inline <style> + ตัวแปร --mru-*)
+   ========================================= */
+
+/* alias ตัวแปรเดิม เผื่อมี markup ที่ยังอ้าง --mru-* ค้างอยู่ */
+:root {
+  --mru-blue: var(--primary-blue);
+  --mru-gold: var(--accent-gold);
+  --mru-blue-hover: var(--primary-hover);
+}
+
+/* พื้นหลังหน้า auth — ภาพมหาวิทยาลัยคลุมด้วยน้ำเงินสถาบัน */
+body.auth-page {
+  background: linear-gradient(rgba(11, 44, 92, 0.82), rgba(7, 29, 61, 0.92)),
+    url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')
+    center / cover no-repeat fixed;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+/* การ์ด auth กลางจอ */
+.auth-box {
+  background: var(--surface);
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 50px rgba(7, 29, 61, 0.35);
+  overflow: hidden;
+  margin: 20px;
+}
+.auth-box--login { max-width: 420px; }
+.auth-box--register { max-width: 560px; }
+
+.auth-box__header {
+  color: #fff;
+  text-align: center;
+  padding: 38px 24px 30px;
+  position: relative;
+}
+.auth-box__header--blue {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-soft));
+}
+.auth-box__header--gold {
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-deep));
+}
+.auth-box__header h2 {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 1.9rem;
+  letter-spacing: 0.5px;
+}
+.auth-box__header--blue h2 span { color: var(--accent-gold); }
+.auth-box__header p {
+  font-size: 0.92rem;
+  opacity: 0.9;
+  margin: 0;
+}
+/* วงกลมตกแต่งมุมการ์ด — รายละเอียดเล็ก ๆ แบบ academic */
+.auth-box__header::after {
+  content: "";
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+}
+.auth-box__header--blue::after { bottom: -34px; right: -30px; }
+.auth-box__header--gold::after { top: -34px; left: -30px; }
+
+.auth-box__body { padding: 38px 36px; }
+.auth-box__title {
+  font-weight: 600;
+  margin-bottom: 24px;
+  text-align: center;
+  color: var(--text-dark);
+}
+
+/* input ที่มีไอคอนนำหน้า */
+.field {
+  position: relative;
+  margin-bottom: 18px;
+}
+.field > i.field__icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  z-index: 2;
+  transition: color var(--dur) var(--ease-out);
+}
+.field__control {
+  height: 50px;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  padding: 0 18px 0 44px;
+  border: 1px solid var(--border);
+  background: #f8fafc;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  transition: border-color var(--dur) var(--ease-out),
+    background var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.field__control:focus {
+  border-color: var(--primary-blue);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(11, 44, 92, 0.12);
+  outline: none;
+}
+.field__control:focus ~ i.field__icon { color: var(--primary-blue); }
+/* select ลูกศร dropdown เอง */
+select.field__control {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23586577' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 16px 12px;
+}
+.field__eye {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #94a3b8;
+  z-index: 2;
+  transition: color var(--dur) var(--ease-out);
+}
+.field__eye:hover { color: var(--primary-blue); }
+
+/* ปุ่ม submit เต็มความกว้างในฟอร์ม auth */
+.auth-submit {
+  width: 100%;
+  height: 50px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 1rem;
+  color: #fff;
+  background: var(--primary-blue);
+  transition: background var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out),
+    box-shadow var(--dur) var(--ease-out);
+}
+.auth-submit:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(11, 44, 92, 0.25);
+}
+.auth-submit:active { transform: translateY(0); box-shadow: none; }
+
+/* ตัวคั่น "หรือ" */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0 20px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+.auth-divider:not(:empty)::before { margin-right: 0.6em; }
+.auth-divider:not(:empty)::after { margin-left: 0.6em; }
+
+/* ปุ่มรอง (ลิงก์ไปสมัคร) */
+.auth-secondary {
+  width: 100%;
+  height: 50px;
+  border: 2px solid var(--border);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  font-size: 0.95rem;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out),
+    background var(--dur) var(--ease-out);
+}
+.auth-secondary:hover {
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  background: #f8fafc;
+}
+.auth-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+.auth-link a {
+  color: var(--primary-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+.auth-link a:hover { text-decoration: underline; }
+
+/* =========================================
+   Modal — เข้าชุดแบรนด์ (ใช้ในหน้าจัดการชมรม)
+   ========================================= */
+.modal-content {
+  border: none;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header.modal-header--brand {
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-soft));
+  color: #fff;
+  border-bottom: none;
+}
+.modal-header.modal-header--gold {
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-deep));
+  color: #fff;
+  border-bottom: none;
+}
+.modal-footer { border-top: 1px solid var(--border); }
+
+/* form-control มาตรฐาน (ในโมดอล) ให้ focus เป็นสีแบรนด์ */
+.modal .form-control:focus,
+.modal .form-select:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 3px rgba(11, 44, 92, 0.12);
+}
+.form-label.fw-bold { color: var(--text-dark); }
+
+/* =========================================
+   Reduced motion — ปิด/ลดการเคลื่อนไหวทั้งหมด (a11y, ไม่ optional)
+   ========================================= */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .navbar-custom .nav-link:hover,
+  .card-custom:hover,
+  .btn-logout:hover,
+  .btn-primary-custom:hover,
+  .btn-gold-custom:active,
+  .btn-primary-custom:active {
+    transform: none;
+  }
+  .dropdown-menu {
+    animation: none;
   }
 }

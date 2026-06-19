@@ -2,7 +2,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary-custom fw-bold m-0">จัดการข้อมูลชมรม</h4>
     <?php if ($role === 'admin'): ?>
-        <button class="btn btn-warning fw-bold" data-bs-toggle="modal" data-bs-target="#addClubModal">+ สร้างชมรมใหม่</button>
+        <button class="btn-gold-custom" data-bs-toggle="modal" data-bs-target="#addClubModal">
+            <i class="fa-solid fa-plus me-1"></i> สร้างชมรมใหม่
+        </button>
     <?php endif; ?>
 </div>
 
@@ -19,16 +21,28 @@
                         <?php if (assetExists($row['club_logo'])): ?>
                             <img src="<?= asset($row['club_logo']) ?>" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" alt="">
                         <?php else: ?>
-                            <div style="width:40px;height:40px;border-radius:50%;background:#eee;"></div>
+                            <div style="width:40px;height:40px;border-radius:50%;background:var(--surface-alt);"></div>
                         <?php endif; ?>
                     </td>
                     <td class="fw-bold text-primary-custom"><?= e($row['club_name']) ?></td>
-                    <td><?= $row['pres_name'] ? e($row['pres_name']) . '<br><small class="text-muted">(' . e($row['pres_id']) . ')</small>' : '<span class="badge bg-danger">ยังไม่ระบุ</span>' ?></td>
+                    <td>
+                        <?php if ($row['pres_name']): ?>
+                            <?= e($row['pres_name']) ?><br>
+                            <small class="text-muted"><?= e($row['pres_id']) ?></small>
+                        <?php else: ?>
+                            <span class="status-badge status-badge--neutral">ยังไม่ระบุ</span>
+                        <?php endif; ?>
+                    </td>
                     <td><?= (int) $row['max_members'] ?> คน</td>
                     <td>
-                        <button class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $row['id'] ?>">แก้ไข</button>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $row['id'] ?>">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
+                        </button>
                         <?php if ($role === 'admin'): ?>
-                            <a href="<?= url('clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-danger" onclick="return confirm('ยืนยันการลบชมรมและข้อมูลการสมัครทั้งหมดของชมรมนี้?')">ลบ</a>
+                            <a href="<?= url('clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('ยืนยันการลบชมรมและข้อมูลการสมัครทั้งหมดของชมรมนี้?')">
+                                <i class="fa-solid fa-trash me-1"></i>ลบ
+                            </a>
                         <?php endif; ?>
                     </td>
                 </tr>
@@ -38,12 +52,12 @@
     </div>
 </div>
 
-<!-- Modals แก้ไข (วางนอกตาราง) -->
+<!-- Modals แก้ไข -->
 <?php foreach ($clubs as $row): ?>
 <div class="modal fade" id="editModal<?= (int) $row['id'] ?>" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header modal-header--brand">
                 <h5 class="modal-title">แก้ไขข้อมูลชมรม</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -65,7 +79,7 @@
                         </div>
                         <?php if ($role === 'admin'): ?>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold text-danger">รหัสนักศึกษาประธานชมรม</label>
+                            <label class="form-label fw-bold">รหัสนักศึกษาประธานชมรม</label>
                             <input type="text" name="pres_student_id" class="form-control" value="<?= e($row['pres_id']) ?>" placeholder="เว้นว่างถ้าไม่มี">
                             <small class="text-muted">ระบบจะอัปเดตยศให้รหัสนี้เป็นประธานอัตโนมัติ</small>
                         </div>
@@ -73,7 +87,7 @@
                     </div>
                     <div class="row border-top pt-3 mt-2">
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-bold">อัปโหลดโลโก้ใหม่ (ถ้าต้องการเปลี่ยน)</label>
+                            <label class="form-label fw-bold">อัปโหลดโลโก้ใหม่</label>
                             <input type="file" name="logo" class="form-control" accept="image/*">
                         </div>
                         <div class="col-md-6 mb-3">
@@ -83,7 +97,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">บันทึกการแก้ไข</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn-primary-custom">บันทึกการแก้ไข</button>
                 </div>
             </form>
         </div>
@@ -92,13 +107,12 @@
 <?php endforeach; ?>
 
 <?php if ($role === 'admin'): ?>
-<!-- Modal เพิ่มชมรม -->
 <div class="modal fade" id="addClubModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-warning">
+            <div class="modal-header modal-header--gold">
                 <h5 class="modal-title fw-bold">สร้างชมรมใหม่</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="<?= url('clubs/store') ?>" enctype="multipart/form-data">
                 <div class="modal-body">
@@ -126,7 +140,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">สร้างชมรม</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="submit" class="btn-primary-custom">สร้างชมรม</button>
                 </div>
             </form>
         </div>
