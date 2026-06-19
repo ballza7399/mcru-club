@@ -104,7 +104,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-bold">เนื้อหาข่าว</label>
-                        <textarea name="content" class="form-control" rows="8" placeholder="พิมพ์เนื้อหาหรือรายละเอียดการประชาสัมพันธ์อย่างละเอียด..." required></textarea>
+                        <textarea name="content" class="form-control ckeditor-replace" rows="8" placeholder="พิมพ์เนื้อหาหรือรายละเอียดการประชาสัมพันธ์อย่างละเอียด..."></textarea>
                     </div>
 
                     <div class="mb-3">
@@ -141,7 +141,7 @@
                         
                         <div class="mb-3">
                             <label class="form-label fw-bold">เนื้อหาข่าว</label>
-                            <textarea name="content" class="form-control" rows="8" required><?= e($news['content']) ?></textarea>
+                            <textarea name="content" class="form-control ckeditor-replace" rows="8"><?= e($news['content']) ?></textarea>
                         </div>
                         
                         <div class="mb-3">
@@ -158,3 +158,29 @@
         </div>
     </div>
 <?php endforeach; ?>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+<style>
+/* แก้ไขหน้าต่างตั้งค่าลิงก์/ป๊อปอัพของ CKEditor ไม่ให้แสดงผลซ้อนใต้ Bootstrap Modal */
+.ck-rounded-corners .ck.ck-balloon-panel, 
+.ck.ck-balloon-panel {
+    z-index: 10055 !important;
+}
+/* ปรับขนาดความสูงขั้นต่ำของส่วนแก้ไขข้อความ */
+.ck-editor__editable {
+    min-height: 250px;
+}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('.ckeditor-replace').forEach(textarea => {
+        ClassicEditor
+            .create(textarea, {
+                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo' ]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    });
+});
+</script>

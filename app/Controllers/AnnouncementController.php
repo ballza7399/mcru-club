@@ -136,6 +136,22 @@ class AnnouncementController extends Controller
         $this->redirect('/announcements/manage');
     }
 
+    public function detail(string $id): void
+    {
+        $annId = (int)$id;
+        $annModel = new Announcement;
+        $ann = $annModel->find($annId);
+        
+        if (!$ann) {
+            $this->redirect('/');
+        }
+        
+        $this->view('announcements/detail', [
+            'announcement' => $ann,
+            'pageTitle' => $ann['title']
+        ]);
+    }
+
     public function delete(string $id): void
     {
         $this->requireRole('admin', 'president');

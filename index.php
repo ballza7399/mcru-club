@@ -69,6 +69,7 @@ $router->post('/roles/store',            'App\Controllers\RoleController', 'stor
 $router->get('/roles/delete/{id}',       'App\Controllers\RoleController', 'delete');
 $router->post('/roles/permissions/sync', 'App\Controllers\RoleController', 'syncPermissions');
 
+$router->get('/announcements/detail/{id}', 'App\Controllers\AnnouncementController', 'detail');
 $router->get('/announcements/manage',     'App\Controllers\AnnouncementController', 'manage');
 $router->post('/announcements/store',     'App\Controllers\AnnouncementController', 'store');
 $router->post('/announcements/update',    'App\Controllers\AnnouncementController', 'update');

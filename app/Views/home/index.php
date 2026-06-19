@@ -60,26 +60,28 @@
             <?php else: ?>
                 <?php foreach ($announcements as $news): ?>
                     <div class="col-md-6">
-                        <div class="news-card h-100 d-flex flex-column">
-                            <div class="news-thumb bg-light d-flex align-items-center justify-content-center text-muted" 
-                                 style="<?= !empty($news['thumbnail']) ? 'background-image: url(' . asset($news['thumbnail']) . ');' : 'background: linear-gradient(135deg, var(--surface-alt), var(--border));' ?>">
-                                <?php if (empty($news['thumbnail'])): ?>
-                                    <i class="fa-regular fa-image fs-1 opacity-25"></i>
-                                <?php endif; ?>
-                                <span class="news-badge <?= $news['club_id'] ? 'news-badge-club' : '' ?>">
-                                    <?= $news['club_id'] ? e($news['club_name']) : 'ข่าวสารกลาง' ?>
-                                </span>
-                            </div>
-                            <div class="p-3 d-flex flex-column flex-grow-1">
-                                <h6 class="fw-bold text-primary-custom mb-2"><?= e($news['title']) ?></h6>
-                                <p class="text-muted small flex-grow-1"><?= mb_substr(strip_tags($news['content']), 0, 100) . '...' ?></p>
-                                <hr class="my-2 opacity-10">
-                                <div class="d-flex justify-content-between align-items-center text-muted small mt-auto">
-                                    <span><i class="fa-regular fa-user me-1"></i><?= e($news['author_name']) ?></span>
-                                    <span><i class="fa-regular fa-calendar-days me-1"></i><?= date('d/m/Y', strtotime($news['created_at'])) ?></span>
+                        <a href="<?= url('announcements/detail/' . (int)$news['id']) ?>" class="text-decoration-none h-100 d-block">
+                            <div class="news-card h-100 d-flex flex-column">
+                                <div class="news-thumb bg-light d-flex align-items-center justify-content-center text-muted" 
+                                     style="<?= !empty($news['thumbnail']) ? 'background-image: url(' . asset($news['thumbnail']) . ');' : 'background: linear-gradient(135deg, var(--surface-alt), var(--border));' ?>">
+                                    <?php if (empty($news['thumbnail'])): ?>
+                                        <i class="fa-regular fa-image fs-1 opacity-25"></i>
+                                    <?php endif; ?>
+                                    <span class="news-badge <?= $news['club_id'] ? 'news-badge-club' : '' ?>">
+                                        <?= $news['club_id'] ? e($news['club_name']) : 'ข่าวสารกลาง' ?>
+                                    </span>
+                                </div>
+                                <div class="p-3 d-flex flex-column flex-grow-1">
+                                    <h6 class="fw-bold text-primary-custom mb-2"><?= e($news['title']) ?></h6>
+                                    <p class="text-muted small flex-grow-1"><?= mb_substr(strip_tags($news['content']), 0, 100) . '...' ?></p>
+                                    <hr class="my-2 opacity-10">
+                                    <div class="d-flex justify-content-between align-items-center text-muted small mt-auto">
+                                        <span><i class="fa-regular fa-user me-1"></i><?= e($news['author_name']) ?></span>
+                                        <span><i class="fa-regular fa-calendar-days me-1"></i><?= date('d/m/Y', strtotime($news['created_at'])) ?></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
