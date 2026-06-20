@@ -18,8 +18,13 @@ class AnnouncementController extends Controller
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
         
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
         $announcements = [];
         $clubId = null;
+        $totalItems = 0;
         
         if ($role === 'president') {
             // ดึงชมรมของประธาน
@@ -30,20 +35,25 @@ class AnnouncementController extends Controller
             
             if ($myClub) {
                 $clubId = (int)$myClub['id'];
-                $announcements = $annModel->forClub($clubId);
+                $totalItems = $annModel->countForClub($clubId);
+                $announcements = $annModel->forClubPaginated($clubId, $limit, $offset);
             }
         } else {
             // แอดมินจัดการได้หมด
-            $announcements = $annModel->all(50);
+            $totalItems = $annModel->countAll();
+            $announcements = $annModel->allPaginated($limit, $offset);
         }
         
+        $totalPages = (int)ceil($totalItems / $limit);
         $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('announcements/manage', [
             'announcements' => $announcements,
             'clubsList' => $clubsList,
             'role' => $role,
-            'clubId' => $clubId
+            'clubId' => $clubId,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ], 'backoffice');
     }
 

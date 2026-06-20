@@ -30,18 +30,36 @@ class Club extends Model
         return $stmt->fetch() ?: null;
     }
 
-    /** รายการชมรมสำหรับหน้าจัดการ (admin เห็นทั้งหมด, president เห็นเฉพาะของตน) */
-    public function listForManage(string $role, int $userId): array
+    /** รายการชมรมสำหรับหน้าจัดการ (admin เห็นทั้งหมด, president เห็นเฉพาะของตน) แบบแบ่งหน้า */
+    public function listForManage(string $role, int $userId, int $limit = 10, int $offset = 0): array
     {
         $sql = 'SELECT c.*, u.student_id AS pres_id, u.name AS pres_name
                 FROM clubs c
                 LEFT JOIN users u ON c.president_id = u.id';
         if ($role === 'admin') {
-            return $this->db->query($sql)->fetchAll();
+            $stmt = $this->db->prepare($sql . ' LIMIT ? OFFSET ?');
+            $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
         }
-        $stmt = $this->db->prepare($sql . ' WHERE c.president_id = ?');
-        $stmt->execute([$userId]);
+        $stmt = $this->db->prepare($sql . ' WHERE c.president_id = ? LIMIT ? OFFSET ?');
+        $stmt->bindValue(1, $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนชมรมทั้งหมดสำหรับหน้าจัดการ */
+    public function countForManage(string $role, int $userId): int
+    {
+        if ($role === 'admin') {
+            return (int)$this->db->query('SELECT COUNT(*) FROM clubs')->fetchColumn();
+        }
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ?');
+        $stmt->execute([$userId]);
+        return (int)$stmt->fetchColumn();
     }
 
     public function create(array $data): void

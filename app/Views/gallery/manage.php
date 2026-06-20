@@ -43,6 +43,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
+        <?= renderPagination($currentPage, $totalPages, 'gallery/manage') ?>
     <?php endif; ?>
 </div>
 

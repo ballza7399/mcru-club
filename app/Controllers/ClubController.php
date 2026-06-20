@@ -44,8 +44,22 @@ class ClubController extends Controller
     public function manage(): void
     {
         $this->requireRole('admin', 'president');
-        $clubs = (new Club)->listForManage($_SESSION['role'], $_SESSION['user_id']);
-        $this->view('clubs/manage', ['clubs' => $clubs], 'backoffice');
+
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
+        $clubModel = new Club;
+        $totalClubs = $clubModel->countForManage($_SESSION['role'], $_SESSION['user_id']);
+        $totalPages = (int)ceil($totalClubs / $limit);
+
+        $clubs = $clubModel->listForManage($_SESSION['role'], $_SESSION['user_id'], $limit, $offset);
+
+        $this->view('clubs/manage', [
+            'clubs' => $clubs,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
+        ], 'backoffice');
     }
 
     public function store(): void
@@ -152,7 +166,14 @@ class ClubController extends Controller
             throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการจัดการสมาชิก', 404);
         }
         
-        $members = $roleModel->getClubMembers($clubId);
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
+        $totalMembers = $roleModel->countClubMembers($clubId);
+        $totalPages = (int)ceil($totalMembers / $limit);
+
+        $members = $roleModel->getClubMembersPaginated($clubId, $limit, $offset);
         $roles = $roleModel->listClubRoles($clubId);
         $allClubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
         
@@ -161,7 +182,9 @@ class ClubController extends Controller
             'members' => $members,
             'roles' => $roles,
             'allClubsList' => $allClubsList,
-            'currentClubId' => $clubId
+            'currentClubId' => $clubId,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ], 'backoffice');
     }
 

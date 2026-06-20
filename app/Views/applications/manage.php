@@ -39,4 +39,5 @@
             </tbody>
         </table>
     </div>
+    <?= renderPagination($currentPage, $totalPages, 'applications/manage') ?>
 </div>

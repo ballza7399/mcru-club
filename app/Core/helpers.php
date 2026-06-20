@@ -24,3 +24,48 @@ function assetExists(?string $path): bool
 {
     return !empty($path) && file_exists(BASE_PATH . '/' . $path);
 }
+
+/** แสดงผลลิ้งก์แบ่งหน้า (Pagination) แบบ Bootstrap */
+function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath): string
+{
+    if ($totalPages <= 1) {
+        return '';
+    }
+
+    $html = '<nav class="mt-4"><ul class="pagination justify-content-center">';
+    
+    // ดึง query parameters ทั้งหมดที่ส่งมาก่อนหน้าเพื่อคงสถานะตัวกรอง (เช่น club_id=X)
+    $queryParams = $_GET;
+    
+    // ปุ่มย้อนกลับ (Previous)
+    if ($currentPage > 1) {
+        $queryParams['page'] = $currentPage - 1;
+        $url = url($baseUrlPath . '?' . http_build_query($queryParams));
+        $html .= '<li class="page-item"><a class="page-link" href="' . $url . '"><i class="fa-solid fa-chevron-left"></i> ย้อนกลับ</a></li>';
+    } else {
+        $html .= '<li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-left"></i> ย้อนกลับ</span></li>';
+    }
+
+    // ปุ่มตัวเลขหน้า
+    for ($i = 1; $i <= $totalPages; $i++) {
+        $queryParams['page'] = $i;
+        $url = url($baseUrlPath . '?' . http_build_query($queryParams));
+        if ($i === $currentPage) {
+            $html .= '<li class="page-item active" aria-current="page"><span class="page-link">' . $i . '</span></li>';
+        } else {
+            $html .= '<li class="page-item"><a class="page-link" href="' . $url . '">' . $i . '</a></li>';
+        }
+    }
+
+    // ปุ่มถัดไป (Next)
+    if ($currentPage < $totalPages) {
+        $queryParams['page'] = $currentPage + 1;
+        $url = url($baseUrlPath . '?' . http_build_query($queryParams));
+        $html .= '<li class="page-item"><a class="page-link" href="' . $url . '">ถัดไป <i class="fa-solid fa-chevron-right"></i></a></li>';
+    } else {
+        $html .= '<li class="page-item disabled"><span class="page-link">ถัดไป <i class="fa-solid fa-chevron-right"></i></span></li>';
+    }
+
+    $html .= '</ul></nav>';
+    return $html;
+}

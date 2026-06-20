@@ -118,6 +118,37 @@ class Role extends Model
         return $stmt->fetchAll();
     }
 
+    /** ดึงข้อมูลสมาชิกชมรมและตำแหน่งหน้าที่ แบบแบ่งหน้า */
+    public function getClubMembersPaginated(int $clubId, int $limit, int $offset): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT cm.id AS member_record_id, u.id AS user_id, u.student_id, u.name, 
+                    u.faculty, u.major, u.phone, r.id AS role_id, r.role_name, r.role_key
+             FROM club_members cm
+             JOIN users u ON cm.user_id = u.id
+             LEFT JOIN roles r ON cm.role_id = r.id
+             WHERE cm.club_id = ?
+             ORDER BY CASE WHEN r.role_key = "president" THEN 1 
+                           WHEN r.role_key = "officer" THEN 2 
+                           WHEN r.id IS NULL THEN 4 
+                           ELSE 3 END ASC, cm.joined_at ASC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนสมาชิกชมรมทั้งหมด */
+    public function countClubMembers(int $clubId): int
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM club_members WHERE club_id = ?');
+        $stmt->execute([$clubId]);
+        return (int) $stmt->fetchColumn();
+    }
+
     /** กำหนดตำแหน่ง (Role) ให้กับสมาชิกชมรม */
     public function assignMemberRole(int $clubId, int $userId, ?int $roleId): bool
     {

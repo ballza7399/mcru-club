@@ -73,4 +73,48 @@ class Event extends Model
         $stmt = $this->db->prepare('DELETE FROM events WHERE id = ?');
         return $stmt->execute([$id]);
     }
+
+    /** ดึงรายการปฏิทินกิจกรรมทั้งหมดแบบแบ่งหน้า */
+    public function allPaginated(int $limit, int $offset): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT e.*, c.club_name 
+             FROM events e
+             LEFT JOIN clubs c ON e.club_id = c.id
+             ORDER BY e.event_date DESC, e.start_time ASC LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนกิจกรรมทั้งหมด */
+    public function countAll(): int
+    {
+        return (int)$this->db->query('SELECT COUNT(*) FROM events')->fetchColumn();
+    }
+
+    /** ดึงรายการกิจกรรมสำหรับชมรมเฉพาะเจาะจงแบบแบ่งหน้า */
+    public function forClubPaginated(int $clubId, int $limit, int $offset): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT * FROM events 
+             WHERE club_id = ?
+             ORDER BY event_date DESC, start_time ASC LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนกิจกรรมของชมรมเฉพาะเจาะจง */
+    public function countForClub(int $clubId): int
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM events WHERE club_id = ?');
+        $stmt->execute([$clubId]);
+        return (int)$stmt->fetchColumn();
+    }
 }

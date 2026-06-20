@@ -18,8 +18,13 @@ class GalleryController extends Controller
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
         
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 12;
+        $offset = ($currentPage - 1) * $limit;
+
         $gallery = [];
         $clubId = null;
+        $totalItems = 0;
         
         if ($role === 'president') {
             $db = \App\Core\Database::instance();
@@ -28,19 +33,24 @@ class GalleryController extends Controller
             $myClub = $stmt->fetch();
             if ($myClub) {
                 $clubId = (int)$myClub['id'];
-                $gallery = $galModel->forClub($clubId);
+                $totalItems = $galModel->countForClub($clubId);
+                $gallery = $galModel->forClubPaginated($clubId, $limit, $offset);
             }
         } else {
-            $gallery = $galModel->all(100);
+            $totalItems = $galModel->countAll();
+            $gallery = $galModel->allPaginated($limit, $offset);
         }
         
+        $totalPages = (int)ceil($totalItems / $limit);
         $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('gallery/manage', [
             'gallery' => $gallery,
             'clubsList' => $clubsList,
             'role' => $role,
-            'clubId' => $clubId
+            'clubId' => $clubId,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ], 'backoffice');
     }
 

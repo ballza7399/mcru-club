@@ -31,8 +31,22 @@ class ApplicationController extends Controller
     public function manage(): void
     {
         $this->requireRole('admin', 'president');
-        $apps = (new Application)->listForManage($_SESSION['role'], $_SESSION['user_id']);
-        $this->view('applications/manage', ['apps' => $apps], 'backoffice');
+
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
+        $appModel = new Application;
+        $totalApps = $appModel->countForManage($_SESSION['role'], $_SESSION['user_id']);
+        $totalPages = (int)ceil($totalApps / $limit);
+
+        $apps = $appModel->listForManage($_SESSION['role'], $_SESSION['user_id'], $limit, $offset);
+
+        $this->view('applications/manage', [
+            'apps' => $apps,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
+        ], 'backoffice');
     }
 
     public function approve(string $id): void

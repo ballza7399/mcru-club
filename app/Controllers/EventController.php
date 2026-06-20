@@ -17,8 +17,13 @@ class EventController extends Controller
         $userId = $_SESSION['user_id'];
         $role = $_SESSION['role'];
         
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
         $events = [];
         $clubId = null;
+        $totalItems = 0;
         
         if ($role === 'president') {
             $db = \App\Core\Database::instance();
@@ -27,19 +32,24 @@ class EventController extends Controller
             $myClub = $stmt->fetch();
             if ($myClub) {
                 $clubId = (int)$myClub['id'];
-                $events = $eventModel->forClub($clubId);
+                $totalItems = $eventModel->countForClub($clubId);
+                $events = $eventModel->forClubPaginated($clubId, $limit, $offset);
             }
         } else {
-            $events = $eventModel->all();
+            $totalItems = $eventModel->countAll();
+            $events = $eventModel->allPaginated($limit, $offset);
         }
         
+        $totalPages = (int)ceil($totalItems / $limit);
         $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('events/manage', [
             'events' => $events,
             'clubsList' => $clubsList,
             'role' => $role,
-            'clubId' => $clubId
+            'clubId' => $clubId,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages
         ], 'backoffice');
     }
 

@@ -33,8 +33,8 @@ class Application extends Model
         $stmt->execute([$userId, $clubId]);
     }
 
-    /** รายการคำขอ (admin เห็นทั้งหมด, president เห็นเฉพาะชมรมของตน) */
-    public function listForManage(string $role, int $userId): array
+    /** รายการคำขอ (admin เห็นทั้งหมด, president เห็นเฉพาะชมรมของตน) แบบแบ่งหน้า */
+    public function listForManage(string $role, int $userId, int $limit = 10, int $offset = 0): array
     {
         $sql = 'SELECT a.id, u.name, u.student_id, u.faculty, u.major, u.phone,
                        c.club_name, a.status
@@ -42,13 +42,33 @@ class Application extends Model
                 JOIN users u ON a.user_id = u.id
                 JOIN clubs c ON a.club_id = c.id';
         if ($role === 'admin') {
-            return $this->db->query($sql . ' ORDER BY a.id DESC')->fetchAll();
+            $stmt = $this->db->prepare($sql . ' ORDER BY a.id DESC LIMIT ? OFFSET ?');
+            $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
         }
         $stmt = $this->db->prepare(
-            $sql . ' WHERE c.president_id = ? ORDER BY a.id DESC'
+            $sql . ' WHERE c.president_id = ? ORDER BY a.id DESC LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $userId, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนรายการคำขอทั้งหมดตามบทบาทหลัก */
+    public function countForManage(string $role, int $userId): int
+    {
+        if ($role === 'admin') {
+            return (int)$this->db->query('SELECT COUNT(*) FROM applications')->fetchColumn();
+        }
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(*) FROM applications a JOIN clubs c ON a.club_id = c.id WHERE c.president_id = ?'
         );
         $stmt->execute([$userId]);
-        return $stmt->fetchAll();
+        return (int)$stmt->fetchColumn();
     }
 
     /** club_id ของคำขอ (ใช้เช็คสิทธิ์ประธาน) */

@@ -12,15 +12,24 @@ class UserController extends Controller
     {
         $this->requireRole('admin');
 
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = 10;
+        $offset = ($currentPage - 1) * $limit;
+
         $userModel = new User;
         $roleModel = new Role;
 
-        $users = $userModel->allWithRole();
+        $totalUsers = $userModel->countAll();
+        $totalPages = (int)ceil($totalUsers / $limit);
+
+        $users = $userModel->allWithRole($limit, $offset);
         $roles = $roleModel->listSystemRoles();
 
         $this->view('users/manage', [
             'users' => $users,
             'roles' => $roles,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
             'pageTitle' => 'จัดการผู้ใช้ในระบบ'
         ], 'backoffice');
     }

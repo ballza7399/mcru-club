@@ -85,17 +85,26 @@ class User extends Model
         }
     }
 
-    /** ดึงรายการผู้ใช้งานทั้งหมดพร้อมข้อมูลบทบาท */
-    public function allWithRole(): array
+    /** ดึงรายการผู้ใช้งานทั้งหมดพร้อมข้อมูลบทบาท แบบแบ่งหน้า */
+    public function allWithRole(int $limit = 10, int $offset = 0): array
     {
         $stmt = $this->db->prepare(
             'SELECT u.*, r.role_name, r.role_key 
              FROM users u
              JOIN roles r ON u.role_id = r.id
-             ORDER BY u.id ASC'
+             ORDER BY u.id ASC
+             LIMIT ? OFFSET ?'
         );
+        $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนผู้ใช้งานทั้งหมดในระบบ */
+    public function countAll(): int
+    {
+        return (int)$this->db->query('SELECT COUNT(*) FROM users')->fetchColumn();
     }
 
     /** กำหนดบทบาทโดยตรงผ่าน role_id */
