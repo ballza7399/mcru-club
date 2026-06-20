@@ -33,7 +33,8 @@ class ClubController extends Controller
     public function detail(string $id): void
     {
         $clubId = (int) $id;
-        $club   = (new Club)->findWithDetail($clubId);
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
 
         if (!$club || ($club['status'] !== 'approved' && ($_SESSION['role'] ?? '') !== 'admin' && ((int)($club['president_id'] ?? 0) !== (int)($_SESSION['user_id'] ?? 0)))) {
             throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการ หรือชมรมยังไม่ได้รับการอนุมัติ', 404);
@@ -44,10 +45,51 @@ class ClubController extends Controller
             $appStatus = (new Application)->statusFor($_SESSION['user_id'], $clubId);
         }
 
+        $db = \App\Core\Database::instance();
+        
+        // Fetch Club Announcements
+        $stmtAnn = $db->prepare('SELECT a.*, u.name AS author_name FROM announcements a JOIN users u ON a.author_id = u.id WHERE a.club_id = ? ORDER BY a.id DESC LIMIT 6');
+        $stmtAnn->execute([$clubId]);
+        $announcements = $stmtAnn->fetchAll();
+
+        // Fetch Club Events
+        $stmtEv = $db->prepare('SELECT * FROM events WHERE club_id = ? ORDER BY event_date ASC, start_time ASC LIMIT 10');
+        $stmtEv->execute([$clubId]);
+        $events = $stmtEv->fetchAll();
+
+        // Fetch Club Gallery
+        $stmtGal = $db->prepare('SELECT * FROM gallery WHERE club_id = ? ORDER BY id DESC LIMIT 12');
+        $stmtGal->execute([$clubId]);
+        $gallery = $stmtGal->fetchAll();
+
+        // Fetch Club Members for Hierarchy Chart
+        $roleModel = new \App\Models\Role;
+        $allMembers = $roleModel->getClubMembers($clubId);
+        
+        $president = null;
+        $officers = [];
+        $members = [];
+        
+        foreach ($allMembers as $m) {
+            if ($m['role_key'] === 'president') {
+                $president = $m;
+            } elseif ($m['role_key'] === 'officer' || ($m['role_key'] !== 'member' && !empty($m['role_key']))) {
+                $officers[] = $m;
+            } else {
+                $members[] = $m;
+            }
+        }
+
         $this->view('clubs/detail', [
-            'club'      => $club,
-            'appStatus' => $appStatus,
-            'isFull'    => $club['current_members'] >= $club['max_members'],
+            'club'          => $club,
+            'appStatus'     => $appStatus,
+            'isFull'        => $club['current_members'] >= $club['max_members'],
+            'announcements' => $announcements,
+            'events'        => $events,
+            'gallery'       => $gallery,
+            'president'     => $president,
+            'officers'      => $officers,
+            'members'       => $members
         ]);
     }
 
