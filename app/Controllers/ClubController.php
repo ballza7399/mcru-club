@@ -45,7 +45,7 @@ class ClubController extends Controller
     {
         $this->requireRole('admin', 'president');
         $clubs = (new Club)->listForManage($_SESSION['role'], $_SESSION['user_id']);
-        $this->view('clubs/manage', ['clubs' => $clubs]);
+        $this->view('clubs/manage', ['clubs' => $clubs], 'backoffice');
     }
 
     public function store(): void
@@ -162,7 +162,7 @@ class ClubController extends Controller
             'roles' => $roles,
             'allClubsList' => $allClubsList,
             'currentClubId' => $clubId
-        ]);
+        ], 'backoffice');
     }
 
     public function assignRole(): void

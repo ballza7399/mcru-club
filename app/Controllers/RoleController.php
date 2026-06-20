@@ -61,7 +61,7 @@ class RoleController extends Controller
             'allClubsList' => $allClubsList,
             'currentClubId' => $clubId,
             'scopeLabel' => $scopeLabel
-        ]);
+        ], 'backoffice');
     }
 
     public function store(): void

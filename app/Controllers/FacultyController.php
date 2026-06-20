@@ -20,7 +20,7 @@ class FacultyController extends Controller
         $this->view('faculties/manage', [
             'faculties' => $faculties,
             'majors' => $majors
-        ]);
+        ], 'backoffice');
     }
 
     public function store(): void

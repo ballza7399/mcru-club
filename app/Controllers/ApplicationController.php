@@ -32,7 +32,7 @@ class ApplicationController extends Controller
     {
         $this->requireRole('admin', 'president');
         $apps = (new Application)->listForManage($_SESSION['role'], $_SESSION['user_id']);
-        $this->view('applications/manage', ['apps' => $apps]);
+        $this->view('applications/manage', ['apps' => $apps], 'backoffice');
     }
 
     public function approve(string $id): void

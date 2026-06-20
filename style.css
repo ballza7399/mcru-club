@@ -1020,3 +1020,24 @@ select.field__control {
     animation: none;
   }
 }
+
+/* =========================================
+   Admin Sidebar Navigation (Backoffice Layout)
+   ========================================= */
+.admin-sidebar-link {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all var(--dur) var(--ease-out);
+  padding: 0.75rem 1rem !important;
+}
+.admin-sidebar-link:hover {
+  background: var(--surface-alt) !important;
+  color: var(--primary-blue) !important;
+  transform: translateX(3px);
+}
+.admin-sidebar-link.active {
+  background: var(--primary-blue) !important;
+  color: #fff !important;
+  font-weight: 600;
+}

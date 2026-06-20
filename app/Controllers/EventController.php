@@ -40,7 +40,7 @@ class EventController extends Controller
             'clubsList' => $clubsList,
             'role' => $role,
             'clubId' => $clubId
-        ]);
+        ], 'backoffice');
     }
 
     public function store(): void
