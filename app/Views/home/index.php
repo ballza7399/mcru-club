@@ -123,7 +123,7 @@
 <!-- Section: PR News & Event Calendar -->
 <div class="row g-4 mb-5">
     <!-- PR News -->
-    <div class="col-lg-8">
+    <div class="col-lg-8 order-2 order-lg-1">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h4 class="text-primary-custom fw-bold m-0"><i class="fa-solid fa-bullhorn text-warning me-2"></i>ข่าวสารประชาสัมพันธ์</h4>
         </div>
@@ -165,7 +165,7 @@
     </div>
 
     <!-- Event Calendar (Academic Modern Design) -->
-    <div class="col-lg-4">
+    <div class="col-lg-4 order-1 order-lg-2">
         <h4 class="text-primary-custom fw-bold mb-4"><i class="fa-regular fa-calendar-check text-primary me-2"></i>ปฏิทินกิจกรรม</h4>
         
         <!-- Monthly Calendar Grid Card -->
@@ -420,6 +420,27 @@
 }
 .event-mini-card.event-institution {
     border-left-color: var(--accent-gold);
+}
+
+/* --- Mobile Responsive Calendar Styles --- */
+@media (max-width: 576px) {
+    .calendar-day-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.78rem;
+    }
+    .calendar-day-cell {
+        padding: 4px 0;
+    }
+    #calendarMonthYearLabel {
+        font-size: 0.9rem !important;
+    }
+    .card-custom {
+        padding: 1.25rem !important; /* ลดระยะขอบการ์ดในมือถือเพื่อให้มีเนื้อที่แสดงตารางเยอะขึ้น */
+    }
+    .event-mini-card {
+        padding: 1rem !important;
+    }
 }
 </style>
 
