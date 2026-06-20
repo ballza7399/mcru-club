@@ -26,9 +26,9 @@ function assetExists(?string $path): bool
 }
 
 /** แสดงผลลิ้งก์แบ่งหน้า (Pagination) แบบ Bootstrap */
-function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath): string
+function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath, string $pageKey = 'page'): string
 {
-    if ($totalPages <= 1) {
+    if ($totalPages <= 0) {
         return '';
     }
 
@@ -39,7 +39,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
     
     // ปุ่มย้อนกลับ (Previous)
     if ($currentPage > 1) {
-        $queryParams['page'] = $currentPage - 1;
+        $queryParams[$pageKey] = $currentPage - 1;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
         $html .= '<li class="page-item"><a class="page-link" href="' . $url . '"><i class="fa-solid fa-chevron-left"></i> ย้อนกลับ</a></li>';
     } else {
@@ -48,7 +48,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
 
     // ปุ่มตัวเลขหน้า
     for ($i = 1; $i <= $totalPages; $i++) {
-        $queryParams['page'] = $i;
+        $queryParams[$pageKey] = $i;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
         if ($i === $currentPage) {
             $html .= '<li class="page-item active" aria-current="page"><span class="page-link">' . $i . '</span></li>';
@@ -59,7 +59,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
 
     // ปุ่มถัดไป (Next)
     if ($currentPage < $totalPages) {
-        $queryParams['page'] = $currentPage + 1;
+        $queryParams[$pageKey] = $currentPage + 1;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
         $html .= '<li class="page-item"><a class="page-link" href="' . $url . '">ถัดไป <i class="fa-solid fa-chevron-right"></i></a></li>';
     } else {

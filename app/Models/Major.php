@@ -16,6 +16,28 @@ class Major extends Model
         )->fetchAll();
     }
 
+    /** ดึงรายการสาขาวิชาทั้งหมด พร้อมชื่อคณะ แบบแบ่งหน้า */
+    public function allPaginated(int $limit, int $offset): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT m.*, f.name AS faculty_name 
+             FROM majors m
+             JOIN faculties f ON m.faculty_id = f.id
+             ORDER BY m.faculty_id ASC, m.id ASC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนสาขาวิชาทั้งหมด */
+    public function countAll(): int
+    {
+        return (int)$this->db->query('SELECT COUNT(*) FROM majors')->fetchColumn();
+    }
+
     /** ดึงสาขาวิชาเฉพาะของคณะที่กำหนด */
     public function forFaculty(int $facultyId): array
     {

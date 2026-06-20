@@ -48,6 +48,7 @@
                         </tbody>
                     </table>
                 </div>
+                <?= renderPagination($currentPageFac, $totalPagesFac, 'faculties/manage', 'page_fac') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -96,6 +97,7 @@
                         </tbody>
                     </table>
                 </div>
+                <?= renderPagination($currentPageMaj, $totalPagesMaj, 'faculties/manage', 'page_maj') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -143,7 +145,7 @@
                         <label class="form-label fw-bold">เลือกคณะที่สังกัด</label>
                         <select name="faculty_id" class="form-select" required>
                             <option value="">-- เลือกคณะ --</option>
-                            <?php foreach ($faculties as $fac): ?>
+                            <?php foreach ($allFacultiesList as $fac): ?>
                                 <option value="<?= (int) $fac['id'] ?>"><?= e($fac['name']) ?></option>
                             <?php endforeach; ?>
                         </select>

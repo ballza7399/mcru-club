@@ -11,6 +11,22 @@ class Faculty extends Model
         return $this->db->query('SELECT * FROM faculties ORDER BY id ASC')->fetchAll();
     }
 
+    /** ดึงรายการคณะทั้งหมดแบบแบ่งหน้า */
+    public function allPaginated(int $limit, int $offset): array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM faculties ORDER BY id ASC LIMIT ? OFFSET ?');
+        $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** นับจำนวนคณะทั้งหมด */
+    public function countAll(): int
+    {
+        return (int)$this->db->query('SELECT COUNT(*) FROM faculties')->fetchColumn();
+    }
+
     /** ค้นหาคณะโดย ID */
     public function find(int $id): ?array
     {
