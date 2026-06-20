@@ -1,6 +1,9 @@
 <?php
 /**
  * @var array $clubs
+ * @var int $currentPage
+ * @var int $totalPages
+ * @var int $limit
  */
 ?>
 
@@ -99,6 +102,9 @@
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<!-- Pagination Links -->
+<?= renderPagination($currentPage, $totalPages, 'clubs', $limit) ?>
 
 <!-- No Results Alert -->
 <div id="noResultsAlert" class="text-center py-5 text-muted bg-white rounded shadow-sm border dashed d-none mt-4">

@@ -11,12 +11,22 @@ class ClubController extends Controller
 {
     public function list(): void
     {
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) ? max(6, min(96, (int)$_GET['limit'])) : 9;
+        $offset = ($currentPage - 1) * $limit;
+
         $clubModel = new Club;
-        $clubs = $clubModel->allWithMemberCount();
+        $totalClubs = $clubModel->countApproved();
+        $totalPages = (int)ceil($totalClubs / $limit);
+        
+        $clubs = $clubModel->allWithMemberCount($limit, $offset);
 
         $this->view('clubs/list', [
             'clubs' => $clubs,
-            'pageTitle' => 'ชมรมทั้งหมด'
+            'pageTitle' => 'ชมรมทั้งหมด',
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'limit' => $limit
         ]);
     }
 

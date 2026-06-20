@@ -6,14 +6,29 @@ use App\Core\Model;
 class Club extends Model
 {
     /** รายการชมรมทั้งหมด พร้อมจำนวนสมาชิกที่อนุมัติแล้ว (หน้าแรก) */
-    public function allWithMemberCount(): array
+    public function allWithMemberCount(int $limit = 0, int $offset = 0): array
     {
         $sql = 'SELECT c.*,
                     (SELECT COUNT(*) FROM applications
                      WHERE club_id = c.id AND status = "approved") AS current_members
                 FROM clubs c
-                WHERE c.status = "approved"';
+                WHERE c.status = "approved"
+                ORDER BY c.id DESC';
+        if ($limit > 0) {
+            $sql .= ' LIMIT ? OFFSET ?';
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
+            $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        }
         return $this->db->query($sql)->fetchAll();
+    }
+
+    /** นับจำนวนชมรมที่ได้รับการอนุมัติทั้งหมด (เพื่อแบ่งหน้า) */
+    public function countApproved(): int
+    {
+        return (int)$this->db->query('SELECT COUNT(*) FROM clubs WHERE status = "approved"')->fetchColumn();
     }
 
     /** ข้อมูลชมรมเดียว พร้อมชื่อประธานและจำนวนสมาชิก */
