@@ -289,7 +289,26 @@ document.addEventListener('click', function(e) {
             if (e.defaultPrevented) return;
             
             e.preventDefault();
-            loadBackofficePage(a.href);
+            
+            const confirmMsg = a.getAttribute('data-confirm');
+            if (confirmMsg) {
+                Swal.fire({
+                    title: 'ยืนยันการทำรายการ',
+                    text: confirmMsg,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        loadBackofficePage(a.href);
+                    }
+                });
+            } else {
+                loadBackofficePage(a.href);
+            }
         }
     } catch (err) {
         console.error('Invalid URL:', err);
@@ -334,7 +353,25 @@ document.addEventListener('submit', function(e) {
                 options.body = formData;
             }
             
-            loadBackofficePage(finalAction, options);
+            const confirmMsg = form.getAttribute('data-confirm');
+            if (confirmMsg) {
+                Swal.fire({
+                    title: 'ยืนยันการทำรายการ',
+                    text: confirmMsg,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'ยืนยัน',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        loadBackofficePage(finalAction, options);
+                    }
+                });
+            } else {
+                loadBackofficePage(finalAction, options);
+            }
         }
     } catch (err) {
         console.error('Error intercepts form submit:', err);

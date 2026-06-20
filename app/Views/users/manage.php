@@ -88,7 +88,7 @@
                                         <i class="fa-solid fa-ban me-1"></i>ระงับ
                                     </button>
                                 <?php else: ?>
-                                    <form method="POST" action="<?= url('backoffice/users/toggle-status') ?>" class="d-inline-block" onsubmit="return confirm('ยืนยันความต้องการอัปเดตสถานะบัญชีนี้?')">
+                                    <form method="POST" action="<?= url('backoffice/users/toggle-status') ?>" class="d-inline-block" data-confirm="ยืนยันความต้องการอัปเดตสถานะบัญชีนี้?">
                                         <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
                                         <input type="hidden" name="status" value="<?= $u['status'] === 'active' ? 'disabled' : 'active' ?>">
                                         
@@ -163,7 +163,7 @@
                     <h5 class="modal-title fw-bold text-white"><i class="fa-solid fa-key me-2"></i>รีเซ็ตรหัสผ่านใหม่: <?= e($u['name']) ?></h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="<?= url('backoffice/users/reset-password') ?>" onsubmit="return confirm('ยืนยันรหัสผ่านใหม่ของผู้ใช้รายนี้?')">
+                <form method="POST" action="<?= url('backoffice/users/reset-password') ?>" data-confirm="ยืนยันรหัสผ่านใหม่ของผู้ใช้รายนี้?">
                     <div class="modal-body text-start">
                         <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
                         
