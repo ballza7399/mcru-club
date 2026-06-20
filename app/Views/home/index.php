@@ -164,49 +164,51 @@
         </div>
     </div>
 
-    <!-- Event Calendar -->
+    <!-- Event Calendar (Academic Modern Design) -->
     <div class="col-lg-4">
         <h4 class="text-primary-custom fw-bold mb-4"><i class="fa-regular fa-calendar-check text-primary me-2"></i>ปฏิทินกิจกรรม</h4>
-        <div class="calendar-list">
-            <?php if (empty($events)): ?>
-                <div class="text-center py-5 text-muted bg-white rounded shadow-sm">
-                    <i class="fa-regular fa-calendar-times fs-2 mb-2"></i>
-                    <p class="m-0">ยังไม่มีกำหนดการกิจกรรมในขณะนี้</p>
+        
+        <!-- Monthly Calendar Grid Card -->
+        <div class="card-custom border shadow-sm rounded-4 overflow-hidden mb-4" style="background: var(--surface); border-color: var(--border);">
+            <!-- Calendar Header -->
+            <div class="d-flex justify-content-between align-items-center p-3 text-white" style="background: var(--primary-blue);">
+                <button class="btn btn-sm text-white-50 hover-text-white border-0" id="prevMonthBtn" onclick="changeMonth(-1)">
+                    <i class="fa-solid fa-chevron-left fs-5"></i>
+                </button>
+                <h6 class="m-0 fw-bold font-kanit text-white" id="calendarMonthYearLabel" style="font-size: 1rem;">-</h6>
+                <button class="btn btn-sm text-white-50 hover-text-white border-0" id="nextMonthBtn" onclick="changeMonth(1)">
+                    <i class="fa-solid fa-chevron-right fs-5"></i>
+                </button>
+            </div>
+            
+            <!-- Calendar Days Header -->
+            <div class="p-3 pb-0">
+                <div class="row g-0 text-center fw-bold text-muted mb-2" style="font-size: 0.8rem;">
+                    <div class="col" style="width: 14.28%;">อา</div>
+                    <div class="col" style="width: 14.28%;">จ</div>
+                    <div class="col" style="width: 14.28%;">อ</div>
+                    <div class="col" style="width: 14.28%;">พ</div>
+                    <div class="col" style="width: 14.28%;">พฤ</div>
+                    <div class="col" style="width: 14.28%;">ศ</div>
+                    <div class="col" style="width: 14.28%;">ส</div>
                 </div>
-            <?php else: ?>
-                <?php foreach ($events as $event): ?>
-                    <?php 
-                        $time = strtotime($event['event_date']);
-                        $day = date('d', $time);
-                        $thaiMonths = [
-                            '01' => 'ม.ค.', '02' => 'ก.พ.', '03' => 'มี.ค.', '04' => 'เม.ย.',
-                            '05' => 'พ.ค.', '06' => 'มิ.ย.', '07' => 'ก.ค.', '08' => 'ส.ค.',
-                            '09' => 'ก.ย.', '10' => 'ต.ค.', '11' => 'พ.ย.', '12' => 'ธ.ค.'
-                        ];
-                        $month = $thaiMonths[date('m', $time)] ?? date('M', $time);
-                    ?>
-                    <div class="calendar-item">
-                        <div class="calendar-date-badge">
-                            <span class="day"><?= $day ?></span>
-                            <span class="month"><?= $month ?></span>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold text-primary-custom m-0 mb-1"><?= e($event['title']) ?></h6>
-                            <span class="badge bg-light text-primary border mb-2" style="font-size: 0.75rem;">
-                                <?= $event['club_id'] ? e($event['club_name']) : 'กิจกรรมสถาบัน' ?>
-                            </span>
-                            <div class="text-muted small">
-                                <?php if ($event['start_time']): ?>
-                                    <div><i class="fa-regular fa-clock me-1"></i> <?= date('H:i', strtotime($event['start_time'])) ?><?= $event['end_time'] ? ' - ' . date('H:i', strtotime($event['end_time'])) : '' ?> น.</div>
-                                <?php endif; ?>
-                                <?php if ($event['location']): ?>
-                                    <div><i class="fa-solid fa-location-dot me-1"></i> <?= e($event['location']) ?></div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                <!-- Days Grid -->
+                <div class="row g-0 text-center pb-3" id="calendarDaysGrid">
+                    <!-- Populated dynamically by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected Day Events Panel -->
+        <div class="card-custom p-4 border shadow-sm rounded-4" style="background: var(--surface); border-color: var(--border); min-height: 250px;">
+            <h5 class="fw-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center justify-content-between" style="font-size: 0.95rem;">
+                <span><i class="fa-regular fa-calendar-star text-warning me-2"></i>กิจกรรมในวันที่เลือก</span>
+                <span class="badge bg-light text-primary border" id="selectedDateLabel" style="font-size: 0.75rem;">-</span>
+            </h5>
+            
+            <div id="selectedEventsList" class="d-flex flex-column gap-3">
+                <!-- Populated dynamically by JS -->
+            </div>
         </div>
     </div>
 </div>
@@ -302,6 +304,125 @@
     </div>
 </div>
 
+<!-- Event Detail Modal (Academic Modern) -->
+<div class="modal fade" id="eventDetailModal" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background: var(--surface);">
+            <div style="height: 5px; background: linear-gradient(90deg, var(--primary-blue) 0%, var(--accent-gold) 50%, var(--primary-soft) 100%);"></div>
+            <div class="modal-header border-0 bg-light p-4">
+                <h5 class="modal-title fw-bold text-primary-custom d-flex align-items-center" id="eventDetailModalLabel">
+                    <i class="fa-regular fa-calendar-check text-warning me-2 fs-4"></i>รายละเอียดกิจกรรม
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-dark">
+                <h5 class="fw-bold text-primary-custom mb-3" id="modalEventTitle">-</h5>
+                <div class="mb-3">
+                    <span class="badge bg-primary px-3 py-2 rounded" id="modalEventClub">-</span>
+                </div>
+                
+                <div class="p-3 bg-light rounded-4 border mb-4" style="font-size: 0.9rem; border-color: var(--border-strong) !important;">
+                    <div class="mb-2 d-flex align-items-center"><i class="fa-regular fa-calendar-days text-muted me-2" style="width: 16px;"></i><strong class="me-1">วันที่จัดงาน:</strong> <span id="modalEventDate">-</span></div>
+                    <div class="mb-2 d-flex align-items-center"><i class="fa-regular fa-clock text-muted me-2" style="width: 16px;"></i><strong class="me-1">เวลา:</strong> <span id="modalEventTime">-</span></div>
+                    <div class="d-flex align-items-center"><i class="fa-solid fa-location-dot text-muted me-2" style="width: 16px;"></i><strong class="me-1">สถานที่:</strong> <span id="modalEventLocation">-</span></div>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-align-left text-muted me-1"></i> รายละเอียดกิจกรรม:</h6>
+                <div class="text-muted small p-3 rounded-4 bg-light border" style="line-height: 1.7; white-space: pre-wrap; min-height: 100px; border-color: var(--border-strong) !important;" id="modalEventDescription">
+                    -
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4 bg-light">
+                <button type="button" class="btn btn-academic-secondary px-4 py-2 border-0 rounded-pill" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark me-1"></i> ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* --- Calendar Layout & Styling --- */
+.calendar-day-cell {
+    width: 14.28%;
+    padding: 6px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.calendar-day-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-dark, #333333);
+    font-size: 0.82rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.25s ease;
+    position: relative;
+    cursor: pointer;
+    font-family: 'Kanit', sans-serif;
+}
+.calendar-day-btn:hover {
+    background-color: rgba(11, 44, 92, 0.08);
+    color: var(--primary-blue);
+}
+.calendar-day-btn.empty-day {
+    cursor: default;
+    pointer-events: none;
+    color: #cccccc;
+}
+.calendar-day-btn.today {
+    border: 2px solid var(--primary-blue);
+    color: var(--primary-blue);
+    font-weight: bold;
+}
+.calendar-day-btn.has-event::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--accent-gold);
+}
+.calendar-day-btn.active {
+    background-color: var(--primary-blue) !important;
+    color: #ffffff !important;
+}
+.calendar-day-btn.active::after {
+    background-color: #ffffff;
+    box-shadow: 0 0 5px #ffffff;
+}
+
+/* --- Mini Cards for selected events --- */
+.event-mini-card {
+    border-left: 4px solid var(--primary-blue);
+    background: rgba(11, 44, 92, 0.02);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 8px;
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.event-mini-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(11, 44, 92, 0.08);
+    background: rgba(11, 44, 92, 0.04);
+}
+.event-mini-card.event-institution {
+    border-left-color: var(--accent-gold);
+}
+</style>
+
 <script>
 /** ฟังก์ชันเปิด Lightbox สำหรับแกลเลอรี */
 function openLightbox(imagePath, captionText) {
@@ -310,4 +431,289 @@ function openLightbox(imagePath, captionText) {
     document.getElementById('lightboxCaption').innerText = captionText;
     myModal.show();
 }
+
+// ----------------------------------------------------
+// ระบบปฏิทินรายเดือน Interactive Event Calendar
+// ----------------------------------------------------
+
+// ข้อมูลกิจกรรมส่งตรงมาจาก PHP
+const rawEvents = <?= json_encode($events) ?>;
+
+// แปลงข้อมูลกิจกรรมให้เป็น Object Map ยึดวันที่ YYYY-MM-DD เป็น Key
+const eventsMap = {};
+rawEvents.forEach(ev => {
+    const dateStr = ev.event_date;
+    if (!eventsMap[dateStr]) {
+        eventsMap[dateStr] = [];
+    }
+    eventsMap[dateStr].push(ev);
+});
+
+// สถานะวันที่ปฏิทินปัจจุบัน
+let currentCalDate = new Date();
+
+// ฟังก์ชันล้างข้อมูล HTML เพื่อความปลอดภัยป้องกัน XSS (Client-side escaping helper)
+function jsEscape(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// สั่งวาดปฏิทิน
+function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth(); // 0 - 11
+    
+    // รายชื่อเดือนภาษาไทย
+    const thaiMonthsFull = [
+        'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+        'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+    ];
+    
+    const monthLabel = document.getElementById('calendarMonthYearLabel');
+    if (monthLabel) {
+        // เพิ่ม 543 ปีเป็น พ.ศ.
+        monthLabel.innerText = `${thaiMonthsFull[month]} ${year + 543}`;
+    }
+    
+    const daysGrid = document.getElementById('calendarDaysGrid');
+    if (!daysGrid) return;
+    daysGrid.innerHTML = '';
+    
+    // หาวันแรกของสัปดาห์ (0 = อาทิตย์, 6 = เสาร์)
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    // หาจำนวนวันทั้งหมดในเดือนนั้น
+    const totalDays = new Date(year, month + 1, 0).getDate();
+    
+    // สร้างช่องว่างช่วงต้นของเดือนก่อนวันแรก
+    for (let i = 0; i < firstDayIndex; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell';
+        cell.innerHTML = '<button class="calendar-day-btn empty-day"></button>';
+        daysGrid.appendChild(cell);
+    }
+    
+    const today = new Date();
+    
+    // สร้างปุ่มวันที่ตามจำนวนจริงในเดือน
+    for (let day = 1; day <= totalDays; day++) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-day-cell';
+        
+        const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasEvent = !!eventsMap[dateString];
+        
+        let classes = 'calendar-day-btn';
+        if (hasEvent) classes += ' has-event';
+        if (today.getFullYear() === year && today.getMonth() === month && today.getDate() === day) {
+            classes += ' today';
+        }
+        
+        cell.innerHTML = `<button class="${classes}" data-date="${dateString}" onclick="selectDate('${dateString}', this)">${day}</button>`;
+        daysGrid.appendChild(cell);
+    }
+}
+
+// กดสลับเปลี่ยนเดือนย้อนหลัง/ถัดไป
+function changeMonth(direction) {
+    currentCalDate.setMonth(currentCalDate.getMonth() + direction);
+    renderCalendar(currentCalDate);
+    
+    // เคลียร์วันที่เคยเลือก
+    const selectedDateLabel = document.getElementById('selectedDateLabel');
+    if (selectedDateLabel) selectedDateLabel.innerText = '-';
+    
+    // ดึงกิจกรรมที่จะถึงมาแสดง
+    showUpcomingEventsForMonth(currentCalDate.getFullYear(), currentCalDate.getMonth());
+}
+
+// เลือกวันที่ในปฏิทิน
+function selectDate(dateString, element) {
+    // ลบคลาส active เดิมออก
+    const activeBtns = document.querySelectorAll('.calendar-day-btn.active');
+    activeBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // ใส่คลาส active ให้วันที่เลือกใหม่
+    if (element) {
+        element.classList.add('active');
+    }
+    
+    const [year, month, day] = dateString.split('-');
+    const formattedDate = `${parseInt(day)}/${parseInt(month)}/${parseInt(year) + 543}`;
+    
+    const dateLabel = document.getElementById('selectedDateLabel');
+    if (dateLabel) {
+        dateLabel.innerText = formattedDate;
+    }
+    
+    const events = eventsMap[dateString] || [];
+    displaySelectedEvents(events);
+}
+
+// แสดงรายการกิจกรรมของวันที่เลือก
+function displaySelectedEvents(events) {
+    const listContainer = document.getElementById('selectedEventsList');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+    
+    if (events.length === 0) {
+        listContainer.innerHTML = `
+            <div class="text-center py-5 text-muted bg-light rounded-4 border" style="border-style: dashed !important; border-color: var(--border-strong) !important;">
+                <i class="fa-solid fa-calendar-minus fs-3 mb-2 opacity-50"></i>
+                <p class="m-0 small">ไม่มีกิจกรรมในวันที่เลือก</p>
+            </div>
+        `;
+        return;
+    }
+    
+    events.forEach(ev => {
+        const borderClass = ev.club_id ? '' : 'event-institution';
+        const clubLabel = ev.club_id ? ev.club_name : 'กิจกรรมสถาบัน';
+        const badgeColor = ev.club_id ? 'bg-primary' : 'bg-warning text-dark';
+        
+        let timeStr = 'ไม่ระบุเวลา';
+        if (ev.start_time) {
+            timeStr = ev.start_time.substring(0, 5);
+            if (ev.end_time) {
+                timeStr += ' - ' + ev.end_time.substring(0, 5);
+            }
+            timeStr += ' น.';
+        }
+        
+        const locStr = ev.location ? ev.location : 'ไม่ระบุสถานที่';
+        
+        const card = document.createElement('div');
+        card.className = `event-mini-card p-3 ${borderClass}`;
+        card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge ${badgeColor} small">${jsEscape(clubLabel)}</span>
+                <small class="text-muted"><i class="fa-regular fa-clock me-1"></i>${timeStr}</small>
+            </div>
+            <h6 class="fw-bold text-primary-custom mb-2">${jsEscape(ev.title)}</h6>
+            <div class="text-muted small mb-3">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i> ${jsEscape(locStr)}
+            </div>
+            <div class="text-end">
+                <button class="btn btn-sm btn-academic-primary px-3 py-1 rounded-pill border-0" onclick="openEventDetails(${ev.id})" style="font-size: 0.8rem;">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i>ดูรายละเอียด
+                </button>
+            </div>
+        `;
+        listContainer.appendChild(card);
+    });
+}
+
+// แสดงรายการกิจกรรมที่สำคัญที่จะเกิดขึ้นในเดือนนี้ (Upcoming Events)
+function showUpcomingEventsForMonth(year, month) {
+    const listContainer = document.getElementById('selectedEventsList');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+    
+    // กรองเอากิจกรรมที่เกิดเฉพาะเดือนที่เลือก
+    const monthStr = String(month + 1).padStart(2, '0');
+    const prefix = `${year}-${monthStr}`;
+    
+    const monthEvents = rawEvents.filter(ev => ev.event_date.startsWith(prefix));
+    
+    if (monthEvents.length === 0) {
+        listContainer.innerHTML = `
+            <div class="text-center py-5 text-muted bg-light rounded-4 border" style="border-style: dashed !important; border-color: var(--border-strong) !important;">
+                <i class="fa-solid fa-calendar-xmark fs-3 mb-2 opacity-50"></i>
+                <p class="m-0 small">ไม่มีกิจกรรมในเดือนนี้</p>
+            </div>
+        `;
+        return;
+    }
+    
+    // หัวข้อชี้แจง
+    const info = document.createElement('div');
+    info.className = 'text-muted small mb-2';
+    info.innerHTML = `กิจกรรมทั้งหมดในเดือนนี้ (${monthEvents.length} รายการ):`;
+    listContainer.appendChild(info);
+    
+    // แสดงสูงสุด 4 งาน
+    const limitEvents = monthEvents.slice(0, 4);
+    
+    limitEvents.forEach(ev => {
+        const borderClass = ev.club_id ? '' : 'event-institution';
+        const clubLabel = ev.club_id ? ev.club_name : 'กิจกรรมสถาบัน';
+        const badgeColor = ev.club_id ? 'bg-primary' : 'bg-warning text-dark';
+        
+        const dateParts = ev.event_date.split('-');
+        const dateStr = `${parseInt(dateParts[2])}/${parseInt(dateParts[1])}/${parseInt(dateParts[0]) + 543}`;
+        
+        let timeStr = '';
+        if (ev.start_time) {
+            timeStr = ' | ' + ev.start_time.substring(0, 5) + ' น.';
+        }
+        
+        const card = document.createElement('div');
+        card.className = `event-mini-card p-3 ${borderClass}`;
+        card.innerHTML = `
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <span class="badge ${badgeColor} small">${jsEscape(clubLabel)}</span>
+                <small class="text-muted fw-bold"><i class="fa-regular fa-calendar-days me-1"></i>${dateStr}${timeStr}</small>
+            </div>
+            <h6 class="fw-bold text-primary-custom mb-2">${jsEscape(ev.title)}</h6>
+            <div class="text-muted small mb-3">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i> ${jsEscape(ev.location || 'ไม่ระบุสถานที่')}
+            </div>
+            <div class="text-end">
+                <button class="btn btn-sm btn-academic-primary px-3 py-1 rounded-pill border-0" onclick="openEventDetails(${ev.id})" style="font-size: 0.8rem;">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i>ดูรายละเอียด
+                </button>
+            </div>
+        `;
+        listContainer.appendChild(card);
+    });
+}
+
+// เปิดดู Modal รายละเอียดกิจกรรมแบบเต็ม
+function openEventDetails(eventId) {
+    const ev = rawEvents.find(x => parseInt(x.id) === parseInt(eventId));
+    if (!ev) return;
+    
+    document.getElementById('modalEventTitle').innerText = ev.title;
+    document.getElementById('modalEventClub').innerText = ev.club_id ? ev.club_name : 'กิจกรรมสถาบัน';
+    document.getElementById('modalEventClub').className = ev.club_id ? 'badge bg-primary px-3 py-2 fs-7' : 'badge bg-warning text-dark px-3 py-2 fs-7';
+    
+    const dateParts = ev.event_date.split('-');
+    const dateStr = `${parseInt(dateParts[2])} ${getThaiMonthName(dateParts[1])} ${parseInt(dateParts[0]) + 543}`;
+    document.getElementById('modalEventDate').innerText = dateStr;
+    
+    let timeStr = 'ไม่ระบุเวลา';
+    if (ev.start_time) {
+        timeStr = ev.start_time.substring(0, 5);
+        if (ev.end_time) {
+            timeStr += ' - ' + ev.end_time.substring(0, 5);
+        }
+        timeStr += ' น.';
+    }
+    document.getElementById('modalEventTime').innerText = timeStr;
+    document.getElementById('modalEventLocation').innerText = ev.location || 'ไม่ระบุสถานที่';
+    document.getElementById('modalEventDescription').innerText = ev.description || 'ไม่มีรายละเอียดเพิ่มเติม';
+    
+    const modal = new bootstrap.Modal(document.getElementById('eventDetailModal'));
+    modal.show();
+}
+
+// ตัวแปลงเลขเดือนเป็นชื่อเต็มภาษาไทย
+function getThaiMonthName(monthNumStr) {
+    const months = {
+        '01': 'มกราคม', '02': 'กุมภาพันธ์', '03': 'มีนาคม', '04': 'เมษายน',
+        '05': 'พฤษภาคม', '06': 'มิถุนายน', '07': 'กรกฎาคม', '08': 'สิงหาคม',
+        '09': 'กันยายน', '10': 'ตุลาคม', '11': 'พฤศจิกายน', '12': 'ธันวาคม'
+    };
+    return months[monthNumStr] || monthNumStr;
+}
+
+// เริ่มต้นทำงานเมื่อเพจโหลดเรียบร้อย
+document.addEventListener('DOMContentLoaded', () => {
+    renderCalendar(currentCalDate);
+    showUpcomingEventsForMonth(currentCalDate.getFullYear(), currentCalDate.getMonth());
+});
 </script>
