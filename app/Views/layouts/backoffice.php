@@ -40,6 +40,7 @@ if (str_contains($uri, 'backoffice/clubs/members')) {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="<?= asset('style.css') ?>">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
 <script>
 window.addEventListener('error', function(e) {
     if (e.target.tagName === 'IMG') {
@@ -58,7 +59,7 @@ window.addEventListener('error', function(e) {
 <div class="container-fluid pb-5 mt-4 px-md-4">
     <div class="row g-4">
         <!-- Sidebar ด้านซ้าย -->
-        <div class="col-lg-3 col-md-4">
+        <div class="col-lg-3 col-md-4" id="backoffice-sidebar">
             <div class="card-custom p-3 shadow-sm border" style="background: var(--surface); border-color: var(--border);">
                 <h5 class="fw-bold text-primary-custom mb-3 pb-2 border-bottom">
                     <i class="fa-solid fa-screwdriver-wrench me-2" style="color: var(--accent-gold) !important;"></i>เมนูจัดการระบบ
@@ -105,11 +106,254 @@ window.addEventListener('error', function(e) {
         </div>
         
         <!-- ฝั่งแสดงข้อมูลด้าขวา -->
-        <div class="col-lg-9 col-md-8">
+        <div class="col-lg-9 col-md-8" id="backoffice-content">
             <?php if ($flash): ?><div class="alert alert-success"><?= e($flash) ?></div><?php endif; ?>
             <?= $content ?>
         </div>
     </div>
 </div>
+
+<script>
+let activeEditors = [];
+
+function destroyEditors() {
+    activeEditors.forEach(editor => {
+        if (typeof editor.destroy === 'function') {
+            editor.destroy().catch(err => console.error('Error destroying editor:', err));
+        }
+    });
+    activeEditors = [];
+}
+
+function initDynamicComponents() {
+    // 1. Initialize CKEditor instances
+    document.querySelectorAll('.ckeditor-replace').forEach(textarea => {
+        if (typeof ClassicEditor !== 'undefined') {
+            ClassicEditor
+                .create(textarea, {
+                    toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo' ]
+                })
+                .then(editor => {
+                    activeEditors.push(editor);
+                })
+                .catch(error => {
+                    console.error('CKEditor initialization error:', error);
+                });
+        }
+    });
+    
+    // 2. SweetAlert Toast for flash messages
+    const flashEl = document.querySelector('#backoffice-content .alert-success');
+    if (flashEl) {
+        const message = flashEl.innerText.trim();
+        flashEl.style.display = 'none';
+        
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+        Toast.fire({
+            icon: 'success',
+            title: message
+        });
+    }
+}
+
+function showLoading(isMutating = false) {
+    if (isMutating) {
+        Swal.fire({
+            title: 'กำลังประมวลผล...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    } else {
+        const contentArea = document.getElementById('backoffice-content');
+        if (contentArea) {
+            contentArea.style.opacity = '0.5';
+            contentArea.style.pointerEvents = 'none';
+        }
+    }
+}
+
+function hideLoading() {
+    if (Swal.isVisible() && !Swal.isTimerRunning()) {
+        Swal.close();
+    }
+    const contentArea = document.getElementById('backoffice-content');
+    if (contentArea) {
+        contentArea.style.opacity = '1';
+        contentArea.style.pointerEvents = 'auto';
+    }
+}
+
+function closeOpenModals() {
+    document.querySelectorAll('.modal.show').forEach(modalEl => {
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) {
+            modalInstance.hide();
+        } else {
+            modalEl.classList.remove('show');
+            modalEl.style.display = 'none';
+        }
+    });
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.removeProperty('padding-right');
+    document.body.style.removeProperty('overflow');
+}
+
+async function loadBackofficePage(url, options = {}) {
+    const isMutating = (options.method && options.method.toUpperCase() !== 'GET') || url.includes('/delete/') || url.includes('/toggle/') || url.includes('/reset/');
+    showLoading(isMutating);
+    
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const finalUrl = response.url;
+        const htmlText = await response.text();
+        const parser = new DOMParser();
+        const newDoc = parser.parseFromString(htmlText, 'text/html');
+        
+        // Fallback if returned page is not part of the backoffice (e.g. redirected to login page)
+        if (!newDoc.getElementById('backoffice-content')) {
+            window.location.href = finalUrl;
+            return;
+        }
+        
+        // Update URL path in browser history
+        if (finalUrl !== window.location.href) {
+            history.pushState(null, '', finalUrl);
+        }
+        
+        closeOpenModals();
+        destroyEditors();
+        
+        // Swap content
+        document.getElementById('backoffice-content').innerHTML = newDoc.getElementById('backoffice-content').innerHTML;
+        
+        // Swap sidebar to keep active menu classes in sync
+        const newSidebar = newDoc.getElementById('backoffice-sidebar');
+        if (newSidebar) {
+            document.getElementById('backoffice-sidebar').innerHTML = newSidebar.innerHTML;
+        }
+        
+        // Update browser tab title
+        const newTitle = newDoc.querySelector('title');
+        if (newTitle) {
+            document.title = newTitle.innerText;
+        }
+        
+        // Re-initialize dynamic components
+        initDynamicComponents();
+        
+    } catch (error) {
+        console.error('AJAX request failed:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'เกิดข้อผิดพลาด',
+            text: 'ไม่สามารถโหลดข้อมูลได้ กรุณาลองใหม่อีกครั้ง'
+        });
+    } finally {
+        hideLoading();
+    }
+}
+
+// Intercept all anchor link clicks pointing inside backoffice
+document.addEventListener('click', function(e) {
+    const a = e.target.closest('a');
+    if (!a) return;
+    
+    // Skip external links, downloads, hash links, or target="_blank"
+    if (a.getAttribute('target') === '_blank' || a.hasAttribute('download')) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    
+    const href = a.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+    
+    try {
+        const targetUrl = new URL(a.href);
+        if (targetUrl.origin === window.location.origin && targetUrl.pathname.includes('/backoffice')) {
+            // Respect inline onclick cancellation (e.g. return confirm('...'))
+            if (e.defaultPrevented) return;
+            
+            e.preventDefault();
+            loadBackofficePage(a.href);
+        }
+    } catch (err) {
+        console.error('Invalid URL:', err);
+    }
+});
+
+// Intercept all form submissions inside the backoffice
+document.addEventListener('submit', function(e) {
+    const form = e.target;
+    const action = form.getAttribute('action') || window.location.href;
+    
+    try {
+        const targetUrl = new URL(action, window.location.origin);
+        if (targetUrl.origin === window.location.origin && targetUrl.pathname.includes('/backoffice')) {
+            if (e.defaultPrevented) return;
+            
+            e.preventDefault();
+            
+            // Sync CKEditor values to their associated textareas
+            activeEditors.forEach(editor => {
+                if (typeof editor.updateSourceElement === 'function') {
+                    editor.updateSourceElement();
+                }
+            });
+            
+            const formData = new FormData(form);
+            const method = (form.getAttribute('method') || 'POST').toUpperCase();
+            
+            const options = {
+                method: method
+            };
+            
+            let finalAction = action;
+            if (method === 'GET') {
+                const params = new URLSearchParams(formData);
+                const urlObj = new URL(action, window.location.origin);
+                for (const [key, value] of params.entries()) {
+                    urlObj.searchParams.set(key, value);
+                }
+                finalAction = urlObj.pathname + urlObj.search;
+            } else {
+                options.body = formData;
+            }
+            
+            loadBackofficePage(finalAction, options);
+        }
+    } catch (err) {
+        console.error('Error intercepts form submit:', err);
+    }
+});
+
+// Handle browser Back/Forward navigation buttons
+window.addEventListener('popstate', function() {
+    if (window.location.pathname.includes('/backoffice')) {
+        loadBackofficePage(window.location.href);
+    } else {
+        window.location.reload();
+    }
+});
+
+// Initial load
+document.addEventListener('DOMContentLoaded', function() {
+    initDynamicComponents();
+});
+</script>
 </body>
 </html>

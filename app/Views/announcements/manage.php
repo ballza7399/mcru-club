@@ -160,7 +160,6 @@
     </div>
 <?php endforeach; ?>
 
-<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
 <style>
 /* แก้ไขหน้าต่างตั้งค่าลิงก์/ป๊อปอัพของ CKEditor ไม่ให้แสดงผลซ้อนใต้ Bootstrap Modal */
 .ck-rounded-corners .ck.ck-balloon-panel, 
@@ -172,16 +171,3 @@
     min-height: 250px;
 }
 </style>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll('.ckeditor-replace').forEach(textarea => {
-        ClassicEditor
-            .create(textarea, {
-                toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo' ]
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    });
-});
-</script>
