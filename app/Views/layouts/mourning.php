@@ -125,8 +125,9 @@ $starsEnabled = getSetting('mourning_stars_enabled', '1') === '1';
 
 <script>
 (function() {
-    // 1. ตรวจสอบว่าเคยเข้าชมหน้านี้ไปแล้วใน Session นี้หรือไม่
-    if (sessionStorage.getItem('mourning_shown') === 'true') {
+    // 1. ตรวจสอบว่าเคยเข้าชมหน้านี้ไปแล้วใน Session นี้หรือไม่ (หากไม่ได้ตั้งค่าให้แสดงผลทุกครั้ง)
+    const showEveryTime = <?= getSetting('mourning_every_time', '0') === '1' ? 'true' : 'false' ?>;
+    if (!showEveryTime && sessionStorage.getItem('mourning_shown') === 'true') {
         return;
     }
 

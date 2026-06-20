@@ -79,6 +79,43 @@
                     </div>
                 </div>
 
+                <!-- Display Scope -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark d-block">ขอบเขตการแสดงหน้าจอไว้อาลัย</label>
+                    <div class="d-flex gap-4 mt-2">
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_homepage_only" id="scopeHome" value="1" <?= ($settings['mourning_homepage_only'] ?? '1') === '1' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-dark fw-bold small mb-0" for="scopeHome" style="cursor: pointer;">
+                                <i class="fa-solid fa-house-chimney me-1 text-primary"></i> เฉพาะหน้าหลัก (Home Page)
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_homepage_only" id="scopeAll" value="0" <?= ($settings['mourning_homepage_only'] ?? '1') === '0' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-dark fw-bold small mb-0" for="scopeAll" style="cursor: pointer;">
+                                <i class="fa-solid fa-network-wired me-1 text-secondary"></i> ทุกหน้าที่มี Layout หลัก
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Display Frequency -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark d-block">ความถี่ในการแสดงหน้าจอไว้อาลัย</label>
+                    <div class="d-flex gap-4 mt-2">
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_every_time" id="freqEvery" value="1" <?= ($settings['mourning_every_time'] ?? '1') === '1' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-dark fw-bold small mb-0" for="freqEvery" style="cursor: pointer;">
+                                <i class="fa-solid fa-rotate me-1 text-warning"></i> แสดงทุกครั้งที่โหลด/เปิดหน้า
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_every_time" id="freqSession" value="0" <?= ($settings['mourning_every_time'] ?? '1') === '0' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-dark fw-bold small mb-0" for="freqSession" style="cursor: pointer;">
+                                <i class="fa-solid fa-cookie-bite me-1 text-secondary"></i> แสดงครั้งเดียวต่อเซสชัน (Session)
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="text-end border-top pt-4" style="border-color: var(--border-strong) !important;">
                     <a href="<?= url('backoffice') ?>" class="btn btn-outline-secondary px-4 py-2 rounded-pill me-2">

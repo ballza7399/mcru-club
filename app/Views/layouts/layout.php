@@ -25,7 +25,27 @@ window.addEventListener('error', function(e) {
 </script>
 </head>
 <body>
-<?php if (getSetting('mourning_enabled', '0') === '1'): ?>
+<?php 
+$showMourning = false;
+if (getSetting('mourning_enabled', '0') === '1') {
+    $homepageOnly = getSetting('mourning_homepage_only', '0') === '1';
+    if ($homepageOnly) {
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        $path = parse_url($uri, PHP_URL_PATH);
+        $relPath = $path;
+        if (!empty(BASE_URL) && str_starts_with($path, BASE_URL)) {
+            $relPath = substr($path, strlen(BASE_URL));
+        }
+        $isHomepage = ($relPath === '/' || $relPath === '' || $relPath === '/index.php');
+        if ($isHomepage) {
+            $showMourning = true;
+        }
+    } else {
+        $showMourning = true;
+    }
+}
+?>
+<?php if ($showMourning): ?>
     <?php require BASE_PATH . '/app/Views/layouts/mourning.php'; ?>
 <?php endif; ?>
 <?php require BASE_PATH . '/app/Views/layouts/navbar.php'; ?>

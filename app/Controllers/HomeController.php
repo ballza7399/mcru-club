@@ -247,7 +247,9 @@ class HomeController extends Controller
                 'mourning_enabled',
                 'mourning_image_url',
                 'mourning_duration',
-                'mourning_stars_enabled'
+                'mourning_stars_enabled',
+                'mourning_homepage_only',
+                'mourning_every_time'
             ];
             
             try {
