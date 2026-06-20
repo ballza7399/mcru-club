@@ -47,7 +47,7 @@
                 </li>
             <?php else: ?>
                 <li class="nav-item ms-lg-3 my-2 my-lg-0">
-                    <a class="btn btn-outline-light rounded-pill px-3 text-white" href="<?= url('auth/login') ?>">
+                    <a class="btn btn-outline-light rounded-pill px-3" href="<?= url('auth/login') ?>">
                         <i class="fa-solid fa-right-to-bracket me-1"></i> เข้าสู่ระบบ
                     </a>
                 </li>
