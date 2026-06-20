@@ -401,5 +401,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initDynamicComponents();
 });
 </script>
+<?php require BASE_PATH . '/app/Views/layouts/pdpa_modal.php'; ?>
 </body>
 </html>

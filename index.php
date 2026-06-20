@@ -103,6 +103,9 @@ $router->post('/backoffice/faculties/store',     'App\Controllers\FacultyControl
 $router->post('/backoffice/faculties/update',    'App\Controllers\FacultyController', 'update');
 $router->get('/backoffice/faculties/delete/{id}', 'App\Controllers\FacultyController', 'delete');
 
+$router->get('/backoffice/pdpa',                  'App\Controllers\HomeController', 'pdpa');
+$router->post('/backoffice/pdpa/update',          'App\Controllers\HomeController', 'pdpaUpdate');
+
 $router->post('/backoffice/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
 $router->post('/backoffice/majors/update',    'App\Controllers\FacultyController', 'updateMajor');
 $router->get('/backoffice/majors/delete/{id}', 'App\Controllers\FacultyController', 'deleteMajor');
@@ -133,5 +136,8 @@ $router->get('/cluboffice/gallery/delete/{id}',        'App\Controllers\ClubOffi
 $router->get('/api/notifications',            'App\Controllers\NotificationController', 'list');
 $router->post('/api/notifications/read-all',  'App\Controllers\NotificationController', 'markAllRead');
 $router->post('/api/notifications/read/{id}', 'App\Controllers\NotificationController', 'markRead');
+
+// --- PDPA API Routes ---
+$router->post('/api/pdpa/consent',            'App\Controllers\AuthController', 'giveConsent');
 
 $router->dispatch();

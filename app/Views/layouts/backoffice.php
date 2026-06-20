@@ -89,6 +89,9 @@ window.addEventListener('error', function(e) {
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
                             <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
                         </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'pdpa' ? 'active' : '' ?>" href="<?= url('backoffice/pdpa') ?>">
+                            <i class="fa-solid fa-scale-balanced me-2"></i>จัดการนโยบาย PDPA
+                        </a>
                     <?php endif; ?>
                     
                     <div class="my-2 border-top"></div>
@@ -404,5 +407,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initDynamicComponents();
 });
 </script>
+<?php require BASE_PATH . '/app/Views/layouts/pdpa_modal.php'; ?>
 </body>
 </html>

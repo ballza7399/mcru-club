@@ -99,3 +99,54 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
     
     return $html;
 }
+
+/** ตรวจสอบความยินยอม PDPA ของผู้ใช้งาน */
+function needsPdpaConsent(): bool
+{
+    if (empty($_SESSION['user_id'])) {
+        return false;
+    }
+    
+    // ละเว้นหน้า logout และ หน้า API ยินยอมข้อมูล
+    $uri = $_SERVER['REQUEST_URI'] ?? '';
+    if (str_contains($uri, '/auth/logout') || str_contains($uri, '/api/pdpa/consent')) {
+        return false;
+    }
+    
+    try {
+        $userId = (int)$_SESSION['user_id'];
+        $db = \App\Core\Database::instance();
+        
+        $stmt = $db->query("SELECT policy_key, version FROM policies");
+        $policies = $stmt->fetchAll();
+        
+        foreach ($policies as $policy) {
+            $key = $policy['policy_key'];
+            $ver = $policy['version'];
+            
+            $stmtConsent = $db->prepare("SELECT COUNT(*) FROM user_consents WHERE user_id = ? AND policy_key = ? AND version = ?");
+            $stmtConsent->execute([$userId, $key, $ver]);
+            $hasConsented = (int)$stmtConsent->fetchColumn() > 0;
+            
+            if (!$hasConsented) {
+                return true;
+            }
+        }
+    } catch (\Exception $e) {
+        return false;
+    }
+    
+    return false;
+}
+
+/** ดึงข้อมูลนโยบายที่เปิดใช้งานอยู่ทั้งหมด */
+function getActivePolicies(): array
+{
+    try {
+        $db = \App\Core\Database::instance();
+        return $db->query("SELECT * FROM policies")->fetchAll();
+    } catch (\Exception $e) {
+        return [];
+    }
+}
+

@@ -94,4 +94,44 @@ class AuthController extends Controller
         session_destroy();
         $this->redirect('/auth/login');
     }
+
+    public function giveConsent(): void
+    {
+        if (empty($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'โปรดเข้าสู่ระบบก่อนดำเนินการ']);
+            exit;
+        }
+        
+        $userId = (int)$_SESSION['user_id'];
+        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+        
+        $db = \App\Core\Database::instance();
+        
+        $stmt = $db->query("SELECT policy_key, version FROM policies");
+        $policies = $stmt->fetchAll();
+        
+        $db->beginTransaction();
+        try {
+            foreach ($policies as $p) {
+                $key = $p['policy_key'];
+                $ver = $p['version'];
+                
+                $stmtCheck = $db->prepare("SELECT COUNT(*) FROM user_consents WHERE user_id = ? AND policy_key = ? AND version = ?");
+                $stmtCheck->execute([$userId, $key, $ver]);
+                if ((int)$stmtCheck->fetchColumn() === 0) {
+                    $stmtInsert = $db->prepare("INSERT INTO user_consents (user_id, policy_key, version, ip_address) VALUES (?, ?, ?, ?)");
+                    $stmtInsert->execute([$userId, $key, $ver, $ip]);
+                }
+            }
+            $db->commit();
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true]);
+        } catch (\Exception $e) {
+            $db->rollBack();
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'เกิดข้อผิดพลาดในการบันทึก: ' . $e->getMessage()]);
+        }
+        exit;
+    }
 }

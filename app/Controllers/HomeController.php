@@ -94,4 +94,58 @@ class HomeController extends Controller
             'pageTitle' => 'แผงควบคุมหลังบ้าน (Backoffice)'
         ], 'backoffice');
     }
+
+    public function pdpa(): void
+    {
+        $this->requireRole('admin');
+        
+        $db = \App\Core\Database::instance();
+        
+        $policies = $db->query("SELECT * FROM policies")->fetchAll();
+        
+        $consents = $db->query("
+            SELECT c.*, u.name, u.student_id 
+            FROM user_consents c 
+            JOIN users u ON c.user_id = u.id 
+            ORDER BY c.consented_at DESC 
+            LIMIT 100
+        ")->fetchAll();
+        
+        $this->view('home/pdpa', [
+            'policies'  => $policies,
+            'consents'  => $consents,
+            'activePage' => 'pdpa',
+            'pageTitle' => 'จัดการนโยบายความยินยอม PDPA'
+        ], 'backoffice');
+    }
+
+    public function pdpaUpdate(): void
+    {
+        $this->requireRole('admin');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $policyKey = $_POST['policy_key'] ?? '';
+            $title = trim($_POST['title'] ?? '');
+            $content = trim($_POST['content'] ?? '');
+            $version = trim($_POST['version'] ?? '1.0');
+            
+            if ($policyKey && $title && $content) {
+                $db = \App\Core\Database::instance();
+                try {
+                    $stmt = $db->prepare("
+                        UPDATE policies 
+                        SET title = ?, content = ?, version = ? 
+                        WHERE policy_key = ?
+                    ");
+                    $stmt->execute([$title, $content, $version, $policyKey]);
+                    $this->flash('อัปเดตนโยบายความเป็นส่วนตัวและเวอร์ชันสำเร็จ นโยบายรุ่นใหม่จะมีผลบังคับให้ผู้ใช้ทุกคนกดยืนยอมใหม่อีกครั้ง');
+                } catch (\Exception $e) {
+                    $this->flash('เกิดข้อผิดพลาด: ' . $e->getMessage());
+                }
+            } else {
+                $this->flash('กรุณากรอกข้อมูลให้ครบถ้วน');
+            }
+        }
+        $this->redirect('/backoffice/pdpa');
+    }
 }

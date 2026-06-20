@@ -61,5 +61,6 @@ window.addEventListener('error', function(e) {
 <?= $content ?>
 </div>
 <?php require BASE_PATH . '/app/Views/layouts/footer.php'; ?>
+<?php require BASE_PATH . '/app/Views/layouts/pdpa_modal.php'; ?>
 </body>
 </html>
