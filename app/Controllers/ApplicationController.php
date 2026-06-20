@@ -23,6 +23,21 @@ class ApplicationController extends Controller
 
         if (!$appModel->exists($userId, $clubId)) {
             $appModel->create($userId, $clubId);
+
+            // ส่งการแจ้งเตือนไปยังประธานชมรม
+            $club = $clubModel->findWithDetail($clubId);
+            if ($club && !empty($club['president_id'])) {
+                $db = \App\Core\Database::instance();
+                $stmtUser = $db->prepare('SELECT name FROM users WHERE id = ?');
+                $stmtUser->execute([$userId]);
+                $studentName = $stmtUser->fetchColumn();
+                
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'มีผู้ยื่นสมัครเข้าชมรมใหม่',
+                    $studentName . ' ได้ยื่นคำขอสมัครเข้าชมรม "' . $club['club_name'] . '" ของคุณ โปรดตรวจสอบและพิจารณาอนุมัติ'
+                );
+            }
         }
 
         $this->redirect('/clubs/detail/' . $clubId);
