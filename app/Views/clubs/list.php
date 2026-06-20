@@ -82,28 +82,30 @@
                         <!-- Underline ribbon for visual detail -->
                         <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--accent-gold);"></div>
                     </div>
-                    <div class="px-3 pb-4 d-flex flex-column flex-grow-1 align-items-center position-relative">
+                    <div class="px-3 pb-4 d-flex flex-column flex-grow-1 align-items-center">
                         <?php if (assetExists($row['club_logo'])): ?>
                             <img src="<?= asset($row['club_logo']) ?>" class="club-logo-thumb shadow-sm" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 4px solid var(--surface); background: var(--surface); margin-top: -40px; position: relative; z-index: 2;" alt="Logo">
                         <?php else: ?>
                             <div class="club-logo-thumb bg-light d-flex align-items-center justify-content-center text-muted shadow-sm border" style="width: 80px; height: 80px; border-radius: 50%; margin-top: -40px; position: relative; z-index: 2; font-size: 0.75rem; font-weight: bold; background: var(--surface);">No Logo</div>
                         <?php endif; ?>
                         
-                        <h5 class="text-primary-custom fw-bold mt-3 mb-2 club-name-title" style="min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><?= e($row['club_name']) ?></h5>
-                        
-                        <!-- Badge Overlay/Inline Group -->
-                        <div class="club-badges-group">
-                            <span class="member-badge member-badge--<?= $tone ?>">
-                                <i class="fa-solid fa-users me-1"></i><?= $cur ?> / <?= $max ?> คน
-                            </span>
-                            <?php if ($isFull): ?>
-                                <span class="badge bg-danger text-white fw-bold">เต็มแล้ว</span>
-                            <?php else: ?>
-                                <span class="badge bg-success text-white fw-bold">เปิดรับสมัคร</span>
-                            <?php endif; ?>
+                        <div class="club-info-wrapper d-flex flex-column align-items-center w-100">
+                            <h5 class="text-primary-custom fw-bold mt-3 mb-2 club-name-title" style="min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><?= e($row['club_name']) ?></h5>
+                            
+                            <!-- Badge Overlay/Inline Group -->
+                            <div class="club-badges-group">
+                                <span class="member-badge member-badge--<?= $tone ?>">
+                                    <i class="fa-solid fa-users me-1"></i><?= $cur ?> / <?= $max ?> คน
+                                </span>
+                                <?php if ($isFull): ?>
+                                    <span class="badge bg-danger text-white fw-bold">เต็มแล้ว</span>
+                                <?php else: ?>
+                                    <span class="badge bg-success text-white fw-bold">เปิดรับสมัคร</span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <p class="club-desc mb-4 text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; min-height: 48px;"><?= e($row['description']) ?></p>
                         </div>
-                        
-                        <p class="club-desc flex-grow-1 mb-4 text-muted small" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.6; min-height: 48px;"><?= e($row['description']) ?></p>
                         
                         <a href="<?= url('clubs/detail/' . $row['id']) ?>" class="btn-academic-outline-sm w-100 py-2 text-decoration-none">
                             รายละเอียด / สมัครเข้าชมรม <i class="fa-solid fa-chevron-right ms-1"></i>
@@ -322,11 +324,28 @@
     margin-right: 20px;
 }
 
+#clubsGrid.list-mode .club-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start !important;
+    text-align: left !important;
+    flex-grow: 1;
+    margin-right: 20px;
+}
+
 #clubsGrid.list-mode .club-name-title {
     min-height: auto !important;
-    margin: 0 0 4px 0 !important;
+    margin: 0 0 8px 0 !important;
     font-size: 1.15rem;
     text-align: left !important;
+}
+
+#clubsGrid.list-mode .club-badges-group {
+    position: static !important;
+    display: inline-flex !important;
+    gap: 8px !important;
+    padding: 0 !important;
+    margin: 0 0 8px 0 !important;
 }
 
 #clubsGrid.list-mode .club-desc {
@@ -334,8 +353,8 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin: 0 20px 0 0 !important;
-    flex-grow: 1;
+    margin: 0 !important;
+    flex-grow: 0;
     font-size: 0.85rem;
     text-align: left !important;
 }
@@ -358,6 +377,10 @@
         margin-right: 12px;
     }
     
+    #clubsGrid.list-mode .club-info-wrapper {
+        margin-right: 48px; /* space for absolute button */
+    }
+    
     #clubsGrid.list-mode .club-desc {
         display: none !important;
     }
@@ -369,7 +392,12 @@
     
     #clubsGrid.list-mode .club-name-title {
         font-size: 1rem;
-        padding-right: 40px;
+        padding-right: 0px; /* moved to wrapper margin */
+        margin-bottom: 4px !important;
+    }
+    
+    #clubsGrid.list-mode .club-badges-group {
+        margin-bottom: 0 !important;
     }
     
     #clubsGrid.list-mode .btn-academic-outline-sm {
