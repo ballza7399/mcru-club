@@ -15,68 +15,69 @@
     <div class="col-lg-10">
         <!-- Academic Club Detail Card -->
         <div class="academic-card shadow-lg border-0 overflow-hidden mb-5">
-            <!-- Club Banner with Title and Metadata inside -->
-            <div class="club-detail-banner position-relative d-flex align-items-end p-4 p-md-5" style="min-height: 240px; padding-bottom: 80px !important;">
+            <!-- Club Banner with Back Button -->
+            <div class="club-detail-banner position-relative d-flex align-items-end p-4 p-md-5" style="min-height: 180px;">
                 <div class="academic-pattern"></div>
                 
                 <!-- Back Button in Banner -->
                 <a href="<?= url('clubs') ?>" class="btn-banner-back text-decoration-none">
                     <i class="fa-solid fa-arrow-left me-2"></i>กลับหน้ารายชื่อชมรม
                 </a>
-
-                <!-- Title and Metadata inside Banner for perfect contrast -->
-                <div class="position-relative z-index-2 w-100 text-white mt-5 text-center text-md-start">
-                    <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
-                    <h2 class="fw-bold m-0 text-white text-shadow-sm" style="font-size: 2.2rem; letter-spacing: -0.5px;"><?= e($club['club_name']) ?></h2>
-                    <p class="m-0 mt-2 text-white-50">
-                        <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
-                        <strong class="text-white"><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
-                    </p>
-                </div>
             </div>
 
-            <!-- Floating Logo Area -->
+            <!-- Floating Logo and Profile Title Info Area -->
             <div class="club-profile-header px-4 px-md-5">
-                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-3" style="margin-top: -60px; margin-bottom: 30px;">
-                    <div class="club-logo-wrapper">
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-4" style="margin-top: -60px; margin-bottom: 30px;">
+                    <div class="club-logo-wrapper shadow-sm" style="border-radius: 50%;">
                         <?php if (assetExists($club['club_logo'])): ?>
                             <img src="<?= asset($club['club_logo']) ?>" class="club-detail-logo" alt="Logo">
                         <?php else: ?>
                             <div class="club-detail-logo bg-light d-flex align-items-center justify-content-center text-muted fw-bold border">NO LOGO</div>
                         <?php endif; ?>
                     </div>
+                    
+                    <div class="club-title-info text-center text-md-start flex-grow-1 py-2">
+                        <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
+                        <h2 class="fw-bold m-0 text-primary-custom" style="font-size: 2.2rem; letter-spacing: -0.5px;"><?= e($club['club_name']) ?></h2>
+                        <p class="m-0 mt-2 text-muted">
+                            <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
+                            <strong class="text-dark"><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
+                        </p>
+                    </div>
                 </div>
             </div>
 
             <!-- Navigation Tabs for Club Homepage Sections -->
             <div class="px-4 px-md-5">
-                <ul class="nav nav-tabs nav-tabs-academic justify-content-center border-0 gap-2 mb-5" id="clubTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active rounded-pill px-4 py-2 border-0" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-panel" type="button" role="tab" aria-selected="true">
-                            <i class="fa-solid fa-circle-info me-2"></i>ข้อมูลทั่วไป
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill px-4 py-2 border-0" id="news-tab" data-bs-toggle="tab" data-bs-target="#news-panel" type="button" role="tab" aria-selected="false">
-                            <i class="fa-solid fa-bullhorn me-2"></i>ข่าวสารชมรม (<?= count($announcements) ?>)
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill px-4 py-2 border-0" id="events-tab" data-bs-toggle="tab" data-bs-target="#events-panel" type="button" role="tab" aria-selected="false">
-                            <i class="fa-regular fa-calendar-check me-2"></i>ปฏิทินกิจกรรม (<?= count($events) ?>)
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill px-4 py-2 border-0" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery-panel" type="button" role="tab" aria-selected="false">
-                            <i class="fa-solid fa-images me-2"></i>ภาพกิจกรรม (<?= count($gallery) ?>)
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill px-4 py-2 border-0" id="hierarchy-tab" data-bs-toggle="tab" data-bs-target="#hierarchy-panel" type="button" role="tab" aria-selected="false">
-                            <i class="fa-solid fa-sitemap me-2"></i>โครงสร้างชมรม
-                        </button>
-                    </li>
-                </ul>
+                <div class="tabs-scroll-wrapper mb-5">
+                    <ul class="nav nav-tabs nav-tabs-academic justify-content-md-center border-0 gap-2" id="clubTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active rounded-pill px-4 py-2 border-0" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview-panel" type="button" role="tab" aria-selected="true">
+                                <i class="fa-solid fa-circle-info me-2"></i>ข้อมูลทั่วไป
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill px-4 py-2 border-0" id="news-tab" data-bs-toggle="tab" data-bs-target="#news-panel" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-bullhorn me-2"></i>ข่าวสารชมรม (<?= count($announcements) ?>)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill px-4 py-2 border-0" id="events-tab" data-bs-toggle="tab" data-bs-target="#events-panel" type="button" role="tab" aria-selected="false">
+                                <i class="fa-regular fa-calendar-check me-2"></i>ปฏิทินกิจกรรม (<?= count($events) ?>)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill px-4 py-2 border-0" id="gallery-tab" data-bs-toggle="tab" data-bs-target="#gallery-panel" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-images me-2"></i>ภาพกิจกรรม (<?= count($gallery) ?>)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link rounded-pill px-4 py-2 border-0" id="hierarchy-tab" data-bs-toggle="tab" data-bs-target="#hierarchy-panel" type="button" role="tab" aria-selected="false">
+                                <i class="fa-solid fa-sitemap me-2"></i>โครงสร้างชมรม
+                            </button>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Tab Panels Content -->
@@ -428,6 +429,24 @@
     transform: translateX(-3px);
 }
 
+/* Horizontal Scrollable Tabs on Mobile */
+.tabs-scroll-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    padding-bottom: 4px;
+    width: 100%;
+}
+.tabs-scroll-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+.nav-tabs-academic {
+    flex-wrap: nowrap !important;
+}
+.nav-tabs-academic .nav-item {
+    flex-shrink: 0;
+}
+
 /* Profile header overlay layout */
 .club-profile-header {
     position: relative;
@@ -447,6 +466,11 @@
     border: 5px solid var(--surface);
     background: var(--surface);
     box-shadow: 0 10px 25px rgba(11, 44, 92, 0.12);
+}
+
+.club-title-info h2 {
+    color: var(--primary-blue) !important;
+    margin-bottom: 4px !important;
 }
 
 .badge-academic-accent {
@@ -776,6 +800,77 @@
 @media (min-width: 768px) {
     .border-end-md {
         border-right: 1px solid var(--border-strong);
+    }
+}
+
+/* Responsive Hierarchy Tree for Mobile */
+@media (max-width: 767.98px) {
+    .hierarchy-tree ul {
+        flex-direction: column !important;
+        align-items: center !important;
+        padding-top: 0 !important;
+        gap: 20px !important;
+    }
+    
+    .hierarchy-tree li {
+        padding: 0 !important;
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+    
+    /* Hide the horizontal connector lines */
+    .hierarchy-tree li::before, 
+    .hierarchy-tree li::after,
+    .hierarchy-tree ul ul::before {
+        display: none !important;
+    }
+    
+    /* Add a clean vertical arrow between hierarchy levels on mobile */
+    .hierarchy-tree ul ul {
+        position: relative !important;
+        padding-top: 30px !important;
+        margin-top: 10px !important;
+    }
+    
+    .hierarchy-tree ul ul::before {
+        content: "\f063" !important; /* FontAwesome angle-down arrow */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--primary-soft);
+        font-size: 1.25rem;
+        display: block !important;
+        width: auto !important;
+        height: auto !important;
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    /* Add spacing and line indicators between officers on mobile */
+    .hierarchy-tree ul ul li:not(:last-child) {
+        position: relative !important;
+        padding-bottom: 30px !important;
+    }
+    
+    .hierarchy-tree ul ul li:not(:last-child)::after {
+        content: "\f063" !important;
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--border-strong);
+        font-size: 1.1rem;
+        display: block !important;
+        width: auto;
+        height: auto;
+        border: none;
     }
 }
 </style>
