@@ -4,6 +4,8 @@
  * @var array $announcements 
  * @var array $events 
  * @var array $gallery 
+ * @var array $myClubs
+ * @var array $myApplications
  */
 ?>
 
@@ -43,6 +45,80 @@
         </div>
     </div>
 </div>
+
+<?php if (!empty($myClubs) || !empty($myApplications)): ?>
+<!-- Section: My Clubs Dashboard -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card-custom p-4 bg-white border-0 shadow-sm rounded-4" style="border: 1px solid var(--border) !important;">
+            <h4 class="text-primary-custom fw-bold mb-4">
+                <i class="fa-solid fa-graduation-cap text-warning me-2"></i>ชมรมและสถานะการสมัครของฉัน
+            </h4>
+            
+            <div class="row g-4">
+                <?php 
+                    $hasClubs = !empty($myClubs);
+                    $hasApps = !empty($myApplications);
+                    $colClass = ($hasClubs && $hasApps) ? 'col-md-6' : 'col-12';
+                ?>
+                <!-- Joined Clubs (Approved) -->
+                <?php if ($hasClubs): ?>
+                    <div class="<?= $colClass ?> <?= ($hasClubs && $hasApps) ? 'border-md-end' : '' ?>">
+                        <h6 class="fw-bold text-muted mb-3"><i class="fa-solid fa-circle-check text-success me-2"></i>ชมรมที่เป็นสมาชิก (<?= count($myClubs) ?>)</h6>
+                        <div class="d-flex flex-column gap-3">
+                            <?php foreach ($myClubs as $mc): ?>
+                                <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between border">
+                                    <div class="d-flex align-items-center">
+                                        <?php if (assetExists($mc['club_logo'])): ?>
+                                            <img src="<?= asset($mc['club_logo']) ?>" class="rounded-circle me-3" style="width:48px;height:48px;object-fit:cover;border:2px solid var(--border);" alt="">
+                                        <?php else: ?>
+                                            <div class="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center text-muted me-3" style="width:48px;height:48px;border:2px solid var(--border);">No Lg</div>
+                                        <?php endif; ?>
+                                        <div>
+                                            <h6 class="fw-bold m-0 text-dark"><?= e($mc['club_name']) ?></h6>
+                                            <small class="text-muted"><i class="fa-solid fa-user-tag me-1 text-primary"></i>ตำแหน่ง: <span class="badge bg-secondary"><?= e($mc['member_role']) ?></span></small>
+                                        </div>
+                                    </div>
+                                    <a href="<?= url('clubs/detail/' . (int)$mc['id']) ?>" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        เข้าสู่หน้าชมรม <i class="fa-solid fa-circle-chevron-right ms-1"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Pending Applications -->
+                <?php if ($hasApps): ?>
+                    <div class="<?= $colClass ?>">
+                        <h6 class="fw-bold text-muted mb-3"><i class="fa-solid fa-clock-rotate-left text-warning me-2"></i>คำขอที่อยู่ระหว่างพิจารณา (<?= count($myApplications) ?>)</h6>
+                        <div class="d-flex flex-column gap-3">
+                            <?php foreach ($myApplications as $ma): ?>
+                                <div class="p-3 bg-light rounded-3 d-flex align-items-center justify-content-between border">
+                                    <div class="d-flex align-items-center">
+                                        <?php if (assetExists($ma['club_logo'])): ?>
+                                            <img src="<?= asset($ma['club_logo']) ?>" class="rounded-circle me-3" style="width:48px;height:48px;object-fit:cover;border:2px solid var(--border);" alt="">
+                                        <?php else: ?>
+                                            <div class="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center text-muted me-3" style="width:48px;height:48px;border:2px solid var(--border);">No Lg</div>
+                                        <?php endif; ?>
+                                        <div>
+                                            <h6 class="fw-bold m-0 text-dark"><?= e($ma['club_name']) ?></h6>
+                                            <small class="text-muted"><i class="fa-solid fa-spinner fa-spin me-1 text-warning"></i>สถานะ: <span class="text-warning fw-bold">รออนุมัติเข้าชมรม</span></small>
+                                        </div>
+                                    </div>
+                                    <a href="<?= url('clubs/detail/' . (int)$ma['id']) ?>" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
+                                        ตรวจสอบสิทธิ์ <i class="fa-solid fa-chevron-right ms-1"></i>
+                                    </a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Section: PR News & Event Calendar -->
 <div class="row g-4 mb-5">

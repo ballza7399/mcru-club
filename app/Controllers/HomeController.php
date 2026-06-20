@@ -24,11 +24,21 @@ class HomeController extends Controller
         $galModel = new Gallery;
         $gallery = $galModel->all(12);
         
+        $myClubs = [];
+        $myApplications = [];
+        if (!empty($_SESSION['user_id']) && $_SESSION['role'] === 'student') {
+            $userId = (int)$_SESSION['user_id'];
+            $myClubs = $clubModel->getJoinedClubs($userId);
+            $myApplications = $clubModel->getPendingApplications($userId);
+        }
+        
         $this->view('home/index', [
             'clubs'          => $clubs,
             'announcements'  => $announcements,
             'events'         => $events,
-            'gallery'        => $gallery
+            'gallery'        => $gallery,
+            'myClubs'        => $myClubs,
+            'myApplications' => $myApplications
         ]);
     }
 

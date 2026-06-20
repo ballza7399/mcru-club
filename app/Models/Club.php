@@ -125,4 +125,33 @@ class Club extends Model
         $stmt->execute([$id, $id]);
         return $stmt->fetch() ?: null;
     }
+
+    /** ดึงรายชื่อชมรมที่ผู้ใช้งานเข้าร่วม (สถานะอนุมัติแล้ว) */
+    public function getJoinedClubs(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT c.*, r.role_name AS member_role,
+                (SELECT COUNT(*) FROM applications WHERE club_id = c.id AND status = "approved") AS current_members
+             FROM club_members cm 
+             JOIN clubs c ON cm.club_id = c.id 
+             JOIN roles r ON cm.role_id = r.id
+             WHERE cm.user_id = ? AND c.status = "approved"'
+        );
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
+
+    /** ดึงรายการสมัครชมรมที่รอการอนุมัติ (pending) */
+    public function getPendingApplications(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT c.*, a.status, a.id AS app_id,
+                (SELECT COUNT(*) FROM applications WHERE club_id = c.id AND status = "approved") AS current_members
+             FROM applications a 
+             JOIN clubs c ON a.club_id = c.id 
+             WHERE a.user_id = ? AND a.status = "pending" AND c.status = "approved"'
+        );
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    }
 }
