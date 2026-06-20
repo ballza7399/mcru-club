@@ -27,18 +27,30 @@
                 <input type="text" id="clubSearchInput" class="form-control-custom search-input" placeholder="พิมพ์ชื่อชมรม หรือรายละเอียดเพื่อค้นหา..." onkeyup="applyFilters()">
             </div>
         </div>
-        <!-- Status Filter Pills -->
+        <!-- Status Filter Pills & View Toggles -->
         <div class="col-md-5">
-            <div class="d-flex flex-wrap gap-2 justify-content-md-end" id="statusFilterGroup">
-                <button type="button" class="btn btn-academic-pill active" data-status="all" onclick="setStatusFilter('all', this)">
-                    ทั้งหมด (<?= count($clubs) ?>)
-                </button>
-                <button type="button" class="btn btn-academic-pill-outline" data-status="open" onclick="setStatusFilter('open', this)">
-                    <i class="fa-solid fa-circle-check text-success me-1"></i>ยังเปิดรับ
-                </button>
-                <button type="button" class="btn btn-academic-pill-outline" data-status="full" onclick="setStatusFilter('full', this)">
-                    <i class="fa-solid fa-circle-xmark text-danger me-1"></i>เต็มแล้ว
-                </button>
+            <div class="d-flex flex-wrap gap-3 justify-content-md-end align-items-center" id="filterAndToggleGroup">
+                <div class="d-flex flex-wrap gap-2" id="statusFilterGroup">
+                    <button type="button" class="btn btn-academic-pill active" data-status="all" onclick="setStatusFilter('all', this)">
+                        ทั้งหมด (<?= count($clubs) ?>)
+                    </button>
+                    <button type="button" class="btn btn-academic-pill-outline" data-status="open" onclick="setStatusFilter('open', this)">
+                        <i class="fa-solid fa-circle-check text-success me-1"></i>ยังเปิดรับ
+                    </button>
+                    <button type="button" class="btn btn-academic-pill-outline" data-status="full" onclick="setStatusFilter('full', this)">
+                        <i class="fa-solid fa-circle-xmark text-danger me-1"></i>เต็มแล้ว
+                    </button>
+                </div>
+                
+                <!-- View Mode Toggle Buttons -->
+                <div class="d-flex gap-1 border-start ps-3" id="viewToggleGroup" style="border-color: var(--border-strong) !important;">
+                    <button type="button" class="btn btn-academic-view-toggle active" id="gridViewBtn" onclick="setViewMode('grid')" title="แสดงแบบการ์ด">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                    <button type="button" class="btn btn-academic-view-toggle" id="listViewBtn" onclick="setViewMode('list')" title="แสดงแบบรายชื่อ">
+                        <i class="fa-solid fa-list"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -245,10 +257,177 @@
     border-style: dashed !important;
     border-color: var(--border-strong) !important;
 }
+
+/* --- View Toggle Styling --- */
+.btn-academic-view-toggle {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1.5px solid var(--border-strong);
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all var(--dur) var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-academic-view-toggle:hover {
+    background: var(--bg-light);
+    color: var(--text-dark);
+}
+.btn-academic-view-toggle.active {
+    background: var(--primary-blue) !important;
+    color: #fff !important;
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 4px 10px rgba(11, 44, 92, 0.15);
+}
+
+/* List Mode Overrides */
+#clubsGrid.list-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#clubsGrid.list-mode .club-card-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+#clubsGrid.list-mode .card-custom {
+    flex-direction: row !important;
+    text-align: left !important;
+    align-items: center;
+    padding: 16px 24px !important;
+    min-height: auto !important;
+}
+
+#clubsGrid.list-mode .club-banner {
+    display: none !important;
+}
+
+#clubsGrid.list-mode .px-3.pb-4 {
+    flex-direction: row !important;
+    width: 100%;
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: center !important;
+    justify-content: space-between;
+}
+
+#clubsGrid.list-mode .club-logo-thumb {
+    margin-top: 0 !important;
+    width: 64px !important;
+    height: 64px !important;
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+#clubsGrid.list-mode .club-name-title {
+    min-height: auto !important;
+    margin: 0 0 4px 0 !important;
+    font-size: 1.15rem;
+    text-align: left !important;
+}
+
+#clubsGrid.list-mode .club-desc {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0 20px 0 0 !important;
+    flex-grow: 1;
+    font-size: 0.85rem;
+    text-align: left !important;
+}
+
+#clubsGrid.list-mode .btn-academic-outline-sm {
+    width: auto !important;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* List Mode Responsive for Mobile */
+@media (max-width: 767.98px) {
+    #clubsGrid.list-mode .card-custom {
+        padding: 12px 16px !important;
+    }
+    
+    #clubsGrid.list-mode .club-logo-thumb {
+        width: 50px !important;
+        height: 50px !important;
+        margin-right: 12px;
+    }
+    
+    #clubsGrid.list-mode .club-desc {
+        display: none !important;
+    }
+    
+    #clubsGrid.list-mode .px-3.pb-4 {
+        justify-content: flex-start;
+        position: relative;
+    }
+    
+    #clubsGrid.list-mode .club-name-title {
+        font-size: 1rem;
+        padding-right: 40px;
+    }
+    
+    #clubsGrid.list-mode .btn-academic-outline-sm {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%) !important;
+        width: 32px !important;
+        height: 32px !important;
+        border-radius: 50% !important;
+        padding: 0 !important;
+        font-size: 0 !important;
+        border-color: var(--border-strong) !important;
+        background: transparent !important;
+        color: var(--primary-soft) !important;
+        box-shadow: none !important;
+    }
+    
+    #clubsGrid.list-mode .btn-academic-outline-sm::before {
+        content: "\f054";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        font-size: 0.85rem;
+    }
+    
+    #clubsGrid.list-mode .btn-academic-outline-sm:hover {
+        background: var(--bg-light) !important;
+        color: var(--primary-blue) !important;
+    }
+}
 </style>
 
 <script>
 let currentStatusFilter = 'all';
+
+function setViewMode(mode) {
+    const grid = document.getElementById('clubsGrid');
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+    if (!grid || !gridBtn || !listBtn) return;
+    
+    if (mode === 'list') {
+        grid.classList.add('list-mode');
+        gridBtn.classList.remove('active');
+        listBtn.classList.add('active');
+        localStorage.setItem('clubs_view_mode', 'list');
+    } else {
+        grid.classList.remove('list-mode');
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+        localStorage.setItem('clubs_view_mode', 'grid');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const savedMode = localStorage.getItem('clubs_view_mode') || 'grid';
+    setViewMode(savedMode);
+});
 
 function setStatusFilter(status, element) {
     document.querySelectorAll('#statusFilterGroup button').forEach(btn => {
