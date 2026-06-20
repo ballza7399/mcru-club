@@ -1113,3 +1113,59 @@ select.field__control {
     font-size: 0.95rem !important;
   }
 }
+
+/* =========================================
+   Club Badges Group Overlay (Flawless Alignment)
+   ========================================= */
+.card-custom {
+  position: relative !important;
+}
+
+.club-badges-group {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.club-badges-group .member-badge {
+  background: rgba(255, 255, 255, 0.93) !important;
+  color: var(--text-dark) !important;
+  border: 1.5px solid var(--border-strong) !important;
+  font-size: 0.725rem !important;
+  font-weight: 600 !important;
+  padding: 4px 10px !important;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08) !important;
+  display: inline-flex;
+  align-items: center;
+}
+
+.club-badges-group .member-badge--full {
+  color: var(--danger-ink) !important;
+  border-color: rgba(192, 57, 43, 0.3) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.club-badges-group .member-badge--warn {
+  color: var(--warning-ink) !important;
+  border-color: rgba(249, 168, 38, 0.3) !important;
+}
+
+.club-badges-group .member-badge--open {
+  color: var(--success-ink) !important;
+  border-color: rgba(31, 122, 82, 0.3) !important;
+}
+
+.club-badges-group .badge {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  font-size: 0.725rem !important;
+  padding: 6px 12px !important;
+  border-radius: 50px !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+

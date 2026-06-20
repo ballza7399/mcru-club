@@ -221,7 +221,26 @@
     <div class="row g-4" id="clubsGrid">
         <?php foreach ($clubs as $row): ?>
         <div class="col-md-6 col-lg-4 club-card-wrapper" data-name="<?= strtolower(e($row['club_name'])) ?>" data-desc="<?= strtolower(e($row['description'])) ?>">
-            <div class="card-custom h-100 text-center d-flex flex-column">
+            <div class="card-custom h-100 text-center d-flex flex-column" style="position: relative;">
+                <?php
+                    $cur = (int) $row['current_members'];
+                    $max = (int) $row['max_members'];
+                    $ratio = $max > 0 ? $cur / $max : 1;
+                    $tone = $ratio >= 1 ? 'full' : ($ratio >= 0.8 ? 'warn' : 'open');
+                    $isFull = $ratio >= 1;
+                ?>
+                <!-- Badge Overlay Group -->
+                <div class="club-badges-group">
+                    <span class="member-badge member-badge--<?= $tone ?>">
+                        <i class="fa-solid fa-users me-1"></i><?= $cur ?> / <?= $max ?> คน
+                    </span>
+                    <?php if ($isFull): ?>
+                        <span class="badge bg-danger text-white fw-bold">เต็มแล้ว</span>
+                    <?php else: ?>
+                        <span class="badge bg-success text-white fw-bold">เปิดรับสมัคร</span>
+                    <?php endif; ?>
+                </div>
+
                 <div class="club-banner"></div>
                 <div class="px-3 pb-4 d-flex flex-column flex-grow-1 align-items-center">
                     <?php if (assetExists($row['club_logo'])): ?>
@@ -229,19 +248,7 @@
                     <?php else: ?>
                         <div class="club-logo-thumb bg-light d-flex align-items-center justify-content-center text-muted">No Image</div>
                     <?php endif; ?>
-                    <h5 class="text-primary-custom fw-bold mt-3 mb-1 club-name-title"><?= e($row['club_name']) ?></h5>
-                    <?php
-                        $cur = (int) $row['current_members'];
-                        $max = (int) $row['max_members'];
-                        $ratio = $max > 0 ? $cur / $max : 1;
-                        $tone = $ratio >= 1 ? 'full' : ($ratio >= 0.8 ? 'warn' : 'open');
-                    ?>
-                    <div class="mb-2">
-                        <span class="member-badge member-badge--<?= $tone ?>">
-                            <i class="fa-solid fa-users"></i>
-                            <?= $cur ?> / <?= $max ?>
-                        </span>
-                    </div>
+                    <h5 class="text-primary-custom fw-bold mt-3 mb-2 club-name-title" style="min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><?= e($row['club_name']) ?></h5>
                     <p class="club-desc flex-grow-1 mb-4"><?= mb_substr(e($row['description']), 0, 90) . '...' ?></p>
                     <a href="<?= url('clubs/detail/' . $row['id']) ?>" class="btn-outline-custom w-100 py-2">รายละเอียด / สมัคร</a>
                 </div>

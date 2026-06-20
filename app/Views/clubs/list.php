@@ -91,15 +91,15 @@
                         
                         <h5 class="text-primary-custom fw-bold mt-3 mb-2 club-name-title" style="min-height: 48px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><?= e($row['club_name']) ?></h5>
                         
-                        <div class="mb-3">
-                            <span class="member-badge member-badge--<?= $tone ?> px-2 py-1 small rounded-pill">
-                                <i class="fa-solid fa-users me-1"></i>
-                                <?= $cur ?> / <?= $max ?> คน
+                        <!-- Badge Overlay/Inline Group -->
+                        <div class="club-badges-group">
+                            <span class="member-badge member-badge--<?= $tone ?>">
+                                <i class="fa-solid fa-users me-1"></i><?= $cur ?> / <?= $max ?> คน
                             </span>
                             <?php if ($isFull): ?>
-                                <span class="badge bg-danger-custom ms-1 px-2 py-1 text-danger fw-bold" style="font-size: 0.75rem; border-radius: 30px;">เต็มแล้ว</span>
+                                <span class="badge bg-danger text-white fw-bold">เต็มแล้ว</span>
                             <?php else: ?>
-                                <span class="badge bg-success-custom ms-1 px-2 py-1 text-success fw-bold" style="font-size: 0.75rem; border-radius: 30px;">เปิดรับสมัคร</span>
+                                <span class="badge bg-success text-white fw-bold">เปิดรับสมัคร</span>
                             <?php endif; ?>
                         </div>
                         
