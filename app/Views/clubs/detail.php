@@ -9,18 +9,29 @@
     <div class="col-lg-10">
         <!-- Academic Club Detail Card -->
         <div class="academic-card shadow-lg border-0 overflow-hidden mb-5">
-            <!-- Club Banner with Gradient and Patterns -->
-            <div class="club-detail-banner position-relative">
+            <!-- Club Banner with Title and Metadata inside -->
+            <div class="club-detail-banner position-relative d-flex align-items-end p-4 p-md-5" style="min-height: 240px; padding-bottom: 80px !important;">
                 <div class="academic-pattern"></div>
+                
                 <!-- Back Button in Banner -->
                 <a href="<?= url('clubs') ?>" class="btn-banner-back text-decoration-none">
                     <i class="fa-solid fa-arrow-left me-2"></i>กลับหน้ารายชื่อชมรม
                 </a>
+
+                <!-- Title and Metadata inside Banner for perfect contrast -->
+                <div class="position-relative z-index-2 w-100 text-white mt-5 text-center text-md-start">
+                    <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
+                    <h2 class="fw-bold m-0 text-white text-shadow-sm" style="font-size: 2.2rem; letter-spacing: -0.5px;"><?= e($club['club_name']) ?></h2>
+                    <p class="m-0 mt-2 text-white-50">
+                        <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
+                        <strong class="text-white"><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
+                    </p>
+                </div>
             </div>
 
-            <!-- Club Logo & Title Section -->
-            <div class="club-profile-header px-4 px-md-5 text-center text-md-start">
-                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-4">
+            <!-- Floating Logo Area -->
+            <div class="club-profile-header px-4 px-md-5">
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-3" style="margin-top: -60px; margin-bottom: 20px;">
                     <div class="club-logo-wrapper">
                         <?php if (assetExists($club['club_logo'])): ?>
                             <img src="<?= asset($club['club_logo']) ?>" class="club-detail-logo" alt="Logo">
@@ -28,19 +39,11 @@
                             <div class="club-detail-logo bg-light d-flex align-items-center justify-content-center text-muted fw-bold border">NO LOGO</div>
                         <?php endif; ?>
                     </div>
-                    <div class="club-title-info flex-grow-1 pb-2">
-                        <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
-                        <h2 class="text-primary-custom fw-bold m-0"><?= e($club['club_name']) ?></h2>
-                        <p class="text-muted m-0 mt-2">
-                            <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
-                            <strong><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
-                        </p>
-                    </div>
                 </div>
             </div>
 
             <!-- Main Content Grid -->
-            <div class="academic-body p-4 p-md-5">
+            <div class="academic-body p-4 p-md-5 pt-0">
                 <div class="row g-4">
                     <!-- Left Column: Description and Objectives -->
                     <div class="col-lg-7">
@@ -163,7 +166,6 @@
 
 .club-detail-banner {
     background: linear-gradient(135deg, #0b2c5c 0%, #1a4980 100%);
-    height: 180px;
     border-bottom: 4px solid var(--accent-gold);
 }
 
@@ -206,7 +208,6 @@
 .club-profile-header {
     position: relative;
     z-index: 5;
-    margin-top: -60px;
     margin-bottom: 20px;
 }
 
@@ -225,14 +226,18 @@
 }
 
 .badge-academic-accent {
-    background: rgba(249, 168, 38, 0.15);
-    color: var(--accent-gold-deep);
+    background: rgba(249, 168, 38, 0.2);
+    color: var(--accent-gold);
     font-size: 0.75rem;
     letter-spacing: 1px;
     font-weight: 700;
     padding: 5px 12px;
     border-radius: 50px;
-    border: 1px solid rgba(249, 168, 38, 0.3);
+    border: 1px solid rgba(249, 168, 38, 0.4);
+}
+
+.text-shadow-sm {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* General Layout Elements */
