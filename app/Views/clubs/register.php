@@ -10,6 +10,10 @@
                 <h3 class="text-primary-custom fw-bold"><i class="fa-solid fa-file-signature text-warning me-2"></i>ยื่นขอเสนอจัดตั้งชมรมใหม่</h3>
                 <p class="text-muted m-0">กรอกข้อมูลพื้นฐานของชมรมเพื่อส่งให้ผู้ดูแลระบบตรวจสอบและอนุมัติจัดตั้ง</p>
             </div>
+
+            <div class="alert alert-warning mb-4 small text-start">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ได้รับจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการและขั้นตอนการจัดตั้งชมรมอย่างเป็นทางการจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
+            </div>
             
             <?php if ($error): ?>
                 <div class="alert alert-danger mb-4"><i class="fa-solid fa-circle-exclamation me-2"></i><?= e($error) ?></div>

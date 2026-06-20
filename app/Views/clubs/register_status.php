@@ -20,6 +20,10 @@ if ($club['status'] === 'pending') {
                 <p class="text-muted small m-0 mt-1">ผู้เสนอจัดตั้ง: <?= e($_SESSION['name']) ?></p>
             </div>
 
+            <div class="alert alert-warning mb-4 small text-start">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ได้รับจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการและขั้นตอนการจัดตั้งชมรมอย่างเป็นทางการจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
+            </div>
+
             <!-- Stepper Container -->
             <div class="stepper-wrapper">
                 <div class="stepper-progress" style="width: <?= $progressWidth ?>;"></div>
