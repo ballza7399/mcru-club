@@ -52,7 +52,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-warning rounded-pill px-3 text-dark fw-bold border-0" style="background-color: var(--accent-gold); color: #1a1a1a !important;" href="<?= url('auth/register') ?>">
+                    <a class="btn btn-gold-custom rounded-pill px-3 fw-bold" href="<?= url('auth/register') ?>">
                         <i class="fa-solid fa-user-plus me-1"></i> สมัครสมาชิก
                     </a>
                 </li>
