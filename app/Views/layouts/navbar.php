@@ -8,7 +8,7 @@
         <i class="fa-solid fa-bars-staggered text-white fs-3"></i>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center gap-2 mt-3 mt-lg-0">
+        <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-2 mt-3 mt-lg-0">
             <li class="nav-item">
                 <a class="nav-link" href="<?= url() ?>"><i class="fa-solid fa-house-chimney me-1"></i> หน้าหลัก</a>
             </li>
