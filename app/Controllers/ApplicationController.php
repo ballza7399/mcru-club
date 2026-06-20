@@ -80,6 +80,6 @@ class ApplicationController extends Controller
             $appModel->updateStatus($appId, $status);
         }
 
-        $this->redirect('/applications/manage');
+        $this->redirect('/backoffice/applications');
     }
 }

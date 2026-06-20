@@ -18,7 +18,7 @@ $role = $_SESSION['role'];
     <?php if ($role === 'admin' && !empty($allClubsList)): ?>
         <div class="d-flex align-items-center gap-2">
             <label class="form-label m-0 fw-bold text-nowrap">เลือกชมรม:</label>
-            <select class="form-select shadow-sm" onchange="window.location.href='<?= url('clubs/members?club_id=') ?>' + this.value">
+            <select class="form-select shadow-sm" onchange="window.location.href='<?= url('backoffice/clubs/members?club_id=') ?>' + this.value">
                 <?php foreach ($allClubsList as $c): ?>
                     <option value="<?= (int) $c['id'] ?>" <?= $currentClubId === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['club_name']) ?></option>
                 <?php endforeach; ?>
@@ -77,7 +77,7 @@ $role = $_SESSION['role'];
                                 
                                 <!-- Remove Button -->
                                 <?php if ($mem['role_key'] !== 'president' || $role === 'admin'): ?>
-                                    <a href="<?= url('clubs/members/remove/' . $currentClubId . '/' . $mem['user_id']) ?>" 
+                                    <a href="<?= url('backoffice/clubs/members/remove/' . $currentClubId . '/' . $mem['user_id']) ?>" 
                                        class="btn btn-sm btn-outline-danger"
                                        onclick="return confirm('ยืนยันที่จะคัดนักศึกษาออกจากชมรม?')">
                                         <i class="fa-solid fa-user-minus me-1"></i> คัดออก
@@ -89,7 +89,7 @@ $role = $_SESSION['role'];
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'clubs/members', $limit) ?>
+        <?= renderPagination($currentPage, $totalPages, 'backoffice/clubs/members', $limit) ?>
     <?php endif; ?>
 </div>
 
@@ -107,7 +107,7 @@ $role = $_SESSION['role'];
                         <h5 class="modal-title text-white">มอบหมายตำแหน่งในชมรม</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
-                    <form method="POST" action="<?= url('clubs/members/assign-role') ?>">
+                    <form method="POST" action="<?= url('backoffice/clubs/members/assign-role') ?>">
                         <div class="modal-body">
                             <input type="hidden" name="club_id" value="<?= $currentClubId ?>">
                             <input type="hidden" name="user_id" value="<?= $mem['user_id'] ?>">

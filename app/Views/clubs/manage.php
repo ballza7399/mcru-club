@@ -39,7 +39,7 @@
                             <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
                         </button>
                         <?php if ($role === 'admin'): ?>
-                            <a href="<?= url('clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger"
+                            <a href="<?= url('backoffice/clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger"
                                onclick="return confirm('ยืนยันการลบชมรมและข้อมูลการสมัครทั้งหมดของชมรมนี้?')">
                                 <i class="fa-solid fa-trash me-1"></i>ลบ
                             </a>
@@ -50,7 +50,7 @@
             </tbody>
         </table>
     </div>
-    <?= renderPagination($currentPage, $totalPages, 'clubs/manage', $limit) ?>
+    <?= renderPagination($currentPage, $totalPages, 'backoffice/clubs', $limit) ?>
 </div>
 
 <!-- Modals แก้ไข -->
@@ -62,7 +62,7 @@
                 <h5 class="modal-title">แก้ไขข้อมูลชมรม</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('clubs/update') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= url('backoffice/clubs/update') ?>" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" name="club_id" value="<?= (int) $row['id'] ?>">
                     <div class="mb-3">
@@ -115,7 +115,7 @@
                 <h5 class="modal-title fw-bold">สร้างชมรมใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('clubs/store') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= url('backoffice/clubs/store') ?>" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">ชื่อชมรม</label>

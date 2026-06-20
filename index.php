@@ -53,51 +53,53 @@ $router->get('/auth/logout',    'App\Controllers\AuthController', 'logout');
 
 $router->get('/clubs',             'App\Controllers\ClubController', 'list');
 $router->get('/clubs/detail/{id}', 'App\Controllers\ClubController', 'detail');
-$router->get('/clubs/manage',      'App\Controllers\ClubController', 'manage');
-$router->post('/clubs/store',      'App\Controllers\ClubController', 'store');
-$router->post('/clubs/update',     'App\Controllers\ClubController', 'update');
-$router->get('/clubs/delete/{id}', 'App\Controllers\ClubController', 'delete');
-$router->get('/clubs/members',     'App\Controllers\ClubController', 'members');
-$router->post('/clubs/members/assign-role', 'App\Controllers\ClubController', 'assignRole');
-$router->get('/clubs/members/remove/{club_id}/{user_id}', 'App\Controllers\ClubController', 'removeMember');
-
 $router->post('/applications/apply',       'App\Controllers\ApplicationController', 'apply');
-$router->get('/applications/manage',       'App\Controllers\ApplicationController', 'manage');
-$router->get('/applications/approve/{id}', 'App\Controllers\ApplicationController', 'approve');
-$router->get('/applications/reject/{id}',  'App\Controllers\ApplicationController', 'reject');
 
-$router->get('/roles/manage',            'App\Controllers\RoleController', 'manage');
-$router->post('/roles/store',            'App\Controllers\RoleController', 'store');
-$router->get('/roles/delete/{id}',       'App\Controllers\RoleController', 'delete');
-$router->post('/roles/permissions/sync', 'App\Controllers\RoleController', 'syncPermissions');
+// --- Backoffice Management Routes ---
+$router->get('/backoffice/clubs',      'App\Controllers\ClubController', 'manage');
+$router->post('/backoffice/clubs/store',      'App\Controllers\ClubController', 'store');
+$router->post('/backoffice/clubs/update',     'App\Controllers\ClubController', 'update');
+$router->get('/backoffice/clubs/delete/{id}', 'App\Controllers\ClubController', 'delete');
+$router->get('/backoffice/clubs/members',     'App\Controllers\ClubController', 'members');
+$router->post('/backoffice/clubs/members/assign-role', 'App\Controllers\ClubController', 'assignRole');
+$router->get('/backoffice/clubs/members/remove/{club_id}/{user_id}', 'App\Controllers\ClubController', 'removeMember');
 
-$router->get('/users/manage',            'App\Controllers\UserController', 'manage');
-$router->post('/users/update-role',      'App\Controllers\UserController', 'updateRole');
-$router->post('/users/toggle-status',    'App\Controllers\UserController', 'toggleStatus');
-$router->post('/users/reset-password',   'App\Controllers\UserController', 'resetPassword');
+$router->get('/backoffice/applications',       'App\Controllers\ApplicationController', 'manage');
+$router->get('/backoffice/applications/approve/{id}', 'App\Controllers\ApplicationController', 'approve');
+$router->get('/backoffice/applications/reject/{id}',  'App\Controllers\ApplicationController', 'reject');
+
+$router->get('/backoffice/roles',            'App\Controllers\RoleController', 'manage');
+$router->post('/backoffice/roles/store',            'App\Controllers\RoleController', 'store');
+$router->get('/backoffice/roles/delete/{id}',       'App\Controllers\RoleController', 'delete');
+$router->post('/backoffice/roles/permissions/sync', 'App\Controllers\RoleController', 'syncPermissions');
+
+$router->get('/backoffice/users',            'App\Controllers\UserController', 'manage');
+$router->post('/backoffice/users/update-role',      'App\Controllers\UserController', 'updateRole');
+$router->post('/backoffice/users/toggle-status',    'App\Controllers\UserController', 'toggleStatus');
+$router->post('/backoffice/users/reset-password',   'App\Controllers\UserController', 'resetPassword');
 
 $router->get('/announcements/detail/{id}', 'App\Controllers\AnnouncementController', 'detail');
-$router->get('/announcements/manage',     'App\Controllers\AnnouncementController', 'manage');
-$router->post('/announcements/store',     'App\Controllers\AnnouncementController', 'store');
-$router->post('/announcements/update',    'App\Controllers\AnnouncementController', 'update');
-$router->get('/announcements/delete/{id}', 'App\Controllers\AnnouncementController', 'delete');
+$router->get('/backoffice/announcements',     'App\Controllers\AnnouncementController', 'manage');
+$router->post('/backoffice/announcements/store',     'App\Controllers\AnnouncementController', 'store');
+$router->post('/backoffice/announcements/update',    'App\Controllers\AnnouncementController', 'update');
+$router->get('/backoffice/announcements/delete/{id}', 'App\Controllers\AnnouncementController', 'delete');
 
-$router->get('/events/manage',     'App\Controllers\EventController', 'manage');
-$router->post('/events/store',     'App\Controllers\EventController', 'store');
-$router->post('/events/update',    'App\Controllers\EventController', 'update');
-$router->get('/events/delete/{id}', 'App\Controllers\EventController', 'delete');
+$router->get('/backoffice/events',     'App\Controllers\EventController', 'manage');
+$router->post('/backoffice/events/store',     'App\Controllers\EventController', 'store');
+$router->post('/backoffice/events/update',    'App\Controllers\EventController', 'update');
+$router->get('/backoffice/events/delete/{id}', 'App\Controllers\EventController', 'delete');
 
-$router->get('/gallery/manage',     'App\Controllers\GalleryController', 'manage');
-$router->post('/gallery/store',     'App\Controllers\GalleryController', 'store');
-$router->get('/gallery/delete/{id}', 'App\Controllers\GalleryController', 'delete');
+$router->get('/backoffice/gallery',     'App\Controllers\GalleryController', 'manage');
+$router->post('/backoffice/gallery/store',     'App\Controllers\GalleryController', 'store');
+$router->get('/backoffice/gallery/delete/{id}', 'App\Controllers\GalleryController', 'delete');
 
-$router->get('/faculties/manage',     'App\Controllers\FacultyController', 'manage');
-$router->post('/faculties/store',     'App\Controllers\FacultyController', 'store');
-$router->post('/faculties/update',    'App\Controllers\FacultyController', 'update');
-$router->get('/faculties/delete/{id}', 'App\Controllers\FacultyController', 'delete');
+$router->get('/backoffice/faculties',     'App\Controllers\FacultyController', 'manage');
+$router->post('/backoffice/faculties/store',     'App\Controllers\FacultyController', 'store');
+$router->post('/backoffice/faculties/update',    'App\Controllers\FacultyController', 'update');
+$router->get('/backoffice/faculties/delete/{id}', 'App\Controllers\FacultyController', 'delete');
 
-$router->post('/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
-$router->post('/majors/update',    'App\Controllers\FacultyController', 'updateMajor');
-$router->get('/majors/delete/{id}', 'App\Controllers\FacultyController', 'deleteMajor');
+$router->post('/backoffice/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
+$router->post('/backoffice/majors/update',    'App\Controllers\FacultyController', 'updateMajor');
+$router->get('/backoffice/majors/delete/{id}', 'App\Controllers\FacultyController', 'deleteMajor');
 
 $router->dispatch();

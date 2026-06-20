@@ -70,7 +70,7 @@ class EventController extends Controller
         
         if ($title === '' || $event_date === '') {
             $this->flash('กรุณากรอกข้อมูลหัวข้อกิจกรรมและวันที่ให้ครบถ้วน');
-            $this->redirect('/events/manage');
+            $this->redirect('/backoffice/events');
         }
         
         // ตรวจสอบสิทธิ์ประธานชมรม
@@ -96,7 +96,7 @@ class EventController extends Controller
         ]);
         
         $this->flash('เพิ่มกิจกรรมใหม่เข้าสู่ปฏิทินสำเร็จแล้ว');
-        $this->redirect('/events/manage');
+        $this->redirect('/backoffice/events');
     }
 
     public function update(): void
@@ -116,7 +116,7 @@ class EventController extends Controller
         
         $event = $eventModel->find($id);
         if (!$event) {
-            $this->redirect('/events/manage');
+            $this->redirect('/backoffice/events');
         }
         
         // เช็คสิทธิ์
@@ -130,7 +130,7 @@ class EventController extends Controller
         }
         
         if (!$canEdit) {
-            $this->redirect('/events/manage');
+            $this->redirect('/backoffice/events');
         }
         
         $eventModel->update($id, [
@@ -143,7 +143,7 @@ class EventController extends Controller
         ]);
         
         $this->flash('แก้ไขข้อมูลปฏิทินกิจกรรมสำเร็จแล้ว');
-        $this->redirect('/events/manage');
+        $this->redirect('/backoffice/events');
     }
 
     public function delete(string $id): void
@@ -156,7 +156,7 @@ class EventController extends Controller
         
         $event = $eventModel->find($eventId);
         if (!$event) {
-            $this->redirect('/events/manage');
+            $this->redirect('/backoffice/events');
         }
         
         // เช็คสิทธิ์
@@ -170,11 +170,11 @@ class EventController extends Controller
         }
         
         if (!$canDelete) {
-            $this->redirect('/events/manage');
+            $this->redirect('/backoffice/events');
         }
         
         $eventModel->delete($eventId);
         $this->flash('ลบกิจกรรมออกจากปฏิทินเรียบร้อยแล้ว');
-        $this->redirect('/events/manage');
+        $this->redirect('/backoffice/events');
     }
 }

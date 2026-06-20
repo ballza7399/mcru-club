@@ -66,7 +66,7 @@ class GalleryController extends Controller
         
         if ($title === '' || !isset($_FILES['photo']) || $_FILES['photo']['error'] !== UPLOAD_ERR_OK) {
             $this->flash('กรุณากรอกชื่อกิจกรรมและอัปโหลดภาพให้ถูกต้อง');
-            $this->redirect('/gallery/manage');
+            $this->redirect('/backoffice/gallery');
         }
         
         // ตรวจสอบสิทธิ์ประธานชมรม
@@ -85,7 +85,7 @@ class GalleryController extends Controller
         $imagePath = Image::uploadResized($_FILES['photo'], 'gallery');
         if ($imagePath === '') {
             $this->flash('เกิดข้อผิดพลาดในการอัปโหลดรูปภาพ (ขนาดใหญ่เกินไป หรือไม่ใช่รูปภาพ)');
-            $this->redirect('/gallery/manage');
+            $this->redirect('/backoffice/gallery');
         }
         
         $galModel->create([
@@ -95,7 +95,7 @@ class GalleryController extends Controller
         ]);
         
         $this->flash('อัปโหลดรูปภาพกิจกรรมเข้าคลังแกลเลอรีสำเร็จแล้ว');
-        $this->redirect('/gallery/manage');
+        $this->redirect('/backoffice/gallery');
     }
 
     public function delete(string $id): void
@@ -108,7 +108,7 @@ class GalleryController extends Controller
         
         $photo = $galModel->find($galId);
         if (!$photo) {
-            $this->redirect('/gallery/manage');
+            $this->redirect('/backoffice/gallery');
         }
         
         // เช็คสิทธิ์
@@ -122,7 +122,7 @@ class GalleryController extends Controller
         }
         
         if (!$canDelete) {
-            $this->redirect('/gallery/manage');
+            $this->redirect('/backoffice/gallery');
         }
         
         // ลบไฟล์รูปภาพออกจากโฟลเดอร์ uploads/
@@ -132,6 +132,6 @@ class GalleryController extends Controller
         
         $galModel->delete($galId);
         $this->flash('ลบรูปภาพกิจกรรมออกจากแกลเลอรีสำเร็จแล้ว');
-        $this->redirect('/gallery/manage');
+        $this->redirect('/backoffice/gallery');
     }
 }

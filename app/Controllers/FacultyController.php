@@ -53,7 +53,7 @@ class FacultyController extends Controller
         $name = trim($_POST['name'] ?? '');
         if ($name === '') {
             $this->flash('กรุณากรอกชื่อคณะ');
-            $this->redirect('/faculties/manage');
+            $this->redirect('/backoffice/faculties');
         }
         
         $ok = (new Faculty)->create($name);
@@ -62,7 +62,7 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาด หรือมีชื่อคณะนี้ในระบบแล้ว');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 
     public function update(): void
@@ -73,7 +73,7 @@ class FacultyController extends Controller
         $name = trim($_POST['name'] ?? '');
         if ($name === '') {
             $this->flash('กรุณากรอกชื่อคณะ');
-            $this->redirect('/faculties/manage');
+            $this->redirect('/backoffice/faculties');
         }
         
         $ok = (new Faculty)->update($id, $name);
@@ -82,7 +82,7 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาดในการแก้ไขข้อมูล');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 
     public function delete(string $id): void
@@ -96,7 +96,7 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาดในการลบคณะ');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 
     public function storeMajor(): void
@@ -108,7 +108,7 @@ class FacultyController extends Controller
         
         if ($facultyId === 0 || $name === '') {
             $this->flash('กรุณากรอกข้อมูลให้ครบถ้วน');
-            $this->redirect('/faculties/manage');
+            $this->redirect('/backoffice/faculties');
         }
         
         $ok = (new Major)->create($facultyId, $name);
@@ -117,7 +117,7 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาด หรือมีชื่อสาขาวิชานี้ในคณะแล้ว');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 
     public function updateMajor(): void
@@ -129,7 +129,7 @@ class FacultyController extends Controller
         
         if ($name === '') {
             $this->flash('กรุณากรอกชื่อสาขาวิชา');
-            $this->redirect('/faculties/manage');
+            $this->redirect('/backoffice/faculties');
         }
         
         $ok = (new Major)->update($id, $name);
@@ -138,7 +138,7 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาดในการแก้ไขสาขาวิชา');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 
     public function deleteMajor(string $id): void
@@ -152,6 +152,6 @@ class FacultyController extends Controller
         } else {
             $this->flash('เกิดข้อผิดพลาดในการลบสาขาวิชา');
         }
-        $this->redirect('/faculties/manage');
+        $this->redirect('/backoffice/faculties');
     }
 }

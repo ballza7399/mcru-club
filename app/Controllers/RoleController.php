@@ -76,7 +76,7 @@ class RoleController extends Controller
         
         if ($roleName === '') {
             $this->flash('กรุณากรอกชื่อตำแหน่ง');
-            $this->redirect('/roles/manage?club_id=' . $clubId);
+            $this->redirect('/backoffice/roles?club_id=' . $clubId);
         }
         
         // เช็คสิทธิ์การจัดการชมรม
@@ -90,7 +90,7 @@ class RoleController extends Controller
         
         $roleModel->createClubRole($clubId, $roleKey, $roleName);
         $this->flash('เพิ่มตำแหน่งใหม่สำเร็จแล้ว');
-        $this->redirect('/roles/manage?club_id=' . $clubId);
+        $this->redirect('/backoffice/roles?club_id=' . $clubId);
     }
 
     public function delete(string $id): void
@@ -104,7 +104,7 @@ class RoleController extends Controller
         $role = $roleModel->find($roleId);
         if (!$role || $role['scope'] !== 'club' || $role['club_id'] === null) {
             $this->flash('ไม่สามารถลบตำแหน่งของระบบหลักได้');
-            $this->redirect('/roles/manage');
+            $this->redirect('/backoffice/roles');
         }
         
         $clubId = (int)$role['club_id'];
@@ -117,7 +117,7 @@ class RoleController extends Controller
         
         $roleModel->deleteClubRole($roleId, $clubId);
         $this->flash('ลบตำแหน่งชมรมเรียบร้อยแล้ว');
-        $this->redirect('/roles/manage?club_id=' . $clubId);
+        $this->redirect('/backoffice/roles?club_id=' . $clubId);
     }
 
     public function syncPermissions(): void
@@ -152,7 +152,7 @@ class RoleController extends Controller
         $roleModel->syncRolePermissions($roleId, $permissionIds);
         $this->flash('บันทึกการตั้งค่าสิทธิ์เรียบร้อยแล้ว');
         
-        $redirectUrl = '/roles/manage';
+        $redirectUrl = '/backoffice/roles';
         if ($clubId > 0) {
             $redirectUrl .= '?club_id=' . $clubId;
         }

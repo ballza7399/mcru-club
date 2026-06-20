@@ -20,7 +20,7 @@ $userRole = $_SESSION['role'];
     <div class="d-flex align-items-center gap-2 flex-wrap">
         <?php if ($userRole === 'admin' && !empty($allClubsList)): ?>
             <label class="form-label m-0 fw-bold text-nowrap">เลือกชมรม:</label>
-            <select class="form-select shadow-sm" onchange="window.location.href='<?= url('roles/manage?club_id=') ?>' + this.value">
+            <select class="form-select shadow-sm" onchange="window.location.href='<?= url('backoffice/roles?club_id=') ?>' + this.value">
                 <option value="0" <?= $currentClubId === 0 ? 'selected' : '' ?>>-- ระบบหลัก (System Roles) --</option>
                 <?php foreach ($allClubsList as $c): ?>
                     <option value="<?= (int) $c['id'] ?>" <?= $currentClubId === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['club_name']) ?></option>
@@ -60,7 +60,7 @@ $userRole = $_SESSION['role'];
                             </span>
                         </div>
                         <?php if (!$isSystemRole): ?>
-                            <a href="<?= url('roles/delete/' . (int) $r['id']) ?>" 
+                            <a href="<?= url('backoffice/roles/delete/' . (int) $r['id']) ?>" 
                                class="text-danger" 
                                title="ลบตำแหน่งนี้" 
                                onclick="return confirm('คุณต้องการลบตำแหน่งนี้หรือไม่? สมาชิกที่สวมตำแหน่งนี้จะกลับไปเป็นสมาชิกทั่วไป')">
@@ -71,7 +71,7 @@ $userRole = $_SESSION['role'];
                     
                     <hr class="my-2 opacity-10">
                     
-                    <form method="POST" action="<?= url('roles/permissions/sync') ?>" class="flex-grow-1 d-flex flex-column">
+                    <form method="POST" action="<?= url('backoffice/roles/permissions/sync') ?>" class="flex-grow-1 d-flex flex-column">
                         <input type="hidden" name="role_id" value="<?= $r['id'] ?>">
                         <input type="hidden" name="club_id" value="<?= $currentClubId ?>">
                         
@@ -121,7 +121,7 @@ $userRole = $_SESSION['role'];
                 <h5 class="modal-title fw-bold text-white">เพิ่มตำแหน่งชมรมใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('roles/store') ?>">
+            <form method="POST" action="<?= url('backoffice/roles/store') ?>">
                 <div class="modal-body">
                     <input type="hidden" name="club_id" value="<?= $currentClubId ?>">
                     

@@ -25,8 +25,8 @@
                     </td>
                     <td>
                         <?php if ($row['status'] === 'pending'): ?>
-                            <a href="<?= url('applications/approve/' . (int) $row['id']) ?>" class="btn btn-sm btn-success px-3">อนุมัติ</a>
-                            <a href="<?= url('applications/reject/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger px-3">ปฏิเสธ</a>
+                            <a href="<?= url('backoffice/applications/approve/' . (int) $row['id']) ?>" class="btn btn-sm btn-success px-3">อนุมัติ</a>
+                            <a href="<?= url('backoffice/applications/reject/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger px-3">ปฏิเสธ</a>
                         <?php else: ?>
                             <span class="text-muted small">- ดำเนินการแล้ว -</span>
                         <?php endif; ?>
@@ -39,5 +39,5 @@
             </tbody>
         </table>
     </div>
-    <?= renderPagination($currentPage, $totalPages, 'applications/manage', $limit) ?>
+    <?= renderPagination($currentPage, $totalPages, 'backoffice/applications', $limit) ?>
 </div>

@@ -70,7 +70,7 @@ class AnnouncementController extends Controller
         
         if ($title === '' || $content === '') {
             $this->flash('กรุณากรอกข้อมูลให้ครบถ้วน');
-            $this->redirect('/announcements/manage');
+            $this->redirect('/backoffice/announcements');
         }
         
         // ตรวจสอบสิทธิ์
@@ -99,7 +99,7 @@ class AnnouncementController extends Controller
         ]);
         
         $this->flash('เพิ่มข่าวประชาสัมพันธ์สำเร็จแล้ว');
-        $this->redirect('/announcements/manage');
+        $this->redirect('/backoffice/announcements');
     }
 
     public function update(): void
@@ -115,7 +115,7 @@ class AnnouncementController extends Controller
         
         $ann = $annModel->find($id);
         if (!$ann) {
-            $this->redirect('/announcements/manage');
+            $this->redirect('/backoffice/announcements');
         }
         
         // เช็คสิทธิ์
@@ -129,7 +129,7 @@ class AnnouncementController extends Controller
         }
         
         if (!$canEdit) {
-            $this->redirect('/announcements/manage');
+            $this->redirect('/backoffice/announcements');
         }
         
         $thumbnail = null;
@@ -144,7 +144,7 @@ class AnnouncementController extends Controller
         ]);
         
         $this->flash('แก้ไขข่าวประชาสัมพันธ์สำเร็จแล้ว');
-        $this->redirect('/announcements/manage');
+        $this->redirect('/backoffice/announcements');
     }
 
     public function detail(string $id): void
@@ -173,7 +173,7 @@ class AnnouncementController extends Controller
         
         $ann = $annModel->find($annId);
         if (!$ann) {
-            $this->redirect('/announcements/manage');
+            $this->redirect('/backoffice/announcements');
         }
         
         // เช็คสิทธิ์
@@ -187,11 +187,11 @@ class AnnouncementController extends Controller
         }
         
         if (!$canDelete) {
-            $this->redirect('/announcements/manage');
+            $this->redirect('/backoffice/announcements');
         }
         
         $annModel->delete($annId);
         $this->flash('ลบข่าวประชาสัมพันธ์เรียบร้อยแล้ว');
-        $this->redirect('/announcements/manage');
+        $this->redirect('/backoffice/announcements');
     }
 }

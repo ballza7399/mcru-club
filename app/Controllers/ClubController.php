@@ -78,7 +78,7 @@ class ClubController extends Controller
             'qr_code'     => $qrPath,
         ]);
 
-        $this->redirect('/clubs/manage');
+        $this->redirect('/backoffice/clubs');
     }
 
     public function update(): void
@@ -92,7 +92,7 @@ class ClubController extends Controller
 
         $canEdit = ($role === 'admin') || $clubModel->isPresident($clubId, $userId);
         if (!$canEdit) {
-            $this->redirect('/clubs/manage');
+            $this->redirect('/backoffice/clubs');
         }
 
         $fields = [
@@ -121,14 +121,14 @@ class ClubController extends Controller
         }
 
         $clubModel->update($clubId, $fields);
-        $this->redirect('/clubs/manage');
+        $this->redirect('/backoffice/clubs');
     }
 
     public function delete(string $id): void
     {
         $this->requireRole('admin');
         (new Club)->delete((int) $id);
-        $this->redirect('/clubs/manage');
+        $this->redirect('/backoffice/clubs');
     }
 
     public function members(): void
@@ -208,7 +208,7 @@ class ClubController extends Controller
         
         $roleModel->assignMemberRole($clubId, $userId, $roleId);
         $this->flash('อัปเดตบทบาท/ตำแหน่งสมาชิกสำเร็จแล้ว');
-        $this->redirect('/clubs/members?club_id=' . $clubId);
+        $this->redirect('/backoffice/clubs/members?club_id=' . $clubId);
     }
 
     public function removeMember(string $clubId, string $userId): void
@@ -228,7 +228,7 @@ class ClubController extends Controller
         
         $roleModel->removeClubMember($cId, $uId);
         $this->flash('คัดสมาชิกออกจากชมรมเรียบร้อยแล้ว');
-        $this->redirect('/clubs/members?club_id=' . $cId);
+        $this->redirect('/backoffice/clubs/members?club_id=' . $cId);
     }
 
     // --- private helpers ---

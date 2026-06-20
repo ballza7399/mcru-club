@@ -46,14 +46,14 @@ class UserController extends Controller
         // ป้องกันสิทธิ์แอดมินสูงสุดล็อกตัวเองออกจากระบบ
         if ($userId === (int)$_SESSION['user_id'] && $roleId !== 1) {
             $this->flash('ผิดพลาด: คุณไม่สามารถปลดสิทธิ์ผู้ดูแลระบบหลักของตัวคุณเองได้');
-            $this->redirect('/users/manage');
+            $this->redirect('/backoffice/users');
         }
 
         $userModel = new User;
         $userModel->setRoleId($userId, $roleId);
 
         $this->flash('อัปเดตบทบาทผู้ใช้งานสำเร็จแล้ว');
-        $this->redirect('/users/manage');
+        $this->redirect('/backoffice/users');
     }
 
     /** เปิด/ปิดการใช้งาน บัญชีผู้ใช้งาน */
@@ -67,7 +67,7 @@ class UserController extends Controller
         // ป้องกันแอดมินระงับบัญชีของตัวเอง
         if ($userId === (int)$_SESSION['user_id']) {
             $this->flash('ผิดพลาด: คุณไม่สามารถระงับการใช้งานบัญชีของผู้ดูแลระบบของคุณเองได้');
-            $this->redirect('/users/manage');
+            $this->redirect('/backoffice/users');
         }
 
         $userModel = new User;
@@ -75,7 +75,7 @@ class UserController extends Controller
 
         $statusText = $status === 'active' ? 'เปิดใช้งานบัญชี' : 'ระงับบัญชีผู้ใช้งาน';
         $this->flash($statusText . ' เรียบร้อยแล้ว');
-        $this->redirect('/users/manage');
+        $this->redirect('/backoffice/users');
     }
 
     /** เปลี่ยนหรือตั้งรหัสผ่านใหม่ (Reset Password) */
@@ -88,13 +88,13 @@ class UserController extends Controller
 
         if (trim($newPassword) === '') {
             $this->flash('ผิดพลาด: กรุณากรอกรหัสผ่านใหม่');
-            $this->redirect('/users/manage');
+            $this->redirect('/backoffice/users');
         }
 
         $userModel = new User;
         $userModel->resetPassword($userId, $newPassword);
 
         $this->flash('รีเซ็ตรหัสผ่านใหม่ให้กับผู้ใช้งานสำเร็จเสร็จสิ้น');
-        $this->redirect('/users/manage');
+        $this->redirect('/backoffice/users');
     }
 }

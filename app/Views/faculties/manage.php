@@ -37,7 +37,7 @@
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editFacultyModal<?= $fac['id'] ?>">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <a href="<?= url('faculties/delete/' . (int) $fac['id']) ?>" 
+                                        <a href="<?= url('backoffice/faculties/delete/' . (int) $fac['id']) ?>" 
                                            class="btn btn-sm btn-outline-danger" 
                                            onclick="return confirm('ยืนยันที่จะลบคณะนี้? การลบคณะจะลบสาขาวิชาในสังกัดทั้งหมดด้วย!')">
                                             <i class="fa-solid fa-trash"></i>
@@ -48,7 +48,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?= renderPagination($currentPageFac, $totalPagesFac, 'faculties/manage', $limitFac, 'page_fac', 'limit_fac') ?>
+                <?= renderPagination($currentPageFac, $totalPagesFac, 'backoffice/faculties', $limitFac, 'page_fac', 'limit_fac') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -86,7 +86,7 @@
                                         <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editMajorModal<?= $major['id'] ?>">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
-                                        <a href="<?= url('majors/delete/' . (int) $major['id']) ?>" 
+                                        <a href="<?= url('backoffice/majors/delete/' . (int) $major['id']) ?>" 
                                            class="btn btn-sm btn-outline-danger" 
                                            onclick="return confirm('ยืนยันที่จะลบสาขาวิชานี้ออกจากคณะ?')">
                                             <i class="fa-solid fa-trash"></i>
@@ -97,7 +97,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?= renderPagination($currentPageMaj, $totalPagesMaj, 'faculties/manage', $limitMaj, 'page_maj', 'limit_maj') ?>
+                <?= renderPagination($currentPageMaj, $totalPagesMaj, 'backoffice/faculties', $limitMaj, 'page_maj', 'limit_maj') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <h5 class="modal-title fw-bold text-white">เพิ่มคณะใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('faculties/store') ?>">
+            <form method="POST" action="<?= url('backoffice/faculties/store') ?>">
                 <div class="modal-body text-start">
                     <div class="mb-3">
                         <label class="form-label fw-bold">ชื่อคณะ</label>
@@ -139,7 +139,7 @@
                 <h5 class="modal-title fw-bold text-white">เพิ่มสาขาวิชาใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('majors/store') ?>">
+            <form method="POST" action="<?= url('backoffice/majors/store') ?>">
                 <div class="modal-body text-start">
                     <div class="mb-3">
                         <label class="form-label fw-bold">เลือกคณะที่สังกัด</label>
@@ -173,7 +173,7 @@
                     <h5 class="modal-title text-white">แก้ไขข้อมูลคณะ</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="<?= url('faculties/update') ?>">
+                <form method="POST" action="<?= url('backoffice/faculties/update') ?>">
                     <div class="modal-body text-start">
                         <input type="hidden" name="id" value="<?= $fac['id'] ?>">
                         <div class="mb-3">
@@ -200,7 +200,7 @@
                     <h5 class="modal-title text-white">แก้ไขข้อมูลสาขาวิชา</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="<?= url('majors/update') ?>">
+                <form method="POST" action="<?= url('backoffice/majors/update') ?>">
                     <div class="modal-body text-start">
                         <input type="hidden" name="id" value="<?= $major['id'] ?>">
                         <div class="mb-3">

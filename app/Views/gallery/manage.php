@@ -32,7 +32,7 @@
                                 <span class="badge <?= $photo['club_id'] ? 'bg-info' : 'bg-primary' ?> text-white" style="font-size: 0.7rem;">
                                     <?= $photo['club_id'] ? e($photo['club_name']) : 'กิจกรรมสถาบัน' ?>
                                 </span>
-                                <a href="<?= url('gallery/delete/' . (int) $photo['id']) ?>" 
+                                <a href="<?= url('backoffice/gallery/delete/' . (int) $photo['id']) ?>" 
                                    class="text-danger small" 
                                    onclick="return confirm('คุณต้องการลบรูปภาพนี้ออกจากระบบหรือไม่?')">
                                     <i class="fa-regular fa-trash-can fs-6"></i> ลบรูป
@@ -43,7 +43,7 @@
                 </div>
             <?php endforeach; ?>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'gallery/manage', $limit) ?>
+        <?= renderPagination($currentPage, $totalPages, 'backoffice/gallery', $limit) ?>
     <?php endif; ?>
 </div>
 
@@ -55,7 +55,7 @@
                 <h5 class="modal-title fw-bold text-white">อัปโหลดภาพกิจกรรมใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('gallery/store') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= url('backoffice/gallery/store') ?>" enctype="multipart/form-data">
                 <div class="modal-body text-start">
                     <?php if ($role === 'admin'): ?>
                         <div class="mb-3">

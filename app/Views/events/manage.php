@@ -55,7 +55,7 @@
                                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editEventModal<?= $event['id'] ?>">
                                     <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
                                 </button>
-                                <a href="<?= url('events/delete/' . (int) $event['id']) ?>" 
+                                <a href="<?= url('backoffice/events/delete/' . (int) $event['id']) ?>" 
                                    class="btn btn-sm btn-outline-danger" 
                                    onclick="return confirm('ยืนยันที่จะลบกิจกรรมนี้ออกจากปฏิทิน?')">
                                     <i class="fa-solid fa-trash me-1"></i>ลบ
@@ -66,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'events/manage', $limit) ?>
+        <?= renderPagination($currentPage, $totalPages, 'backoffice/events', $limit) ?>
     <?php endif; ?>
 </div>
 
@@ -82,7 +82,7 @@
                 <h5 class="modal-title fw-bold text-white">เพิ่มกิจกรรมใหม่ในปฏิทิน</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('events/store') ?>">
+            <form method="POST" action="<?= url('backoffice/events/store') ?>">
                 <div class="modal-body text-start">
                     <?php if ($role === 'admin'): ?>
                         <div class="mb-3">
@@ -147,7 +147,7 @@
                     <h5 class="modal-title text-white">แก้ไขข้อมูลกิจกรรม</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="<?= url('events/update') ?>">
+                <form method="POST" action="<?= url('backoffice/events/update') ?>">
                     <div class="modal-body text-start">
                         <input type="hidden" name="id" value="<?= $event['id'] ?>">
                         

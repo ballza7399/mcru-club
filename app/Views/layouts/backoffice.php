@@ -8,23 +8,23 @@
 // ตรวจสอบและกำหนดหน้าปัจจุบันจาก Request URI เพื่อนำไปใส่คลาส active ใน Sidebar
 $uri = $_SERVER['REQUEST_URI'] ?? '';
 $activePage = 'dashboard';
-if (str_contains($uri, 'clubs/manage')) {
-    $activePage = 'clubs';
-} elseif (str_contains($uri, 'applications/manage')) {
-    $activePage = 'applications';
-} elseif (str_contains($uri, 'clubs/members')) {
+if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'members';
-} elseif (str_contains($uri, 'roles/manage')) {
+} elseif (str_contains($uri, 'backoffice/clubs')) {
+    $activePage = 'clubs';
+} elseif (str_contains($uri, 'backoffice/applications')) {
+    $activePage = 'applications';
+} elseif (str_contains($uri, 'backoffice/roles')) {
     $activePage = 'roles';
-} elseif (str_contains($uri, 'users/manage')) {
+} elseif (str_contains($uri, 'backoffice/users')) {
     $activePage = 'users';
-} elseif (str_contains($uri, 'faculties/manage')) {
+} elseif (str_contains($uri, 'backoffice/faculties')) {
     $activePage = 'faculties';
-} elseif (str_contains($uri, 'announcements/manage')) {
+} elseif (str_contains($uri, 'backoffice/announcements')) {
     $activePage = 'announcements';
-} elseif (str_contains($uri, 'events/manage')) {
+} elseif (str_contains($uri, 'backoffice/events')) {
     $activePage = 'events';
-} elseif (str_contains($uri, 'gallery/manage')) {
+} elseif (str_contains($uri, 'backoffice/gallery')) {
     $activePage = 'gallery';
 }
 ?>
@@ -54,7 +54,7 @@ window.addEventListener('error', function(e) {
 </head>
 <body>
 <?php require BASE_PATH . '/app/Views/layouts/navbar.php'; ?>
-
+ 
 <div class="container-fluid pb-5 mt-4 px-md-4">
     <div class="row g-4">
         <!-- Sidebar ด้านซ้าย -->
@@ -67,37 +67,37 @@ window.addEventListener('error', function(e) {
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="<?= url('backoffice') ?>">
                         <i class="fa-solid fa-chart-pie me-2"></i>ภาพรวมระบบ (Dashboard)
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('clubs/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
                         <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('applications/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('backoffice/applications') ?>">
                         <i class="fa-solid fa-user-check me-2"></i>จัดการคำขอสมัครสมาชิก
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('clubs/members') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
                         <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('roles/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
                         <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
                     </a>
                     
                     <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('users/manage') ?>">
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
                             <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
                         </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('faculties/manage') ?>">
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
                             <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
                         </a>
                     <?php endif; ?>
                     
                     <div class="my-2 border-top"></div>
                     
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('announcements/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
                         <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('events/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
                         <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('gallery/manage') ?>">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
                         <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
                     </a>
                 </div>

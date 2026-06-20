@@ -55,7 +55,7 @@
                                 <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editNewsModal<?= $news['id'] ?>">
                                     <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
                                 </button>
-                                <a href="<?= url('announcements/delete/' . (int) $news['id']) ?>" 
+                                <a href="<?= url('backoffice/announcements/delete/' . (int) $news['id']) ?>" 
                                    class="btn btn-sm btn-outline-danger" 
                                    onclick="return confirm('ยืนยันที่จะลบข่าวประชาสัมพันธ์นี้?')">
                                     <i class="fa-solid fa-trash me-1"></i>ลบ
@@ -66,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'announcements/manage', $limit) ?>
+        <?= renderPagination($currentPage, $totalPages, 'backoffice/announcements', $limit) ?>
     <?php endif; ?>
 </div>
 
@@ -82,7 +82,7 @@
                 <h5 class="modal-title fw-bold text-white">เขียนข่าวประชาสัมพันธ์ใหม่</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="<?= url('announcements/store') ?>" enctype="multipart/form-data">
+            <form method="POST" action="<?= url('backoffice/announcements/store') ?>" enctype="multipart/form-data">
                 <div class="modal-body text-start">
                     <?php if ($role === 'admin'): ?>
                         <div class="mb-3">
@@ -131,7 +131,7 @@
                     <h5 class="modal-title text-white">แก้ไขข่าวประชาสัมพันธ์</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <form method="POST" action="<?= url('announcements/update') ?>" enctype="multipart/form-data">
+                <form method="POST" action="<?= url('backoffice/announcements/update') ?>" enctype="multipart/form-data">
                     <div class="modal-body text-start">
                         <input type="hidden" name="id" value="<?= $news['id'] ?>">
                         
