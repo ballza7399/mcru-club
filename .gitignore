@@ -1,5 +1,7 @@
 .claude
 .agents
+.codex
+.impeccable
 config/config.php
 uploads/
 deploy.ps1
