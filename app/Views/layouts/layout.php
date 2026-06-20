@@ -25,7 +25,37 @@ window.addEventListener('error', function(e) {
 <body>
 <?php require BASE_PATH . '/app/Views/layouts/navbar.php'; ?>
 <div class="container pb-5 mt-4">
-<?php if ($flash): ?><div class="alert alert-success"><?= e($flash) ?></div><?php endif; ?>
+<?php if ($flash): ?>
+    <div id="flash-message-data" data-message="<?= e($flash) ?>" style="display: none;"></div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const flashDataEl = document.getElementById('flash-message-data');
+        if (flashDataEl) {
+            const msg = flashDataEl.getAttribute('data-message');
+            
+            let icon = 'success';
+            let title = 'ดำเนินการสำเร็จ';
+            
+            const errorKeywords = ['กรุณา', 'ข้อผิดพลาด', 'ผิดพลาด', 'ไม่ได้', 'ไม่ผ่าน', 'ขออภัย', 'ล้มเหลว', 'เกิดข้อผิดพลาด'];
+            if (errorKeywords.some(kw => msg.includes(kw))) {
+                icon = 'error';
+                title = 'เกิดข้อผิดพลาด';
+            } else if (msg.includes('ส่งข้อเสนอ') || msg.includes('เสนอขอ') || msg.includes('ยินดี')) {
+                icon = 'success';
+                title = 'ส่งข้อมูลสำเร็จ!';
+            }
+            
+            Swal.fire({
+                title: title,
+                text: msg,
+                icon: icon,
+                confirmButtonColor: '#0b2c5c',
+                confirmButtonText: 'ตกลง'
+            });
+        }
+    });
+    </script>
+<?php endif; ?>
 <?= $content ?>
 </div>
 </body>
