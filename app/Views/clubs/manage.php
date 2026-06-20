@@ -45,15 +45,15 @@
                     </td>
                     <td>
                         <div class="d-flex gap-1 flex-wrap">
-                            <?php if ($row['status'] === 'pending' && $role === 'admin'): ?>
+                             <?php if ($row['status'] === 'pending' && $role === 'admin'): ?>
                                 <a href="<?= url('backoffice/clubs/approve/' . (int) $row['id']) ?>" 
                                    class="btn btn-sm btn-success text-white"
-                                   data-confirm="ยืนยันการอนุมัติจัดตั้งชมรมนี้? เมื่ออนุมัติแล้วผู้เสนอขอจะได้รับการอัปเดตบทบาทเป็นประธานชมรมทันที">
+                                   data-confirm="ยืนยันการอนุมัติเพิ่มข้อมูลชมรมเข้าระบบนี้? เมื่ออนุมัติแล้วผู้เสนอขอจะได้รับการอัปเดตบทบาทเป็นประธานชมรมทันที">
                                     <i class="fa-solid fa-circle-check me-1"></i>อนุมัติ
                                 </a>
                                 <a href="<?= url('backoffice/clubs/reject/' . (int) $row['id']) ?>" 
                                    class="btn btn-sm btn-danger text-white"
-                                   data-confirm="ยืนยันการปฏิเสธคำขอจัดตั้งชมรมนี้?">
+                                   data-confirm="ยืนยันการปฏิเสธคำขอเพิ่มข้อมูลชมรมเข้าระบบนี้?">
                                     <i class="fa-solid fa-circle-xmark me-1"></i>ปฏิเสธ
                                 </a>
                             <?php endif; ?>

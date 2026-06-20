@@ -7,12 +7,12 @@
     <div class="col-md-8">
         <div class="card-custom p-4 border shadow-sm" style="background: var(--surface); border-color: var(--border);">
             <div class="text-center mb-4 border-bottom pb-3">
-                <h3 class="text-primary-custom fw-bold"><i class="fa-solid fa-file-signature text-warning me-2"></i>ยื่นขอเสนอจัดตั้งชมรมใหม่</h3>
-                <p class="text-muted m-0">กรอกข้อมูลพื้นฐานของชมรมเพื่อส่งให้ผู้ดูแลระบบตรวจสอบและอนุมัติจัดตั้ง</p>
+                <h3 class="text-primary-custom fw-bold"><i class="fa-solid fa-file-signature text-warning me-2"></i>ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ</h3>
+                <p class="text-muted m-0">กรอกข้อมูลพื้นฐานของชมรมเพื่อส่งให้ผู้ดูแลระบบตรวจสอบและอนุมัติเพิ่มข้อมูลเข้าสู่ระบบ</p>
             </div>
 
             <div class="alert alert-warning mb-4 small text-start">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ได้รับจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการและขั้นตอนการจัดตั้งชมรมอย่างเป็นทางการจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
+                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ใช่การจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการจัดตั้งชมรมอย่างเป็นทางการจริงจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
             </div>
             
             <?php if ($error): ?>
@@ -52,7 +52,7 @@
                 
                 <div class="border-top pt-3 mt-4 text-end">
                     <a href="<?= url('clubs') ?>" class="btn btn-outline-secondary me-2 rounded-pill px-4">ยกเลิก</a>
-                    <button type="submit" class="btn-primary-custom rounded-pill px-4 py-2 border-0"><i class="fa-solid fa-paper-plane me-1"></i>ส่งข้อเสนอจัดตั้งชมรม</button>
+                    <button type="submit" class="btn-primary-custom rounded-pill px-4 py-2 border-0"><i class="fa-solid fa-paper-plane me-1"></i>ส่งข้อเสนอขอเพิ่มข้อมูลชมรม</button>
                 </div>
             </form>
         </div>

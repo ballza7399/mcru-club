@@ -56,14 +56,14 @@ class ClubController extends Controller
         if ($existingClub) {
             $this->view('clubs/register_status', [
                 'club' => $existingClub,
-                'pageTitle' => 'สถานะการยื่นขอจัดตั้งชมรม'
+                'pageTitle' => 'สถานะการยื่นเสนอขอเพิ่มข้อมูลชมรม'
             ]);
             return;
         }
         
         $this->view('clubs/register', [
             'error' => null,
-            'pageTitle' => 'ยื่นขอจัดตั้งชมรมใหม่'
+            'pageTitle' => 'ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ'
         ]);
     }
 
@@ -103,7 +103,7 @@ class ClubController extends Controller
         if ($error) {
             $this->view('clubs/register', [
                 'error' => $error,
-                'pageTitle' => 'ยื่นขอจัดตั้งชมรมใหม่'
+                'pageTitle' => 'ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ'
             ]);
             return;
         }
@@ -124,7 +124,7 @@ class ClubController extends Controller
             $_SESSION['user_id']
         ]);
         
-        $this->flash('ส่งข้อเสนอจัดตั้งชมรมเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบและอนุมัติ');
+        $this->flash('ส่งข้อเสนอขอเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบและอนุมัติ');
         $this->redirect('/clubs');
     }
 
@@ -152,7 +152,7 @@ class ClubController extends Controller
                     $stmtAddMember->execute([$clubId, $club['president_id']]);
                 }
             }
-            $this->flash('อนุมัติการจัดตั้งชมรมเรียบร้อยแล้ว');
+            $this->flash('อนุมัติการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
         }
         $this->redirect('/backoffice/clubs');
     }
@@ -166,7 +166,7 @@ class ClubController extends Controller
         $club = $clubModel->findWithDetail($clubId);
         if ($club) {
             $clubModel->update($clubId, ['status' => 'rejected']);
-            $this->flash('ปฏิเสธการจัดตั้งชมรมเรียบร้อยแล้ว');
+            $this->flash('ปฏิเสธการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
         }
         $this->redirect('/backoffice/clubs');
     }

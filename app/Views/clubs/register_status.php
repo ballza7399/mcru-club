@@ -13,15 +13,15 @@ if ($club['status'] === 'pending') {
     <div class="col-md-8">
         <div class="card-custom p-5 border shadow-sm text-center" style="background: var(--surface); border-color: var(--border);">
             
-            <h3 class="text-primary-custom fw-bold mb-4"><i class="fa-solid fa-file-waveform text-warning me-2"></i>สถานะเสนอจัดตั้งชมรม</h3>
+            <h3 class="text-primary-custom fw-bold mb-4"><i class="fa-solid fa-file-waveform text-warning me-2"></i>สถานะการยื่นเสนอขอเพิ่มข้อมูลชมรม</h3>
             
             <div class="mb-4 bg-light p-3 rounded text-start" style="border-left: 4px solid var(--accent-gold);">
                 <h5 class="fw-bold text-dark m-0"><?= e($club['club_name']) ?></h5>
-                <p class="text-muted small m-0 mt-1">ผู้เสนอจัดตั้ง: <?= e($_SESSION['name']) ?></p>
+                <p class="text-muted small m-0 mt-1">ผู้ยื่นเสนอข้อมูล: <?= e($_SESSION['name']) ?></p>
             </div>
 
             <div class="alert alert-warning mb-4 small text-start">
-                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ได้รับจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการและขั้นตอนการจัดตั้งชมรมอย่างเป็นทางการจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
+                <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>หมายเหตุสำคัญ:</strong> ระบบนี้เป็นเพียงช่องทางสำหรับเสนอขอเพิ่มข้อมูลชมรมเข้าสู่ระบบออนไลน์ของมหาวิทยาลัยเท่านั้น ไม่ใช่การจัดตั้งชมรมอย่างเป็นทางการโดยตรง โดยกระบวนการจัดตั้งชมรมอย่างเป็นทางการจริงจะดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามระเบียบของมหาวิทยาลัย
             </div>
 
             <!-- Stepper Container -->
@@ -40,7 +40,7 @@ if ($club['status'] === 'pending') {
                     </div>
                     <div class="stepper-item">
                         <div class="step-counter"><i class="fa-solid fa-circle"></i></div>
-                        <div class="step-name">อนุมัติสำเร็จ</div>
+                        <div class="step-name">อนุมัติเพิ่มข้อมูล</div>
                     </div>
                 <?php elseif ($club['status'] === 'approved'): ?>
                     <div class="stepper-item completed">
@@ -49,7 +49,7 @@ if ($club['status'] === 'pending') {
                     </div>
                     <div class="stepper-item completed">
                         <div class="step-counter"><i class="fa-solid fa-circle-check"></i></div>
-                        <div class="step-name">อนุมัติจัดตั้งสำเร็จ</div>
+                        <div class="step-name">อนุมัติเพิ่มข้อมูลสำเร็จ</div>
                     </div>
                 <?php else: // rejected ?>
                     <div class="stepper-item completed">
@@ -58,7 +58,7 @@ if ($club['status'] === 'pending') {
                     </div>
                     <div class="stepper-item rejected">
                         <div class="step-counter"><i class="fa-solid fa-circle-xmark"></i></div>
-                        <div class="step-name">ปฏิเสธการจัดตั้ง</div>
+                        <div class="step-name">ปฏิเสธข้อเสนอ</div>
                     </div>
                 <?php endif; ?>
             </div>
@@ -77,8 +77,8 @@ if ($club['status'] === 'pending') {
                     <div class="alert alert-success d-flex align-items-center mb-3">
                         <i class="fa-solid fa-circle-check fs-4 me-3 text-success"></i>
                         <div>
-                            <strong class="d-block mb-1">อนุมัติจัดตั้งสำเร็จแล้ว!</strong>
-                            <span class="text-muted small">ยินดีด้วย! ชมรมของคุณได้รับการอนุมัติ และบัญชีผู้ใช้นี้ได้รับสิทธิ์การเป็นประธานชมรมเป็นที่เรียบร้อย</span>
+                            <strong class="d-block mb-1">อนุมัติเพิ่มข้อมูลชมรมเข้าระบบสำเร็จแล้ว!</strong>
+                            <span class="text-muted small">ยินดีด้วย! ข้อมูลชมรมของคุณได้รับการบันทึกและอนุมัติเข้าระบบแล้ว และบัญชีผู้ใช้นี้ได้รับสิทธิ์การเป็นประธานชมรมเป็นที่เรียบร้อย</span>
                         </div>
                     </div>
                     <div class="text-center mt-4">
@@ -90,12 +90,12 @@ if ($club['status'] === 'pending') {
                     <div class="alert alert-danger d-flex align-items-center mb-3">
                         <i class="fa-solid fa-triangle-exclamation fs-4 me-3 text-danger"></i>
                         <div>
-                            <strong class="d-block mb-1">ปฏิเสธข้อเสนอจัดตั้งชมรม</strong>
-                            <span class="text-muted small">ขออภัย ข้อเสนอจัดตั้งชมรมนี้ไม่ผ่านเกณฑ์การพิจารณาตรวจสอบจากคณะกรรมการ</span>
+                            <strong class="d-block mb-1">ปฏิเสธข้อเสนอขอเพิ่มข้อมูลชมรม</strong>
+                            <span class="text-muted small">ขออภัย ข้อเสนอขอเพิ่มข้อมูลชมรมนี้ไม่ผ่านเกณฑ์การพิจารณาตรวจสอบจากคณะกรรมการ</span>
                         </div>
                     </div>
                     <div class="text-center mt-4">
-                        <a href="<?= url('clubs/register/reset') ?>" class="btn btn-outline-danger rounded-pill px-4 text-decoration-none" data-confirm="ยืนยันต้องการเคลียร์ประวัติและยื่นข้อเสนอขอจัดตั้งใหม่อีกครั้ง?">
+                        <a href="<?= url('clubs/register/reset') ?>" class="btn btn-outline-danger rounded-pill px-4 text-decoration-none" data-confirm="ยืนยันต้องการเคลียร์ประวัติและยื่นข้อเสนอขอเพิ่มข้อมูลชมรมใหม่อีกครั้ง?">
                             <i class="fa-solid fa-rotate-left me-1"></i> ยื่นข้อเสนอใหม่อีกครั้ง
                         </a>
                     </div>

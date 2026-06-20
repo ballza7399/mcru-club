@@ -17,7 +17,7 @@
             </li>
             <?php if (!empty($_SESSION['user_id']) && $_SESSION['role'] === 'student'): ?>
             <li class="nav-item">
-                <a class="nav-link" href="<?= url('clubs/register') ?>"><i class="fa-solid fa-file-signature me-1"></i> เสนอจัดตั้งชมรม</a>
+                <a class="nav-link" href="<?= url('clubs/register') ?>"><i class="fa-solid fa-file-signature me-1"></i> เสนอเพิ่มข้อมูลชมรม</a>
             </li>
             <?php endif; ?>
             <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president'])): ?>
