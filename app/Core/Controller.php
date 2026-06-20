@@ -5,6 +5,8 @@ abstract class Controller
 {
     protected function view(string $template, array $data = [], string $layout = 'layout'): void
     {
+        $this->syncUserSession();
+
         extract($data);
         $flash = $_SESSION['_flash'] ?? null;
         unset($_SESSION['_flash']);
@@ -34,6 +36,7 @@ abstract class Controller
         if (empty($_SESSION['user_id'])) {
             $this->redirect('/auth/login');
         }
+        $this->syncUserSession();
     }
 
     protected function requireRole(string ...$roles): void
@@ -41,6 +44,39 @@ abstract class Controller
         $this->requireAuth();
         if (!in_array($_SESSION['role'], $roles, true)) {
             $this->redirect('/');
+        }
+    }
+
+    private function syncUserSession(): void
+    {
+        if (!empty($_SESSION['user_id'])) {
+            try {
+                $userId = (int)$_SESSION['user_id'];
+                $db = Database::instance();
+                
+                $stmt = $db->prepare(
+                    'SELECT r.role_key AS role 
+                     FROM users u
+                     JOIN roles r ON u.role_id = r.id
+                     WHERE u.id = ?'
+                );
+                $stmt->execute([$userId]);
+                $role = $stmt->fetchColumn();
+                
+                if ($role) {
+                    if ($role === 'student') {
+                        // Check if they are a president of any approved club
+                        $stmtPres = $db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ? AND status = "approved"');
+                        $stmtPres->execute([$userId]);
+                        if ((int)$stmtPres->fetchColumn() > 0) {
+                            $role = 'president';
+                        }
+                    }
+                    $_SESSION['role'] = $role;
+                }
+            } catch (\Exception $e) {
+                // Fail silently if database is not connected or initialized yet
+            }
         }
     }
 }
