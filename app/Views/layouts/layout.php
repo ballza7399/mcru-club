@@ -26,7 +26,7 @@ window.addEventListener('error', function(e) {
 </head>
 <body>
 <?php require BASE_PATH . '/app/Views/layouts/navbar.php'; ?>
-<div class="container pb-5 mt-4">
+<div class="container pb-5 mt-4 flex-grow-1">
 <?php if ($flash): ?>
     <div id="flash-message-data" data-message="<?= e($flash) ?>" style="display: none;"></div>
     <script>
@@ -60,5 +60,6 @@ window.addEventListener('error', function(e) {
 <?php endif; ?>
 <?= $content ?>
 </div>
+<?php require BASE_PATH . '/app/Views/layouts/footer.php'; ?>
 </body>
 </html>
