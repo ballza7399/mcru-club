@@ -20,9 +20,6 @@
                 <a class="nav-link" href="<?= url('clubs/register') ?>"><i class="fa-solid fa-file-signature me-1"></i> เสนอเพิ่มข้อมูลชมรม</a>
             </li>
             <?php endif; ?>
-            <li class="nav-item">
-                <a class="nav-link" href="<?= url('policy') ?>" onclick="openPdpaViewerModal(event)"><i class="fa-solid fa-user-shield me-1 text-warning"></i> นโยบาย & PDPA</a>
-            </li>
             <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president'])): ?>
             <li class="nav-item">
                 <a class="nav-link" href="<?= url('backoffice') ?>">
