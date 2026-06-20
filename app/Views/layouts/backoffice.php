@@ -95,6 +95,10 @@ window.addEventListener('error', function(e) {
                     <?php endif; ?>
                     
                     <div class="my-2 border-top"></div>
+
+                    <a class="nav-link admin-sidebar-link" href="<?= url('policy') ?>" onclick="openPdpaViewerModal(event)">
+                        <i class="fa-solid fa-user-shield me-2 text-success"></i>นโยบาย & ข้อตกลง (PDPA)
+                    </a>
                     
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
                         <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR

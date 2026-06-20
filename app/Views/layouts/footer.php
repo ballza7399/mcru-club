@@ -32,6 +32,7 @@
                         <?php if (!empty($_SESSION['user_id']) && $_SESSION['role'] === 'student'): ?>
                             <li><a href="<?= url('clubs/register') ?>"><i class="fa-solid fa-chevron-right me-2"></i>เสนอเพิ่มข้อมูลชมรม</a></li>
                         <?php endif; ?>
+                        <li><a href="<?= url('policy') ?>" onclick="openPdpaViewerModal(event)"><i class="fa-solid fa-chevron-right me-2"></i>นโยบาย & เงื่อนไขข้อตกลง (PDPA)</a></li>
                     </ul>
                 </div>
 

@@ -95,6 +95,17 @@ class HomeController extends Controller
         ], 'backoffice');
     }
 
+    public function policyPage(): void
+    {
+        $db = \App\Core\Database::instance();
+        $policies = $db->query("SELECT * FROM policies")->fetchAll();
+        
+        $this->view('home/policy', [
+            'policies'  => $policies,
+            'pageTitle' => 'เงื่อนไขข้อตกลงและนโยบายความเป็นส่วนตัว (TOS & Privacy Policy)'
+        ]);
+    }
+
     public function pdpa(): void
     {
         $this->requireRole('admin');

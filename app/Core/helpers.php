@@ -150,3 +150,27 @@ function getActivePolicies(): array
     }
 }
 
+/** ดึงประวัติความยินยอมของผู้ใช้ปัจจุบัน */
+function getMyConsents(): array
+{
+    if (empty($_SESSION['user_id'])) {
+        return [];
+    }
+    try {
+        $userId = (int)$_SESSION['user_id'];
+        $db = \App\Core\Database::instance();
+        $stmt = $db->prepare("
+            SELECT c.*, p.title 
+            FROM user_consents c
+            LEFT JOIN policies p ON c.policy_key = p.policy_key
+            WHERE c.user_id = ?
+            ORDER BY c.consented_at DESC
+        ");
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll();
+    } catch (\Exception $e) {
+        return [];
+    }
+}
+
+

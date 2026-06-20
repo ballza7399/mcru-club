@@ -93,6 +93,10 @@ window.addEventListener('error', function(e) {
                     </a>
                     
                     <div class="my-2 border-top"></div>
+
+                    <a class="nav-link admin-sidebar-link" href="<?= url('policy') ?>" onclick="openPdpaViewerModal(event)">
+                        <i class="fa-solid fa-user-shield me-2 text-success"></i>นโยบาย & ข้อตกลง (PDPA)
+                    </a>
                     
                     <?php if ($_SESSION['role'] === 'admin'): ?>
                     <a class="nav-link admin-sidebar-link bg-dark text-white mb-1" href="<?= url('backoffice') ?>">

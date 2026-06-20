@@ -43,6 +43,7 @@ use App\Core\Router;
 $router = new Router(BASE_URL);
 
 $router->get('/',  'App\Controllers\HomeController', 'index');
+$router->get('/policy', 'App\Controllers\HomeController', 'policyPage');
 $router->get('/backoffice', 'App\Controllers\HomeController', 'backoffice');
 
 $router->get('/auth/login',     'App\Controllers\AuthController', 'login');
