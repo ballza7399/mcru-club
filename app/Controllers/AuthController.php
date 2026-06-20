@@ -21,13 +21,17 @@ class AuthController extends Controller
             $user = (new User)->findByCredentials($loginId, $password);
 
             if ($user) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['name']    = $user['name'];
-                $_SESSION['role']    = $user['role'];
-                $this->redirect('/');
+                if (isset($user['status']) && $user['status'] === 'disabled') {
+                    $error = 'บัญชีผู้ใช้งานของคุณถูกระงับการใช้งานชั่วคราว โปรดติดต่อผู้ดูแลระบบ';
+                } else {
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['name']    = $user['name'];
+                    $_SESSION['role']    = $user['role'];
+                    $this->redirect('/');
+                }
+            } else {
+                $error = 'รหัสนักศึกษา/อีเมล หรือรหัสผ่านไม่ถูกต้อง';
             }
-
-            $error = 'รหัสนักศึกษา/อีเมล หรือรหัสผ่านไม่ถูกต้อง';
         }
 
         $this->view('auth/login', ['error' => $error], 'auth');

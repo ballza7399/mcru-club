@@ -15,7 +15,7 @@ class User extends Model
     public function findByCredentials(string $loginId, string $password): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT u.id, u.name, u.password, r.role_key AS role 
+            'SELECT u.id, u.name, u.password, u.status, r.role_key AS role 
              FROM users u
              JOIN roles r ON u.role_id = r.id
              WHERE u.student_id = ? OR u.email = ?'
@@ -83,5 +83,40 @@ class User extends Model
             );
             $stmt->execute([$roleRow['id'], $userId]);
         }
+    }
+
+    /** ดึงรายการผู้ใช้งานทั้งหมดพร้อมข้อมูลบทบาท */
+    public function allWithRole(): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT u.*, r.role_name, r.role_key 
+             FROM users u
+             JOIN roles r ON u.role_id = r.id
+             ORDER BY u.id ASC'
+        );
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /** กำหนดบทบาทโดยตรงผ่าน role_id */
+    public function setRoleId(int $userId, int $roleId): bool
+    {
+        $stmt = $this->db->prepare('UPDATE users SET role_id = ? WHERE id = ?');
+        return $stmt->execute([$roleId, $userId]);
+    }
+
+    /** อัปเดตสถานะการใช้งาน (active / disabled) */
+    public function setStatus(int $userId, string $status): bool
+    {
+        $stmt = $this->db->prepare('UPDATE users SET status = ? WHERE id = ?');
+        return $stmt->execute([$status, $userId]);
+    }
+
+    /** รีเซ็ตรหัสผ่านของผู้ใช้งาน */
+    public function resetPassword(int $userId, string $newPassword): bool
+    {
+        $hashed = password_hash($newPassword, PASSWORD_DEFAULT);
+        $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
+        return $stmt->execute([$hashed, $userId]);
     }
 }

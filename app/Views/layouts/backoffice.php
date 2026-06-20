@@ -16,6 +16,8 @@ if (str_contains($uri, 'clubs/manage')) {
     $activePage = 'members';
 } elseif (str_contains($uri, 'roles/manage')) {
     $activePage = 'roles';
+} elseif (str_contains($uri, 'users/manage')) {
+    $activePage = 'users';
 } elseif (str_contains($uri, 'faculties/manage')) {
     $activePage = 'faculties';
 } elseif (str_contains($uri, 'announcements/manage')) {
@@ -79,6 +81,9 @@ window.addEventListener('error', function(e) {
                     </a>
                     
                     <?php if ($_SESSION['role'] === 'admin'): ?>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('users/manage') ?>">
+                            <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
+                        </a>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('faculties/manage') ?>">
                             <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
                         </a>
