@@ -22,27 +22,21 @@ class FacultyController extends Controller
         $totalPagesFac = (int)ceil($totalFaculties / $limitFac);
         $faculties = $facultyModel->allPaginated($limitFac, $offsetFac);
 
-        // Pagination for majors
-        $currentPageMaj = isset($_GET['page_maj']) ? max(1, (int)$_GET['page_maj']) : 1;
-        $limitMaj = isset($_GET['limit_maj']) ? max(5, min(100, (int)$_GET['limit_maj'])) : 10;
-        $offsetMaj = ($currentPageMaj - 1) * $limitMaj;
-        $totalMajors = $majorModel->countAll();
-        $totalPagesMaj = (int)ceil($totalMajors / $limitMaj);
-        $majors = $majorModel->allPaginated($limitMaj, $offsetMaj);
+        // ดึงสาขาวิชามาผูกไว้กับคณะแต่ละคณะที่แสดงในหน้านั้นๆ
+        foreach ($faculties as &$fac) {
+            $fac['majors'] = $majorModel->forFaculty((int)$fac['id']);
+        }
+        unset($fac);
 
         // ดึงคณะทั้งหมดแบบไม่แบ่งหน้า เพื่อใช้แสดงผลใน drop-down เมนูใน modal
         $allFacultiesList = $facultyModel->all();
         
         $this->view('faculties/manage', [
             'faculties' => $faculties,
-            'majors' => $majors,
             'allFacultiesList' => $allFacultiesList,
             'currentPageFac' => $currentPageFac,
             'totalPagesFac' => $totalPagesFac,
-            'currentPageMaj' => $currentPageMaj,
-            'totalPagesMaj' => $totalPagesMaj,
-            'limitFac' => $limitFac,
-            'limitMaj' => $limitMaj
+            'limitFac' => $limitFac
         ], 'backoffice');
     }
 
