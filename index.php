@@ -55,6 +55,7 @@ $router->get('/clubs',             'App\Controllers\ClubController', 'list');
 $router->get('/clubs/detail/{id}', 'App\Controllers\ClubController', 'detail');
 $router->get('/clubs/register',    'App\Controllers\ClubController', 'registerPage');
 $router->post('/clubs/register',   'App\Controllers\ClubController', 'registerSubmit');
+$router->get('/clubs/register/reset', 'App\Controllers\ClubController', 'registerReset');
 $router->post('/applications/apply',       'App\Controllers\ApplicationController', 'apply');
 
 // --- Backoffice Management Routes ---

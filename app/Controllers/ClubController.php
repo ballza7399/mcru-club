@@ -45,10 +45,39 @@ class ClubController extends Controller
     {
         $this->requireAuth();
         
+        $userId = $_SESSION['user_id'];
+        
+        // Find if this user has already proposed a club
+        $db = \App\Core\Database::instance();
+        $stmt = $db->prepare('SELECT * FROM clubs WHERE president_id = ? ORDER BY id DESC LIMIT 1');
+        $stmt->execute([$userId]);
+        $existingClub = $stmt->fetch();
+        
+        if ($existingClub) {
+            $this->view('clubs/register_status', [
+                'club' => $existingClub,
+                'pageTitle' => 'สถานะการยื่นขอจัดตั้งชมรม'
+            ]);
+            return;
+        }
+        
         $this->view('clubs/register', [
             'error' => null,
             'pageTitle' => 'ยื่นขอจัดตั้งชมรมใหม่'
         ]);
+    }
+
+    public function registerReset(): void
+    {
+        $this->requireAuth();
+        $userId = $_SESSION['user_id'];
+        
+        $db = \App\Core\Database::instance();
+        // Delete the rejected proposal so they can submit a new one
+        $stmt = $db->prepare('DELETE FROM clubs WHERE president_id = ? AND status = "rejected"');
+        $stmt->execute([$userId]);
+        
+        $this->redirect('/clubs/register');
     }
 
     public function registerSubmit(): void
