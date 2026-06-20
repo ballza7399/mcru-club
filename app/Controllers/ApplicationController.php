@@ -33,7 +33,7 @@ class ApplicationController extends Controller
         $this->requireRole('admin', 'president');
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $limit = 10;
+        $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
         $offset = ($currentPage - 1) * $limit;
 
         $appModel = new Application;
@@ -45,7 +45,8 @@ class ApplicationController extends Controller
         $this->view('applications/manage', [
             'apps' => $apps,
             'currentPage' => $currentPage,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'limit' => $limit
         ], 'backoffice');
     }
 

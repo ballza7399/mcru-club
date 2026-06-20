@@ -26,18 +26,46 @@ function assetExists(?string $path): bool
 }
 
 /** แสดงผลลิ้งก์แบ่งหน้า (Pagination) แบบ Bootstrap */
-function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath, string $pageKey = 'page'): string
+function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath, int $limit, string $pageKey = 'page', string $limitKey = 'limit'): string
 {
     if ($totalPages <= 0) {
         return '';
     }
 
-    $html = '<nav class="mt-4"><ul class="pagination justify-content-center">';
-    
-    // ดึง query parameters ทั้งหมดที่ส่งมาก่อนหน้าเพื่อคงสถานะตัวกรอง (เช่น club_id=X)
     $queryParams = $_GET;
+    // reset page to 1 when changing limit
+    $queryParams[$pageKey] = 1;
+
+    // We can support different default lists of limits, e.g. for gallery (multiples of 12) or normal (10, 20, 30, 50, 100)
+    $limits = ($limit % 12 === 0) ? [12, 24, 36, 48, 96] : [10, 20, 30, 50, 100];
+    if (!in_array($limit, $limits)) {
+        $limits[] = $limit;
+        sort($limits);
+    }
+
+    $html = '<div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">';
     
-    // ปุ่มย้อนกลับ (Previous)
+    // Page size selector
+    $html .= '<div class="d-flex align-items-center gap-2">';
+    $html .= '<span class="text-muted small">แสดง</span>';
+    $html .= '<select class="form-select form-select-sm d-inline-block w-auto" onchange="window.location.href = this.value">';
+    foreach ($limits as $l) {
+        $queryParams[$limitKey] = $l;
+        $url = url($baseUrlPath . '?' . http_build_query($queryParams));
+        $selected = ($l === $limit) ? 'selected' : '';
+        $html .= '<option value="' . $url . '" ' . $selected . '>' . $l . '</option>';
+    }
+    $html .= '</select>';
+    $html .= '<span class="text-muted small">รายการต่อหน้า</span>';
+    $html .= '</div>';
+
+    // Pagination
+    $html .= '<nav class="m-0"><ul class="pagination justify-content-center m-0">';
+    
+    $queryParams = $_GET;
+    $queryParams[$limitKey] = $limit; // preserve the current limit
+
+    // Previous Button
     if ($currentPage > 1) {
         $queryParams[$pageKey] = $currentPage - 1;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
@@ -46,7 +74,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
         $html .= '<li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-left"></i> ย้อนกลับ</span></li>';
     }
 
-    // ปุ่มตัวเลขหน้า
+    // Numbers
     for ($i = 1; $i <= $totalPages; $i++) {
         $queryParams[$pageKey] = $i;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
@@ -57,7 +85,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
         }
     }
 
-    // ปุ่มถัดไป (Next)
+    // Next Button
     if ($currentPage < $totalPages) {
         $queryParams[$pageKey] = $currentPage + 1;
         $url = url($baseUrlPath . '?' . http_build_query($queryParams));
@@ -67,5 +95,7 @@ function renderPagination(int $currentPage, int $totalPages, string $baseUrlPath
     }
 
     $html .= '</ul></nav>';
+    $html .= '</div>';
+    
     return $html;
 }

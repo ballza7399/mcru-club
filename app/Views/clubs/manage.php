@@ -50,7 +50,7 @@
             </tbody>
         </table>
     </div>
-    <?= renderPagination($currentPage, $totalPages, 'clubs/manage') ?>
+    <?= renderPagination($currentPage, $totalPages, 'clubs/manage', $limit) ?>
 </div>
 
 <!-- Modals แก้ไข -->

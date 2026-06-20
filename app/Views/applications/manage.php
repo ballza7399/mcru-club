@@ -39,5 +39,5 @@
             </tbody>
         </table>
     </div>
-    <?= renderPagination($currentPage, $totalPages, 'applications/manage') ?>
+    <?= renderPagination($currentPage, $totalPages, 'applications/manage', $limit) ?>
 </div>

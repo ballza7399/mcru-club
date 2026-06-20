@@ -13,7 +13,7 @@ class UserController extends Controller
         $this->requireRole('admin');
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $limit = 10;
+        $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
         $offset = ($currentPage - 1) * $limit;
 
         $userModel = new User;
@@ -30,6 +30,7 @@ class UserController extends Controller
             'roles' => $roles,
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
+            'limit' => $limit,
             'pageTitle' => 'จัดการผู้ใช้ในระบบ'
         ], 'backoffice');
     }

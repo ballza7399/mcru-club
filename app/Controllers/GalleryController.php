@@ -19,7 +19,7 @@ class GalleryController extends Controller
         $role = $_SESSION['role'];
         
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
-        $limit = 12;
+        $limit = isset($_GET['limit']) ? max(6, min(120, (int)$_GET['limit'])) : 12;
         $offset = ($currentPage - 1) * $limit;
 
         $gallery = [];
@@ -50,7 +50,8 @@ class GalleryController extends Controller
             'role' => $role,
             'clubId' => $clubId,
             'currentPage' => $currentPage,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
+            'limit' => $limit
         ], 'backoffice');
     }
 

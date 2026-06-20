@@ -48,7 +48,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?= renderPagination($currentPageFac, $totalPagesFac, 'faculties/manage', 'page_fac') ?>
+                <?= renderPagination($currentPageFac, $totalPagesFac, 'faculties/manage', $limitFac, 'page_fac', 'limit_fac') ?>
             <?php endif; ?>
         </div>
     </div>
@@ -97,7 +97,7 @@
                         </tbody>
                     </table>
                 </div>
-                <?= renderPagination($currentPageMaj, $totalPagesMaj, 'faculties/manage', 'page_maj') ?>
+                <?= renderPagination($currentPageMaj, $totalPagesMaj, 'faculties/manage', $limitMaj, 'page_maj', 'limit_maj') ?>
             <?php endif; ?>
         </div>
     </div>

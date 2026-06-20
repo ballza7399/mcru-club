@@ -109,7 +109,7 @@
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'users/manage') ?>
+        <?= renderPagination($currentPage, $totalPages, 'users/manage', $limit) ?>
     <?php endif; ?>
 </div>
 

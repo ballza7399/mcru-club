@@ -16,7 +16,7 @@ class FacultyController extends Controller
         
         // Pagination for faculties
         $currentPageFac = isset($_GET['page_fac']) ? max(1, (int)$_GET['page_fac']) : 1;
-        $limitFac = 10;
+        $limitFac = isset($_GET['limit_fac']) ? max(5, min(100, (int)$_GET['limit_fac'])) : 10;
         $offsetFac = ($currentPageFac - 1) * $limitFac;
         $totalFaculties = $facultyModel->countAll();
         $totalPagesFac = (int)ceil($totalFaculties / $limitFac);
@@ -24,7 +24,7 @@ class FacultyController extends Controller
 
         // Pagination for majors
         $currentPageMaj = isset($_GET['page_maj']) ? max(1, (int)$_GET['page_maj']) : 1;
-        $limitMaj = 10;
+        $limitMaj = isset($_GET['limit_maj']) ? max(5, min(100, (int)$_GET['limit_maj'])) : 10;
         $offsetMaj = ($currentPageMaj - 1) * $limitMaj;
         $totalMajors = $majorModel->countAll();
         $totalPagesMaj = (int)ceil($totalMajors / $limitMaj);
@@ -40,7 +40,9 @@ class FacultyController extends Controller
             'currentPageFac' => $currentPageFac,
             'totalPagesFac' => $totalPagesFac,
             'currentPageMaj' => $currentPageMaj,
-            'totalPagesMaj' => $totalPagesMaj
+            'totalPagesMaj' => $totalPagesMaj,
+            'limitFac' => $limitFac,
+            'limitMaj' => $limitMaj
         ], 'backoffice');
     }
 

@@ -89,7 +89,7 @@ $role = $_SESSION['role'];
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'clubs/members') ?>
+        <?= renderPagination($currentPage, $totalPages, 'clubs/members', $limit) ?>
     <?php endif; ?>
 </div>
 

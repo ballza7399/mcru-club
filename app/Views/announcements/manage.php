@@ -66,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-        <?= renderPagination($currentPage, $totalPages, 'announcements/manage') ?>
+        <?= renderPagination($currentPage, $totalPages, 'announcements/manage', $limit) ?>
     <?php endif; ?>
 </div>
 
