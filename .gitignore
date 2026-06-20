@@ -1,4 +1,5 @@
 .claude
+.agents
 config/config.php
 uploads/
 deploy.ps1
