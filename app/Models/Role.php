@@ -111,7 +111,7 @@ class Role extends Model
              WHERE cm.club_id = ?
              ORDER BY CASE WHEN r.role_key = "president" THEN 1 
                            WHEN r.role_key = "officer" THEN 2 
-                           WHEN r.role_id IS NULL THEN 4 
+                           WHEN r.id IS NULL THEN 4 
                            ELSE 3 END ASC, cm.joined_at ASC'
         );
         $stmt->execute([$clubId]);
