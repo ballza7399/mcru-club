@@ -12,6 +12,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?= url() ?>"><i class="fa-solid fa-house-chimney me-1"></i> หน้าหลัก</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= url('clubs') ?>"><i class="fa-solid fa-people-group me-1"></i> รายชื่อชมรม</a>
+            </li>
             <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president'])): ?>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle btn-manage" href="#" role="button" data-bs-toggle="dropdown">

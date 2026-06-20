@@ -9,6 +9,17 @@ use App\Models\Application;
 
 class ClubController extends Controller
 {
+    public function list(): void
+    {
+        $clubModel = new Club;
+        $clubs = $clubModel->allWithMemberCount();
+
+        $this->view('clubs/list', [
+            'clubs' => $clubs,
+            'pageTitle' => 'ชมรมทั้งหมด'
+        ]);
+    }
+
     public function detail(string $id): void
     {
         $clubId = (int) $id;

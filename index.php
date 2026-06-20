@@ -50,6 +50,7 @@ $router->get('/auth/register',  'App\Controllers\AuthController', 'register');
 $router->post('/auth/register', 'App\Controllers\AuthController', 'register');
 $router->get('/auth/logout',    'App\Controllers\AuthController', 'logout');
 
+$router->get('/clubs',             'App\Controllers\ClubController', 'list');
 $router->get('/clubs/detail/{id}', 'App\Controllers\ClubController', 'detail');
 $router->get('/clubs/manage',      'App\Controllers\ClubController', 'manage');
 $router->post('/clubs/store',      'App\Controllers\ClubController', 'store');

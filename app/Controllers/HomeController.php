@@ -12,7 +12,8 @@ class HomeController extends Controller
     public function index(): void
     {
         $clubModel = new Club;
-        $clubs = $clubModel->allWithMemberCount();
+        $allClubs = $clubModel->allWithMemberCount();
+        $clubs = array_slice($allClubs, 0, 6);
         
         $annModel = new Announcement;
         $announcements = $annModel->all(6);

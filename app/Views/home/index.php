@@ -135,19 +135,11 @@
     </div>
 </div>
 
-<!-- Section: Clubs Grid with Live Search -->
+<!-- Section: Clubs Grid -->
 <div class="my-5 border-top pt-5">
-    <div class="text-center mb-4">
-        <h3 class="text-primary-custom fw-bold">รายชื่อชมรมที่เปิดรับสมัคร</h3>
-        <p class="text-muted">ค้นหาและสมัครเข้าชมรมที่คุณสนใจทางออนไลน์ได้ทันที</p>
-        
-        <!-- Live Search Bar -->
-        <div class="search-container">
-            <div class="search-input-group">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="clubSearchInput" placeholder="พิมพ์ชื่อชมรม หรือรายละเอียดเพื่อค้นหา..." onkeyup="filterClubs()">
-            </div>
-        </div>
+    <div class="text-center mb-5">
+        <h3 class="text-primary-custom fw-bold">ชมรมที่น่าสนใจ</h3>
+        <p class="text-muted">ชมรมต่างๆ ของมหาวิทยาลัยราชภัฏหมู่บ้านจอมบึงที่น่าสนใจ</p>
     </div>
 
     <div class="row g-4" id="clubsGrid">
@@ -180,6 +172,12 @@
             </div>
         </div>
         <?php endforeach; ?>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="<?= url('clubs') ?>" class="btn btn-gold-custom py-3 px-5 fs-5 rounded-pill shadow-sm">
+            <i class="fa-solid fa-compass me-2"></i> ค้นหาและดูชมรมทั้งหมด
+        </a>
     </div>
 </div>
 
@@ -222,22 +220,6 @@
 </div>
 
 <script>
-/** ฟังก์ชันฟิลเตอร์ชมรมแบบเรียลไทม์ */
-function filterClubs() {
-    const input = document.getElementById('clubSearchInput').value.toLowerCase();
-    const wrappers = document.querySelectorAll('.club-card-wrapper');
-    
-    wrappers.forEach(card => {
-        const name = card.getAttribute('data-name');
-        const desc = card.getAttribute('data-desc');
-        if (name.includes(input) || desc.includes(input)) {
-            card.style.display = '';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
 /** ฟังก์ชันเปิด Lightbox สำหรับแกลเลอรี */
 function openLightbox(imagePath, captionText) {
     const myModal = new bootstrap.Modal(document.getElementById('lightboxModal'));
