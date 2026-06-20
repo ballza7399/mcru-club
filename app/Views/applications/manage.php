@@ -25,8 +25,24 @@
                     </td>
                     <td>
                         <?php if ($row['status'] === 'pending'): ?>
-                            <a href="<?= url('backoffice/applications/approve/' . (int) $row['id']) ?>" class="btn btn-sm btn-success px-3">อนุมัติ</a>
-                            <a href="<?= url('backoffice/applications/reject/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger px-3">ปฏิเสธ</a>
+                            <a href="<?= url('backoffice/applications/approve/' . (int) $row['id']) ?>" 
+                               class="btn btn-sm btn-success px-3 me-1"
+                               data-confirm="ยืนยันรับนักศึกษารายนี้เข้าชมรม? เมื่ออนุมัติแล้วจะเพิ่มชื่อเข้าสมาชิกชมรมโดยอัตโนมัติ"
+                               data-confirm-title="อนุมัติคำขอสมัครเข้าชมรม"
+                               data-confirm-icon="question"
+                               data-confirm-color="#198754"
+                               data-confirm-btn="อนุมัติ">
+                                <i class="fa-solid fa-check me-1"></i>อนุมัติ
+                            </a>
+                            <a href="<?= url('backoffice/applications/reject/' . (int) $row['id']) ?>" 
+                               class="btn btn-sm btn-outline-danger px-3"
+                               data-confirm="ยืนยันปฏิเสธคำขอสมัครเข้าร่วมชมรมนี้?"
+                               data-confirm-title="ปฏิเสธคำขอสมัครเข้าชมรม"
+                               data-confirm-icon="warning"
+                               data-confirm-color="#dc3545"
+                               data-confirm-btn="ปฏิเสธ">
+                                <i class="fa-solid fa-xmark me-1"></i>ปฏิเสธ
+                            </a>
                         <?php else: ?>
                             <span class="text-muted small">- ดำเนินการแล้ว -</span>
                         <?php endif; ?>

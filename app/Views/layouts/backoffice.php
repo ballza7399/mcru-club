@@ -292,14 +292,18 @@ document.addEventListener('click', function(e) {
             
             const confirmMsg = a.getAttribute('data-confirm');
             if (confirmMsg) {
+                const title = a.getAttribute('data-confirm-title') || 'ยืนยันการทำรายการ';
+                const icon = a.getAttribute('data-confirm-icon') || 'warning';
+                const color = a.getAttribute('data-confirm-color') || '#d33';
+                const btnText = a.getAttribute('data-confirm-btn') || 'ยืนยัน';
                 Swal.fire({
-                    title: 'ยืนยันการทำรายการ',
+                    title: title,
                     text: confirmMsg,
-                    icon: 'warning',
+                    icon: icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: color,
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'ยืนยัน',
+                    confirmButtonText: btnText,
                     cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {
@@ -356,14 +360,18 @@ document.addEventListener('submit', function(e) {
             
             const confirmMsg = form.getAttribute('data-confirm');
             if (confirmMsg) {
+                const title = form.getAttribute('data-confirm-title') || 'ยืนยันการทำรายการ';
+                const icon = form.getAttribute('data-confirm-icon') || 'warning';
+                const color = form.getAttribute('data-confirm-color') || '#d33';
+                const btnText = form.getAttribute('data-confirm-btn') || 'ยืนยัน';
                 Swal.fire({
-                    title: 'ยืนยันการทำรายการ',
+                    title: title,
                     text: confirmMsg,
-                    icon: 'warning',
+                    icon: icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#d33',
+                    confirmButtonColor: color,
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'ยืนยัน',
+                    confirmButtonText: btnText,
                     cancelButtonText: 'ยกเลิก'
                 }).then((result) => {
                     if (result.isConfirmed) {

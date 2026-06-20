@@ -57,12 +57,20 @@ $clubIdQuery = '?club_id=' . (int)$club['id'];
                                 <?php if ($row['status'] === 'pending'): ?>
                                     <a href="<?= url('cluboffice/applications/approve/' . (int)$row['id']) . $clubIdQuery ?>" 
                                        class="btn btn-sm btn-success text-white me-1"
-                                       data-confirm="ยืนยันรับนักศึกษารายนี้เข้าชมรม? เมื่ออนุมัติแล้วจะเพิ่มชื่อเข้าสมาชิกชมรมโดยอัตโนมัติ">
+                                       data-confirm="ยืนยันรับนักศึกษารายนี้เข้าชมรม? เมื่ออนุมัติแล้วจะเพิ่มชื่อเข้าสมาชิกชมรมโดยอัตโนมัติ"
+                                       data-confirm-title="อนุมัติคำขอสมัครเข้าชมรม"
+                                       data-confirm-icon="question"
+                                       data-confirm-color="#198754"
+                                       data-confirm-btn="อนุมัติ">
                                         <i class="fa-solid fa-check me-1"></i>อนุมัติ
                                     </a>
                                     <a href="<?= url('cluboffice/applications/reject/' . (int)$row['id']) . $clubIdQuery ?>" 
                                        class="btn btn-sm btn-danger text-white"
-                                       data-confirm="ยืนยันปฏิเสธคำขอสมัครเข้าร่วมชมรมนี้?">
+                                       data-confirm="ยืนยันปฏิเสธคำขอสมัครเข้าร่วมชมรมนี้?"
+                                       data-confirm-title="ปฏิเสธคำขอสมัครเข้าชมรม"
+                                       data-confirm-icon="warning"
+                                       data-confirm-color="#dc3545"
+                                       data-confirm-btn="ปฏิเสธ">
                                         <i class="fa-solid fa-xmark me-1"></i>ปฏิเสธ
                                     </a>
                                 <?php else: ?>

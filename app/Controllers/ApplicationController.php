@@ -78,6 +78,11 @@ class ApplicationController extends Controller
 
         if ($canUpdate) {
             $appModel->updateStatus($appId, $status);
+            if ($status === 'approved') {
+                $this->flash('อนุมัติคำขอเข้าสมัครชมรมสำเร็จแล้ว');
+            } else {
+                $this->flash('ปฏิเสธคำขอสมัครเข้าชมรมสำเร็จแล้ว');
+            }
         }
 
         $this->redirect('/backoffice/applications');
