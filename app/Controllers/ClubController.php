@@ -203,6 +203,13 @@ class ClubController extends Controller
                     $stmtAddMember = $db->prepare('INSERT INTO club_members (club_id, user_id, role_id) VALUES (?, ?, 3)');
                     $stmtAddMember->execute([$clubId, $club['president_id']]);
                 }
+
+                // Send Notification
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'คำขอเพิ่มข้อมูลชมรมได้รับการอนุมัติ',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณได้รับการตรวจสอบและอนุมัติแล้ว คุณได้รับการปรับระดับเป็นประธานชมรม'
+                );
             }
             $this->flash('อนุมัติการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
         }
@@ -218,6 +225,16 @@ class ClubController extends Controller
         $club = $clubModel->findWithDetail($clubId);
         if ($club) {
             $clubModel->update($clubId, ['status' => 'rejected']);
+
+            if ($club['president_id']) {
+                // Send Notification
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'คำขอเพิ่มข้อมูลชมรมถูกปฏิเสธ',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณถูกปฏิเสธ'
+                );
+            }
+
             $this->flash('ปฏิเสธการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
         }
         $this->redirect('/backoffice/clubs');

@@ -129,4 +129,9 @@ $router->get('/cluboffice/gallery',                   'App\Controllers\ClubOffic
 $router->post('/cluboffice/gallery/store',             'App\Controllers\ClubOfficeController', 'storeGallery');
 $router->get('/cluboffice/gallery/delete/{id}',        'App\Controllers\ClubOfficeController', 'deleteGallery');
 
+// --- Notification API Routes ---
+$router->get('/api/notifications',            'App\Controllers\NotificationController', 'list');
+$router->post('/api/notifications/read-all',  'App\Controllers\NotificationController', 'markAllRead');
+$router->post('/api/notifications/read/{id}', 'App\Controllers\NotificationController', 'markRead');
+
 $router->dispatch();

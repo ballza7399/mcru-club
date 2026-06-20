@@ -28,6 +28,28 @@
             </li>
             <?php endif; ?>
             <?php if (!empty($_SESSION['user_id'])): ?>
+                <!-- Notification Bell Dropdown -->
+                <li class="nav-item dropdown dropdown-notifications ms-lg-2 position-relative">
+                    <a class="nav-link text-white position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 8px 12px; border-radius: 10px;">
+                        <i class="fa-regular fa-bell fs-5"></i>
+                        <span class="position-absolute badge rounded-pill bg-danger d-none" id="notificationBadge" style="top: 2px; right: 2px; font-size: 0.65rem; padding: 3px 6px;">
+                            0
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0 mt-2" aria-labelledby="notificationDropdown" style="width: 320px; max-height: 400px; overflow-y: auto; border-radius: 12px; z-index: 1050;">
+                        <div class="p-3 border-bottom d-flex justify-content-between align-items-center bg-light">
+                            <span class="fw-bold text-dark" style="font-size: 0.9rem;"><i class="fa-solid fa-bell text-warning me-2"></i>การแจ้งเตือน</span>
+                            <button class="btn btn-link btn-sm text-decoration-none p-0 text-primary-custom d-none" id="markAllReadBtn" style="font-size: 0.75rem;">อ่านแล้วทั้งหมด</button>
+                        </div>
+                        <div id="notificationList" class="py-1">
+                            <div class="text-center py-4 text-muted">
+                                <i class="fa-regular fa-bell-slash fs-4 mb-2 opacity-50"></i>
+                                <p class="small m-0">ไม่มีการแจ้งเตือนใหม่</p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
                 <li class="nav-item ms-lg-3 my-2 my-lg-0">
                     <div class="user-profile-badge">
                         <div class="avatar"><i class="fa-solid fa-user"></i></div>
@@ -61,3 +83,136 @@
     </div>
 </div>
 </nav>
+
+<?php if (!empty($_SESSION['user_id'])): ?>
+<style>
+.dropdown-notifications .dropdown-menu {
+    border: 1px solid var(--border) !important;
+    max-height: 400px;
+}
+.notification-item:hover {
+    background-color: var(--surface-alt) !important;
+}
+.notification-item.unread-bg {
+    background-color: rgba(11, 44, 92, 0.04) !important;
+}
+.notification-item.unread-bg:hover {
+    background-color: rgba(11, 44, 92, 0.08) !important;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const badge = document.getElementById('notificationBadge');
+    const list = document.getElementById('notificationList');
+    const markBtn = document.getElementById('markAllReadBtn');
+    
+    function fetchNotifications() {
+        if (!badge || !list) return;
+        
+        fetch('<?= url("api/notifications") ?>')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Update Badge
+                    const count = parseInt(data.unread_count);
+                    if (count > 0) {
+                        badge.innerText = count;
+                        badge.classList.remove('d-none');
+                        if (markBtn) markBtn.classList.remove('d-none');
+                    } else {
+                        badge.classList.add('d-none');
+                        if (markBtn) markBtn.classList.add('d-none');
+                    }
+                    
+                    // Update List
+                    if (data.notifications.length === 0) {
+                        list.innerHTML = `
+                            <div class="text-center py-4 text-muted">
+                                <i class="fa-regular fa-bell-slash fs-4 mb-2 opacity-50"></i>
+                                <p class="small m-0">ไม่มีการแจ้งเตือน</p>
+                            </div>`;
+                    } else {
+                        let html = '';
+                        data.notifications.forEach(n => {
+                            const isUnread = n.is_read === 0;
+                            const bgClass = isUnread ? 'unread-bg' : '';
+                            const dotHtml = isUnread ? '<span class="d-inline-block bg-danger rounded-circle me-1 animate-pulse" style="width: 6px; height: 6px;"></span>' : '';
+                            
+                            html += `
+                                <div class="dropdown-item notification-item p-3 border-bottom text-wrap ${bgClass}" data-id="${n.id}" style="cursor: pointer; transition: background 0.2s;">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <span class="fw-bold text-dark small" style="line-height: 1.2;">${dotHtml}${n.title}</span>
+                                        <small class="text-muted text-nowrap font-monospace ms-2" style="font-size: 0.7rem;">${n.created_at}</small>
+                                    </div>
+                                    <p class="text-muted small m-0" style="line-height: 1.4; font-size: 0.8rem;">${n.message}</p>
+                                </div>`;
+                        });
+                        list.innerHTML = html;
+                        
+                        // Add click listeners to items
+                        list.querySelectorAll('.notification-item').forEach(item => {
+                            item.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                const notifId = this.getAttribute('data-id');
+                                fetch(`<?= url("api/notifications/read/") ?>${notifId}`, { method: 'POST' })
+                                    .then(res => res.json())
+                                    .then(resData => {
+                                        if (resData.success) {
+                                            this.classList.remove('unread-bg');
+                                            const dot = this.querySelector('.bg-danger');
+                                            if (dot) dot.remove();
+                                            
+                                            // Re-fetch count
+                                            fetch('<?= url("api/notifications") ?>')
+                                                .then(res => res.json())
+                                                .then(updateData => {
+                                                    const newCount = parseInt(updateData.unread_count);
+                                                    if (newCount > 0) {
+                                                        badge.innerText = newCount;
+                                                        badge.classList.remove('d-none');
+                                                        if (markBtn) markBtn.classList.remove('d-none');
+                                                    } else {
+                                                        badge.classList.add('d-none');
+                                                        if (markBtn) markBtn.classList.add('d-none');
+                                                    }
+                                                });
+                                        }
+                                    });
+                            });
+                        });
+                    }
+                }
+            })
+            .catch(err => console.error('Error fetching notifications:', err));
+    }
+    
+    // Initial fetch
+    fetchNotifications();
+    
+    // Poll every 30 seconds for new notifications
+    setInterval(fetchNotifications, 30000);
+    
+    // Mark all as read
+    if (markBtn) {
+        markBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            fetch('<?= url("api/notifications/read-all") ?>', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        badge.classList.add('d-none');
+                        markBtn.classList.add('d-none');
+                        list.querySelectorAll('.notification-item').forEach(item => {
+                            item.classList.remove('unread-bg');
+                            const dot = item.querySelector('.bg-danger');
+                            if (dot) dot.remove();
+                        });
+                    }
+                });
+        });
+    }
+});
+</script>
+<?php endif; ?>

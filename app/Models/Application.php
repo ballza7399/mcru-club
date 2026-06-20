@@ -101,6 +101,21 @@ class Application extends Model
                     }
                 }
             }
+
+            // Create User Notification
+            $stmtDetails = $this->db->prepare('SELECT a.user_id, c.club_name FROM applications a JOIN clubs c ON a.club_id = c.id WHERE a.id = ?');
+            $stmtDetails->execute([$appId]);
+            $details = $stmtDetails->fetch();
+            if ($details) {
+                $title = ($status === 'approved') ? 'คำขอสมัครเข้าชมรมได้รับการอนุมัติ' : 'คำขอสมัครเข้าชมรมถูกปฏิเสธ';
+                $msg = ($status === 'approved') 
+                    ? 'คำขอสมัครเข้าร่วมชมรม "' . $details['club_name'] . '" ของคุณได้รับการอนุมัติแล้ว ยินดีต้อนรับเข้าสู่ชมรม!'
+                    : 'คำขอสมัครเข้าร่วมชมรม "' . $details['club_name'] . '" ของคุณถูกปฏิเสธ';
+                
+                $stmtNotif = $this->db->prepare('INSERT INTO notifications (user_id, title, message, is_read) VALUES (?, ?, ?, 0)');
+                $stmtNotif->execute([$details['user_id'], $title, $msg]);
+            }
+
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollBack();
