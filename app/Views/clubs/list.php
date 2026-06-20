@@ -176,20 +176,19 @@
 }
 
 /* Filter Pills */
-.btn-academic-pill {
-    background: var(--primary-blue);
+.btn-academic-pill,
+.btn-academic-pill.active,
+.btn-academic-pill:active,
+.btn-academic-pill:hover,
+.btn-academic-pill:focus {
+    background: var(--primary-blue) !important;
     color: #fff !important;
-    border: 1.5px solid var(--primary-blue);
-    padding: 8px 20px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    transition: all var(--dur) var(--ease-out);
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 4px 10px rgba(11, 44, 92, 0.15) !important;
 }
 
-.btn-academic-pill:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(11, 44, 92, 0.15);
+.btn-academic-pill i {
+    color: #fff !important;
 }
 
 .btn-academic-pill-outline {
