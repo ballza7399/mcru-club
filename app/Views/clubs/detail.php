@@ -31,7 +31,12 @@
     <?php endif; ?>
 
     <div class="mt-4">
-        <?php if ($_SESSION['role'] === 'student'): ?>
+        <?php if (empty($_SESSION['user_id'])): ?>
+            <div class="alert alert-warning py-3 text-center rounded-3 border-0 shadow-sm">
+                <i class="fa-solid fa-circle-info me-2"></i>
+                คุณยังไม่ได้เข้าสู่ระบบ กรุณา <a href="<?= url('auth/login') ?>" class="fw-bold text-primary text-decoration-underline">เข้าสู่ระบบ</a> หรือ <a href="<?= url('auth/register') ?>" class="fw-bold text-primary text-decoration-underline">สมัครสมาชิก</a> เพื่อเข้าร่วมสมัครชมรมนี้
+            </div>
+        <?php elseif ($_SESSION['role'] === 'student'): ?>
             <?php if ($appStatus === null): ?>
                 <?php if ($isFull): ?>
                     <div class="alert alert-danger py-3 fw-bold rounded-3">❌ ชมรมนี้สมาชิกเต็มแล้ว ไม่สามารถสมัครได้</div>

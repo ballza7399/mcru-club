@@ -11,7 +11,6 @@ class ClubController extends Controller
 {
     public function detail(string $id): void
     {
-        $this->requireAuth();
         $clubId = (int) $id;
         $club   = (new Club)->findWithDetail($clubId);
 
@@ -20,7 +19,7 @@ class ClubController extends Controller
         }
 
         $appStatus = null;
-        if ($_SESSION['role'] === 'student') {
+        if (!empty($_SESSION['role']) && $_SESSION['role'] === 'student') {
             $appStatus = (new Application)->statusFor($_SESSION['user_id'], $clubId);
         }
 

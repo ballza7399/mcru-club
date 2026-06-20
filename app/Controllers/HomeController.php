@@ -11,8 +11,6 @@ class HomeController extends Controller
 {
     public function index(): void
     {
-        $this->requireAuth();
-        
         $clubModel = new Club;
         $clubs = $clubModel->allWithMemberCount();
         

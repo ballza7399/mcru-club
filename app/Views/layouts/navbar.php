@@ -48,23 +48,36 @@
                 </ul>
             </li>
             <?php endif; ?>
-            <li class="nav-item ms-lg-3 my-2 my-lg-0">
-                <div class="user-profile-badge">
-                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                    <div class="user-info text-start">
-                        <span class="name"><?= e($_SESSION['name'] ?? '') ?></span>
-                        <span class="role"><?php
-                            $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
-                            echo $roleLabel[$_SESSION['role'] ?? ''] ?? '';
-                        ?></span>
+            <?php if (!empty($_SESSION['user_id'])): ?>
+                <li class="nav-item ms-lg-3 my-2 my-lg-0">
+                    <div class="user-profile-badge">
+                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                        <div class="user-info text-start">
+                            <span class="name"><?= e($_SESSION['name'] ?? '') ?></span>
+                            <span class="role"><?php
+                                $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
+                                echo $roleLabel[$_SESSION['role'] ?? ''] ?? '';
+                            ?></span>
+                        </div>
                     </div>
-                </div>
-            </li>
-            <li class="nav-item ms-lg-2">
-                <a class="btn-logout" href="<?= url('auth/logout') ?>" title="ออกจากระบบ">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                </a>
-            </li>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn-logout" href="<?= url('auth/logout') ?>" title="ออกจากระบบ">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            <?php else: ?>
+                <li class="nav-item ms-lg-3 my-2 my-lg-0">
+                    <a class="btn btn-outline-light rounded-pill px-3 text-white" href="<?= url('auth/login') ?>">
+                        <i class="fa-solid fa-right-to-bracket me-1"></i> เข้าสู่ระบบ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-warning rounded-pill px-3 text-dark fw-bold border-0" style="background-color: var(--accent-gold); color: #1a1a1a !important;" href="<?= url('auth/register') ?>">
+                        <i class="fa-solid fa-user-plus me-1"></i> สมัครสมาชิก
+                    </a>
+                </li>
+            <?php endif; ?>
         </ul>
     </div>
 </div>
