@@ -48,7 +48,7 @@ if (str_contains($uri, 'clubs/manage')) {
         <div class="col-lg-3 col-md-4">
             <div class="card-custom p-3 shadow-sm border" style="background: var(--surface); border-color: var(--border);">
                 <h5 class="fw-bold text-primary-custom mb-3 pb-2 border-bottom">
-                    <i class="fa-solid fa-screwdriver-wrench me-2 text-warning"></i>เมนูจัดการระบบ
+                    <i class="fa-solid fa-screwdriver-wrench me-2" style="color: var(--accent-gold) !important;"></i>เมนูจัดการระบบ
                 </h5>
                 <div class="nav flex-column nav-pills gap-1">
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="<?= url('backoffice') ?>">
