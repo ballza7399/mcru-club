@@ -60,6 +60,26 @@
                     <div class="form-text small text-muted mt-1">เวลาที่จะบังคับให้นับถอยหลังก่อนจะจางหายไปโดยอัตโนมัติ (ปกติแนะนำที่ 3 - 5 วินาที)</div>
                 </div>
 
+                <!-- Twinkling Stars Effect -->
+                <div class="mb-4">
+                    <label class="form-label fw-bold text-dark d-block">อนิเมชั่นดวงดาวระยิบระยับรอบหน้าจอ</label>
+                    <div class="d-flex gap-4 mt-2">
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_stars_enabled" id="starsActive" value="1" <?= ($settings['mourning_stars_enabled'] ?? '1') === '1' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-success fw-bold small mb-0" for="starsActive" style="cursor: pointer;">
+                                <i class="fa-solid fa-star me-1"></i> เปิดเอฟเฟกต์ดวงดาว
+                            </label>
+                        </div>
+                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="mourning_stars_enabled" id="starsInactive" value="0" <?= ($settings['mourning_stars_enabled'] ?? '1') === '0' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-danger fw-bold small mb-0" for="starsInactive" style="cursor: pointer;">
+                                <i class="fa-solid fa-star-slash me-1"></i> ปิดเอฟเฟกต์ดวงดาว
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="text-end border-top pt-4" style="border-color: var(--border-strong) !important;">
                     <a href="<?= url('backoffice') ?>" class="btn btn-outline-secondary px-4 py-2 rounded-pill me-2">
                         <i class="fa-solid fa-xmark me-1"></i> ยกเลิก

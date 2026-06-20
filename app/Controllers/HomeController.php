@@ -246,7 +246,8 @@ class HomeController extends Controller
             $updatableKeys = [
                 'mourning_enabled',
                 'mourning_image_url',
-                'mourning_duration'
+                'mourning_duration',
+                'mourning_stars_enabled'
             ];
             
             try {
