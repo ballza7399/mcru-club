@@ -15,34 +15,35 @@
     <div class="col-lg-10">
         <!-- Academic Club Detail Card -->
         <div class="academic-card shadow-lg border-0 overflow-hidden mb-5">
-            <!-- Club Banner with Back Button -->
-            <div class="club-detail-banner position-relative d-flex align-items-end p-4 p-md-5" style="min-height: 180px;">
+            <!-- Club Banner with Title and Metadata inside -->
+            <div class="club-detail-banner position-relative d-flex align-items-end p-4 p-md-5" style="min-height: 240px; padding-bottom: 30px !important;">
                 <div class="academic-pattern"></div>
                 
                 <!-- Back Button in Banner -->
                 <a href="<?= url('clubs') ?>" class="btn-banner-back text-decoration-none">
                     <i class="fa-solid fa-arrow-left me-2"></i>กลับหน้ารายชื่อชมรม
                 </a>
+
+                <!-- Title and Metadata inside Banner for perfect contrast -->
+                <div class="position-relative z-index-2 w-100 text-white mt-5 text-center text-md-start club-title-container">
+                    <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
+                    <h2 class="fw-bold m-0 text-white text-shadow-sm club-name-header" style="font-size: 2.2rem; letter-spacing: -0.5px;"><?= e($club['club_name']) ?></h2>
+                    <p class="m-0 mt-2 text-white-50">
+                        <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
+                        <strong class="text-white"><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
+                    </p>
+                </div>
             </div>
 
-            <!-- Floating Logo and Profile Title Info Area -->
+            <!-- Floating Logo Area -->
             <div class="club-profile-header px-4 px-md-5">
-                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-4" style="margin-top: -60px; margin-bottom: 30px;">
+                <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end gap-3 club-logo-row">
                     <div class="club-logo-wrapper shadow-sm" style="border-radius: 50%;">
                         <?php if (assetExists($club['club_logo'])): ?>
                             <img src="<?= asset($club['club_logo']) ?>" class="club-detail-logo" alt="Logo">
                         <?php else: ?>
                             <div class="club-detail-logo bg-light d-flex align-items-center justify-content-center text-muted fw-bold border">NO LOGO</div>
                         <?php endif; ?>
-                    </div>
-                    
-                    <div class="club-title-info text-center text-md-start flex-grow-1 py-2">
-                        <span class="badge badge-academic-accent mb-2">MCRU APPROVED CLUB</span>
-                        <h2 class="fw-bold m-0 text-primary-custom" style="font-size: 2.2rem; letter-spacing: -0.5px;"><?= e($club['club_name']) ?></h2>
-                        <p class="m-0 mt-2 text-muted">
-                            <i class="fa-solid fa-user-tie text-warning me-2"></i>ประธานชมรม: 
-                            <strong class="text-dark"><?= $club['pres_name'] ? e($club['pres_name']) : '<span class="text-danger">ยังไม่แต่งตั้ง</span>' ?></strong>
-                        </p>
                     </div>
                 </div>
             </div>
@@ -392,6 +393,7 @@
 .club-detail-banner {
     background: linear-gradient(135deg, #0b2c5c 0%, #1a4980 100%);
     border-bottom: 4px solid var(--accent-gold);
+    min-height: 240px;
 }
 
 .academic-pattern {
@@ -468,9 +470,28 @@
     box-shadow: 0 10px 25px rgba(11, 44, 92, 0.12);
 }
 
-.club-title-info h2 {
-    color: var(--primary-blue) !important;
-    margin-bottom: 4px !important;
+@media (min-width: 768px) {
+    .club-title-container {
+        margin-left: 150px; /* Shift text to the right of the logo */
+    }
+    
+    .club-logo-row {
+        margin-top: -90px !important; /* Float logo over banner */
+        margin-bottom: 20px !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .club-detail-banner {
+        min-height: 200px;
+        padding-bottom: 20px !important;
+    }
+    
+    .club-logo-row {
+        margin-top: 15px !important; /* Stack below banner to prevent overlap on mobile */
+        margin-bottom: 15px !important;
+        justify-content: center;
+    }
 }
 
 .badge-academic-accent {
