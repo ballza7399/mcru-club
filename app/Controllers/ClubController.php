@@ -25,8 +25,8 @@ class ClubController extends Controller
         $clubId = (int) $id;
         $club   = (new Club)->findWithDetail($clubId);
 
-        if (!$club) {
-            throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการ', 404);
+        if (!$club || ($club['status'] !== 'approved' && ($_SESSION['role'] ?? '') !== 'admin' && ((int)($club['president_id'] ?? 0) !== (int)($_SESSION['user_id'] ?? 0)))) {
+            throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการ หรือชมรมยังไม่ได้รับการอนุมัติ', 404);
         }
 
         $appStatus = null;
@@ -39,6 +39,107 @@ class ClubController extends Controller
             'appStatus' => $appStatus,
             'isFull'    => $club['current_members'] >= $club['max_members'],
         ]);
+    }
+
+    public function registerPage(): void
+    {
+        $this->requireAuth();
+        
+        $this->view('clubs/register', [
+            'error' => null,
+            'pageTitle' => 'ยื่นขอจัดตั้งชมรมใหม่'
+        ]);
+    }
+
+    public function registerSubmit(): void
+    {
+        $this->requireAuth();
+        
+        $error = null;
+        $clubName = trim($_POST['club_name'] ?? '');
+        $description = trim($_POST['description'] ?? '');
+        $maxMembers = (int)($_POST['max_members'] ?? 50);
+        
+        $db = \App\Core\Database::instance();
+        if ($clubName === '' || $description === '') {
+            $error = 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน';
+        } else {
+            $stmt = $db->prepare('SELECT COUNT(*) FROM clubs WHERE club_name = ?');
+            $stmt->execute([$clubName]);
+            if ((int)$stmt->fetchColumn() > 0) {
+                $error = 'มีชมรมชื่อนี้อยู่ในระบบแล้ว';
+            }
+        }
+        
+        if ($error) {
+            $this->view('clubs/register', [
+                'error' => $error,
+                'pageTitle' => 'ยื่นขอจัดตั้งชมรมใหม่'
+            ]);
+            return;
+        }
+        
+        $logoPath = $this->uploadFile('logo');
+        $qrPath   = $this->uploadFile('qr_code');
+        
+        $stmtInsert = $db->prepare(
+            'INSERT INTO clubs (club_name, description, max_members, club_logo, qr_code, president_id, status)
+             VALUES (?, ?, ?, ?, ?, ?, "pending")'
+        );
+        $stmtInsert->execute([
+            $clubName,
+            $description,
+            $maxMembers,
+            $logoPath ?: null,
+            $qrPath ?: null,
+            $_SESSION['user_id']
+        ]);
+        
+        $this->flash('ส่งข้อเสนอจัดตั้งชมรมเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบและอนุมัติ');
+        $this->redirect('/clubs');
+    }
+
+    public function approveClub(string $id): void
+    {
+        $this->requireRole('admin');
+        
+        $clubId = (int)$id;
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, ['status' => 'approved']);
+            
+            // Upgrade submitting student user to president system role
+            if ($club['president_id']) {
+                (new User)->setRole((int)$club['president_id'], 'president');
+                
+                // Add president user into the club members table as president role as well
+                $db = \App\Core\Database::instance();
+                $stmtMemberCheck = $db->prepare('SELECT COUNT(*) FROM club_members WHERE club_id = ? AND user_id = ?');
+                $stmtMemberCheck->execute([$clubId, $club['president_id']]);
+                if ((int)$stmtMemberCheck->fetchColumn() === 0) {
+                    // President role in roles table is ID = 3
+                    $stmtAddMember = $db->prepare('INSERT INTO club_members (club_id, user_id, role_id) VALUES (?, ?, 3)');
+                    $stmtAddMember->execute([$clubId, $club['president_id']]);
+                }
+            }
+            $this->flash('อนุมัติการจัดตั้งชมรมเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
+    }
+
+    public function rejectClub(string $id): void
+    {
+        $this->requireRole('admin');
+        
+        $clubId = (int)$id;
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, ['status' => 'rejected']);
+            $this->flash('ปฏิเสธการจัดตั้งชมรมเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
     }
 
     public function manage(): void

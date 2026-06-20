@@ -1,39 +1,35 @@
 <?php
 /**
- * Layout เฉพาะส่วนระบบจัดการหลังบ้าน (Backoffice)
+ * Layout เฉพาะส่วนระบบจัดการหลังบ้านระดับชมรม (Club Backoffice)
  * @var string $content
  * @var string|null $flash
+ * @var array $club
  */
 
-// ตรวจสอบและกำหนดหน้าปัจจุบันจาก Request URI เพื่อนำไปใส่คลาส active ใน Sidebar
 $uri = $_SERVER['REQUEST_URI'] ?? '';
 $activePage = 'dashboard';
-if (str_contains($uri, 'backoffice/clubs/members')) {
+if (str_contains($uri, 'cluboffice/info')) {
+    $activePage = 'info';
+} elseif (str_contains($uri, 'cluboffice/members')) {
     $activePage = 'members';
-} elseif (str_contains($uri, 'backoffice/clubs')) {
-    $activePage = 'clubs';
-} elseif (str_contains($uri, 'backoffice/applications')) {
+} elseif (str_contains($uri, 'cluboffice/applications')) {
     $activePage = 'applications';
-} elseif (str_contains($uri, 'backoffice/roles')) {
-    $activePage = 'roles';
-} elseif (str_contains($uri, 'backoffice/users')) {
-    $activePage = 'users';
-} elseif (str_contains($uri, 'backoffice/faculties')) {
-    $activePage = 'faculties';
-} elseif (str_contains($uri, 'backoffice/announcements')) {
+} elseif (str_contains($uri, 'cluboffice/announcements')) {
     $activePage = 'announcements';
-} elseif (str_contains($uri, 'backoffice/events')) {
+} elseif (str_contains($uri, 'cluboffice/events')) {
     $activePage = 'events';
-} elseif (str_contains($uri, 'backoffice/gallery')) {
+} elseif (str_contains($uri, 'cluboffice/gallery')) {
     $activePage = 'gallery';
 }
+
+$clubIdQuery = '?club_id=' . (int)$club['id'];
 ?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?>หลังบ้านระบบจัดการ MCRU</title>
+<title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?>ระบบจัดการชมรม <?= e($club['club_name']) ?></title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -61,51 +57,51 @@ window.addEventListener('error', function(e) {
         <!-- Sidebar ด้านซ้าย -->
         <div class="col-lg-3 col-md-4" id="backoffice-sidebar">
             <div class="card-custom p-3 shadow-sm border" style="background: var(--surface); border-color: var(--border);">
-                <h5 class="fw-bold text-primary-custom mb-3 pb-2 border-bottom">
-                    <i class="fa-solid fa-screwdriver-wrench me-2" style="color: var(--accent-gold) !important;"></i>เมนูจัดการระบบ
-                </h5>
-                <div class="nav flex-column nav-pills gap-1">
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="<?= url('backoffice') ?>">
-                        <i class="fa-solid fa-chart-pie me-2"></i>ภาพรวมระบบ (Dashboard)
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
-                        <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('backoffice/applications') ?>">
-                        <i class="fa-solid fa-user-check me-2"></i>จัดการคำขอสมัครสมาชิก
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
-                        <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
-                        <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
-                    </a>
-                    
-                    <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
-                            <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
-                            <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
-                        </a>
+                <div class="text-center mb-3 pb-3 border-bottom">
+                    <?php if (assetExists($club['club_logo'])): ?>
+                        <img src="<?= asset($club['club_logo']) ?>" class="img-fluid rounded-circle mb-2" style="width: 70px; height: 70px; object-fit: cover;" alt="">
+                    <?php else: ?>
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-2" style="width: 70px; height: 70px; font-size: 1.5rem;"><i class="fa-solid fa-users"></i></div>
                     <?php endif; ?>
+                    <h6 class="fw-bold m-0 text-primary-custom text-truncate" title="<?= e($club['club_name']) ?>"><?= e($club['club_name']) ?></h6>
+                    <span class="badge bg-gold-custom text-dark font-weight-bold mt-1">ระบบจัดการชมรม</span>
+                </div>
+                
+                <div class="nav flex-column nav-pills gap-1">
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="<?= url('cluboffice') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-chart-line me-2"></i>หน้าภาพรวม (Club Dashboard)
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'info' ? 'active' : '' ?>" href="<?= url('cluboffice/info') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-circle-info me-2"></i>แก้ไขข้อมูลชมรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('cluboffice/applications') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-user-plus me-2"></i>ผู้สมัครเข้าชมรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('cluboffice/members') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-users me-2"></i>สมาชิก & ตำแหน่ง
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('cluboffice/announcements') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-bullhorn me-2"></i>เขียนข่าวสารชมรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('cluboffice/events') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-calendar-days me-2"></i>กิจกรรมปฏิทินชมรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('cluboffice/gallery') . $clubIdQuery ?>">
+                        <i class="fa-solid fa-images me-2"></i>แกลเลอรีภาพกิจกรรม
+                    </a>
                     
                     <div class="my-2 border-top"></div>
                     
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
-                        <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
+                    <?php if ($_SESSION['role'] === 'admin'): ?>
+                    <a class="nav-link admin-sidebar-link bg-dark text-white mb-1" href="<?= url('backoffice') ?>">
+                        <i class="fa-solid fa-arrow-left-long me-2"></i>กลับหลังบ้านหลัก (System Office)
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
-                        <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
-                        <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
-                    </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
         
-        <!-- ฝั่งแสดงข้อมูลด้าขวา -->
+        <!-- ฝั่งแสดงข้อมูลด้านขวา -->
         <div class="col-lg-9 col-md-8" id="backoffice-content">
             <?php if ($flash): ?><div class="alert alert-success"><?= e($flash) ?></div><?php endif; ?>
             <?= $content ?>
@@ -226,7 +222,7 @@ async function loadBackofficePage(url, options = {}) {
         const parser = new DOMParser();
         const newDoc = parser.parseFromString(htmlText, 'text/html');
         
-        // Fallback if returned page is not part of the backoffice (e.g. redirected to login page)
+        // Fallback if returned page is not part of backoffice or cluboffice
         if (!newDoc.getElementById('backoffice-content')) {
             window.location.href = finalUrl;
             return;

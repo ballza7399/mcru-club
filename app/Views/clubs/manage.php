@@ -12,7 +12,7 @@
     <div class="table-responsive">
         <table class="table align-middle">
             <thead class="table-light">
-                <tr><th>โลโก้</th><th>ชื่อชมรม</th><th>ประธาน</th><th>รับสูงสุด</th><th>จัดการ</th></tr>
+                <tr><th>โลโก้</th><th>ชื่อชมรม</th><th>ประธาน</th><th>รับสูงสุด</th><th>สถานะ</th><th>จัดการ</th></tr>
             </thead>
             <tbody>
                 <?php foreach ($clubs as $row): ?>
@@ -35,15 +35,44 @@
                     </td>
                     <td><?= (int) $row['max_members'] ?> คน</td>
                     <td>
-                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $row['id'] ?>">
-                            <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
-                        </button>
-                        <?php if ($role === 'admin'): ?>
-                            <a href="<?= url('backoffice/clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('ยืนยันการลบชมรมและข้อมูลการสมัครทั้งหมดของชมรมนี้?')">
-                                <i class="fa-solid fa-trash me-1"></i>ลบ
-                            </a>
+                        <?php if ($row['status'] === 'approved'): ?>
+                            <span class="badge bg-success">อนุมัติแล้ว</span>
+                        <?php elseif ($row['status'] === 'pending'): ?>
+                            <span class="badge bg-warning text-dark">รอการอนุมัติ</span>
+                        <?php else: ?>
+                            <span class="badge bg-danger">ปฏิเสธแล้ว</span>
                         <?php endif; ?>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-1 flex-wrap">
+                            <?php if ($row['status'] === 'pending' && $role === 'admin'): ?>
+                                <a href="<?= url('backoffice/clubs/approve/' . (int) $row['id']) ?>" 
+                                   class="btn btn-sm btn-success text-white"
+                                   data-confirm="ยืนยันการอนุมัติจัดตั้งชมรมนี้? เมื่ออนุมัติแล้วผู้เสนอขอจะได้รับการอัปเดตบทบาทเป็นประธานชมรมทันที">
+                                    <i class="fa-solid fa-circle-check me-1"></i>อนุมัติ
+                                </a>
+                                <a href="<?= url('backoffice/clubs/reject/' . (int) $row['id']) ?>" 
+                                   class="btn btn-sm btn-danger text-white"
+                                   data-confirm="ยืนยันการปฏิเสธคำขอจัดตั้งชมรมนี้?">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>ปฏิเสธ
+                                </a>
+                            <?php endif; ?>
+                            
+                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editModal<?= (int) $row['id'] ?>">
+                                <i class="fa-solid fa-pen-to-square me-1"></i>แก้ไข
+                            </button>
+                            <?php if ($row['status'] === 'approved' && $role === 'admin'): ?>
+                                <a href="<?= url('cluboffice?club_id=' . (int) $row['id']) ?>" class="btn btn-sm btn-dark text-white">
+                                    <i class="fa-solid fa-screwdriver-wrench me-1"></i>คุมหลังบ้านชมรม
+                                </a>
+                            <?php endif; ?>
+                            <?php if ($role === 'admin'): ?>
+                                <a href="<?= url('backoffice/clubs/delete/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-danger"
+                                   data-confirm="ยืนยันการลบชมรมและข้อมูลการสมัครทั้งหมดของชมรมนี้?">
+                                    <i class="fa-solid fa-trash me-1"></i>ลบ
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </td>
                 </tr>
                 <?php endforeach; ?>

@@ -11,7 +11,8 @@ class Club extends Model
         $sql = 'SELECT c.*,
                     (SELECT COUNT(*) FROM applications
                      WHERE club_id = c.id AND status = "approved") AS current_members
-                FROM clubs c';
+                FROM clubs c
+                WHERE c.status = "approved"';
         return $this->db->query($sql)->fetchAll();
     }
 
@@ -65,8 +66,8 @@ class Club extends Model
     public function create(array $data): void
     {
         $stmt = $this->db->prepare(
-            'INSERT INTO clubs (club_name, description, max_members, club_logo, qr_code)
-             VALUES (?, ?, ?, ?, ?)'
+            'INSERT INTO clubs (club_name, description, max_members, club_logo, qr_code, status)
+             VALUES (?, ?, ?, ?, ?, "approved")'
         );
         $stmt->execute([
             $data['club_name'], $data['description'], $data['max_members'],

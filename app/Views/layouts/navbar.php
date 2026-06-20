@@ -15,6 +15,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="<?= url('clubs') ?>"><i class="fa-solid fa-people-group me-1"></i> รายชื่อชมรม</a>
             </li>
+            <?php if (!empty($_SESSION['user_id']) && $_SESSION['role'] === 'student'): ?>
+            <li class="nav-item">
+                <a class="nav-link" href="<?= url('clubs/register') ?>"><i class="fa-solid fa-file-signature me-1"></i> เสนอจัดตั้งชมรม</a>
+            </li>
+            <?php endif; ?>
             <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president'])): ?>
             <li class="nav-item">
                 <a class="nav-link" href="<?= url('backoffice') ?>">

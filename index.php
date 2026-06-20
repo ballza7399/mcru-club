@@ -53,6 +53,8 @@ $router->get('/auth/logout',    'App\Controllers\AuthController', 'logout');
 
 $router->get('/clubs',             'App\Controllers\ClubController', 'list');
 $router->get('/clubs/detail/{id}', 'App\Controllers\ClubController', 'detail');
+$router->get('/clubs/register',    'App\Controllers\ClubController', 'registerPage');
+$router->post('/clubs/register',   'App\Controllers\ClubController', 'registerSubmit');
 $router->post('/applications/apply',       'App\Controllers\ApplicationController', 'apply');
 
 // --- Backoffice Management Routes ---
@@ -60,6 +62,8 @@ $router->get('/backoffice/clubs',      'App\Controllers\ClubController', 'manage
 $router->post('/backoffice/clubs/store',      'App\Controllers\ClubController', 'store');
 $router->post('/backoffice/clubs/update',     'App\Controllers\ClubController', 'update');
 $router->get('/backoffice/clubs/delete/{id}', 'App\Controllers\ClubController', 'delete');
+$router->get('/backoffice/clubs/approve/{id}', 'App\Controllers\ClubController', 'approveClub');
+$router->get('/backoffice/clubs/reject/{id}',  'App\Controllers\ClubController', 'rejectClub');
 $router->get('/backoffice/clubs/members',     'App\Controllers\ClubController', 'members');
 $router->post('/backoffice/clubs/members/assign-role', 'App\Controllers\ClubController', 'assignRole');
 $router->get('/backoffice/clubs/members/remove/{club_id}/{user_id}', 'App\Controllers\ClubController', 'removeMember');
@@ -101,5 +105,27 @@ $router->get('/backoffice/faculties/delete/{id}', 'App\Controllers\FacultyContro
 $router->post('/backoffice/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
 $router->post('/backoffice/majors/update',    'App\Controllers\FacultyController', 'updateMajor');
 $router->get('/backoffice/majors/delete/{id}', 'App\Controllers\FacultyController', 'deleteMajor');
+
+// --- Club Backoffice (ClubOffice) Routes ---
+$router->get('/cluboffice',                           'App\Controllers\ClubOfficeController', 'dashboard');
+$router->get('/cluboffice/info',                      'App\Controllers\ClubOfficeController', 'info');
+$router->post('/cluboffice/info/update',              'App\Controllers\ClubOfficeController', 'updateInfo');
+$router->get('/cluboffice/members',                   'App\Controllers\ClubOfficeController', 'members');
+$router->post('/cluboffice/members/assign-role',      'App\Controllers\ClubOfficeController', 'assignRole');
+$router->get('/cluboffice/members/remove/{user_id}',  'App\Controllers\ClubOfficeController', 'removeMember');
+$router->get('/cluboffice/applications',              'App\Controllers\ClubOfficeController', 'applications');
+$router->get('/cluboffice/applications/approve/{id}', 'App\Controllers\ClubOfficeController', 'approveApplication');
+$router->get('/cluboffice/applications/reject/{id}',  'App\Controllers\ClubOfficeController', 'rejectApplication');
+$router->get('/cluboffice/announcements',             'App\Controllers\ClubOfficeController', 'announcements');
+$router->post('/cluboffice/announcements/store',      'App\Controllers\ClubOfficeController', 'storeAnnouncement');
+$router->post('/cluboffice/announcements/update',     'App\Controllers\ClubOfficeController', 'updateAnnouncement');
+$router->get('/cluboffice/announcements/delete/{id}', 'App\Controllers\ClubOfficeController', 'deleteAnnouncement');
+$router->get('/cluboffice/events',                    'App\Controllers\ClubOfficeController', 'events');
+$router->post('/cluboffice/events/store',              'App\Controllers\ClubOfficeController', 'storeEvent');
+$router->post('/cluboffice/events/update',             'App\Controllers\ClubOfficeController', 'updateEvent');
+$router->get('/cluboffice/events/delete/{id}',         'App\Controllers\ClubOfficeController', 'deleteEvent');
+$router->get('/cluboffice/gallery',                   'App\Controllers\ClubOfficeController', 'gallery');
+$router->post('/cluboffice/gallery/store',             'App\Controllers\ClubOfficeController', 'storeGallery');
+$router->get('/cluboffice/gallery/delete/{id}',        'App\Controllers\ClubOfficeController', 'deleteGallery');
 
 $router->dispatch();

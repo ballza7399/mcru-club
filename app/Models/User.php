@@ -28,7 +28,7 @@ class User extends Model
 
             if ($user['role'] === 'student') {
                 // Check if they are a president of any club to grant access to backend management
-                $stmtPres = $this->db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ?');
+                $stmtPres = $this->db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ? AND status = "approved"');
                 $stmtPres->execute([$user['id']]);
                 if ((int)$stmtPres->fetchColumn() > 0) {
                     $user['role'] = 'president';
