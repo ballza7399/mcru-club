@@ -9,7 +9,7 @@ class RoleController extends Controller
 {
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin');
         
         $roleModel = new Role;
         $clubModel = new Club;
@@ -66,7 +66,7 @@ class RoleController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin');
         
         $roleModel = new Role;
         $clubModel = new Club;
@@ -95,7 +95,7 @@ class RoleController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin');
         
         $roleId = (int)$id;
         $roleModel = new Role;
@@ -122,7 +122,7 @@ class RoleController extends Controller
 
     public function syncPermissions(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin');
         
         $roleModel = new Role;
         $clubModel = new Club;

@@ -77,11 +77,10 @@ window.addEventListener('error', function(e) {
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
                         <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
                     </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
-                        <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
-                    </a>
-                    
                     <?php if ($_SESSION['role'] === 'admin'): ?>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
+                            <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
+                        </a>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
                             <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
                         </a>

@@ -28,7 +28,7 @@ $userRole = $_SESSION['role'];
             </select>
         <?php endif; ?>
         
-        <?php if ($currentClubId > 0 || $userRole === 'president'): ?>
+        <?php if ($currentClubId > 0): ?>
             <!-- Add Custom Role Button -->
             <button class="btn-gold-custom" data-bs-toggle="modal" data-bs-target="#addRoleModal">
                 <i class="fa-solid fa-plus me-1"></i> เพิ่มตำแหน่งในชมรม
@@ -113,7 +113,7 @@ $userRole = $_SESSION['role'];
 </div>
 
 <!-- Modal: Add Club Role -->
-<?php if ($currentClubId > 0 || $userRole === 'president'): ?>
+<?php if ($currentClubId > 0): ?>
 <div class="modal fade" id="addRoleModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
