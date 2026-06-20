@@ -108,6 +108,8 @@ $router->get('/backoffice/pdpa',                  'App\Controllers\HomeControlle
 $router->post('/backoffice/pdpa/update',          'App\Controllers\HomeController', 'pdpaUpdate');
 $router->get('/backoffice/settings/footer',       'App\Controllers\HomeController', 'footerSettings');
 $router->post('/backoffice/settings/footer/update', 'App\Controllers\HomeController', 'footerSettingsUpdate');
+$router->get('/backoffice/settings/mourning',     'App\Controllers\HomeController', 'mourningSettings');
+$router->post('/backoffice/settings/mourning/update', 'App\Controllers\HomeController', 'mourningSettingsUpdate');
 
 $router->post('/backoffice/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
 $router->post('/backoffice/majors/update',    'App\Controllers\FacultyController', 'updateMajor');

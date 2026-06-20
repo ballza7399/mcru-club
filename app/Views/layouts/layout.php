@@ -25,6 +25,9 @@ window.addEventListener('error', function(e) {
 </script>
 </head>
 <body>
+<?php if (getSetting('mourning_enabled', '0') === '1'): ?>
+    <?php require BASE_PATH . '/app/Views/layouts/mourning.php'; ?>
+<?php endif; ?>
 <?php require BASE_PATH . '/app/Views/layouts/navbar.php'; ?>
 <div class="container pb-5 mt-4 flex-grow-1">
 <?php if ($flash): ?>

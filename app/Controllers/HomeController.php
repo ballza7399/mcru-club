@@ -216,5 +216,63 @@ class HomeController extends Controller
         
         $this->redirect('/backoffice/settings/footer');
     }
+
+    public function mourningSettings(): void
+    {
+        $this->requireRole('admin');
+        
+        $db = \App\Core\Database::instance();
+        $settingsRaw = $db->query("SELECT * FROM site_settings WHERE setting_group = 'mourning'")->fetchAll();
+        
+        $settings = [];
+        foreach ($settingsRaw as $s) {
+            $settings[$s['setting_key']] = $s['setting_value'];
+        }
+        
+        $this->view('home/mourning_settings', [
+            'settings'   => $settings,
+            'activePage' => 'mourning_settings',
+            'pageTitle'  => 'จัดการระบบไว้อาลัยก่อนเข้าเว็บไซต์'
+        ], 'backoffice');
+    }
+
+    public function mourningSettingsUpdate(): void
+    {
+        $this->requireRole('admin');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $db = \App\Core\Database::instance();
+            
+            $updatableKeys = [
+                'mourning_enabled',
+                'mourning_image_url',
+                'mourning_duration'
+            ];
+            
+            try {
+                $db->beginTransaction();
+                
+                $stmt = $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                
+                foreach ($updatableKeys as $key) {
+                    $val = trim($_POST[$key] ?? '');
+                    if ($key === 'mourning_duration') {
+                        $val = (int)$val;
+                        if ($val <= 0) $val = 3;
+                    }
+                    $stmt->execute([$val, $key]);
+                }
+                
+                $db->commit();
+                $this->flash('อัปเดตการตั้งค่าระบบไว้อาลัยสำเร็จเรียบร้อยแล้ว');
+            } catch (\Exception $e) {
+                $db->rollBack();
+                $this->flash('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+            }
+        }
+        
+        $this->redirect('/backoffice/settings/mourning');
+    }
 }
+
 

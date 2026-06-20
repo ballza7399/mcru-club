@@ -28,6 +28,8 @@ if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'gallery';
 } elseif (str_contains($uri, 'backoffice/settings/footer')) {
     $activePage = 'footer_settings';
+} elseif (str_contains($uri, 'backoffice/settings/mourning')) {
+    $activePage = 'mourning_settings';
 }
 ?>
 <!DOCTYPE html>
@@ -96,6 +98,9 @@ window.addEventListener('error', function(e) {
                         </a>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'footer_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/footer') ?>">
                             <i class="fa-solid fa-list-check me-2"></i>จัดการข้อมูล Footer
+                        </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'mourning_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/mourning') ?>">
+                            <i class="fa-solid fa-ribbon me-2"></i>ตั้งค่าหน้าไว้อาลัย
                         </a>
                     <?php endif; ?>
                     
