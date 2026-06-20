@@ -106,6 +106,8 @@ $router->get('/backoffice/faculties/delete/{id}', 'App\Controllers\FacultyContro
 
 $router->get('/backoffice/pdpa',                  'App\Controllers\HomeController', 'pdpa');
 $router->post('/backoffice/pdpa/update',          'App\Controllers\HomeController', 'pdpaUpdate');
+$router->get('/backoffice/settings/footer',       'App\Controllers\HomeController', 'footerSettings');
+$router->post('/backoffice/settings/footer/update', 'App\Controllers\HomeController', 'footerSettingsUpdate');
 
 $router->post('/backoffice/majors/store',     'App\Controllers\FacultyController', 'storeMajor');
 $router->post('/backoffice/majors/update',    'App\Controllers\FacultyController', 'updateMajor');

@@ -159,4 +159,62 @@ class HomeController extends Controller
         }
         $this->redirect('/backoffice/pdpa');
     }
+
+    public function footerSettings(): void
+    {
+        $this->requireRole('admin');
+        
+        $db = \App\Core\Database::instance();
+        $settingsRaw = $db->query("SELECT * FROM site_settings WHERE setting_group = 'footer'")->fetchAll();
+        
+        $settings = [];
+        foreach ($settingsRaw as $s) {
+            $settings[$s['setting_key']] = $s['setting_value'];
+        }
+        
+        $this->view('home/footer_settings', [
+            'settings'   => $settings,
+            'activePage' => 'footer_settings',
+            'pageTitle'  => 'จัดการข้อมูล Footer และช่องทางการติดต่อ'
+        ], 'backoffice');
+    }
+
+    public function footerSettingsUpdate(): void
+    {
+        $this->requireRole('admin');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $db = \App\Core\Database::instance();
+            
+            $updatableKeys = [
+                'footer_about_text',
+                'footer_facebook_url',
+                'footer_youtube_url',
+                'footer_website_url',
+                'footer_contact_address',
+                'footer_contact_phone',
+                'footer_contact_email'
+            ];
+            
+            try {
+                $db->beginTransaction();
+                
+                $stmt = $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                
+                foreach ($updatableKeys as $key) {
+                    $val = trim($_POST[$key] ?? '');
+                    $stmt->execute([$val, $key]);
+                }
+                
+                $db->commit();
+                $this->flash('อัปเดตข้อมูล Footer และช่องทางการติดต่อสำเร็จเรียบร้อยแล้ว');
+            } catch (\Exception $e) {
+                $db->rollBack();
+                $this->flash('เกิดข้อผิดพลาดในการอัปเดต: ' . $e->getMessage());
+            }
+        }
+        
+        $this->redirect('/backoffice/settings/footer');
+    }
 }
+

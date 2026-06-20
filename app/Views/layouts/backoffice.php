@@ -26,6 +26,8 @@ if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'events';
 } elseif (str_contains($uri, 'backoffice/gallery')) {
     $activePage = 'gallery';
+} elseif (str_contains($uri, 'backoffice/settings/footer')) {
+    $activePage = 'footer_settings';
 }
 ?>
 <!DOCTYPE html>
@@ -91,6 +93,9 @@ window.addEventListener('error', function(e) {
                         </a>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'pdpa' ? 'active' : '' ?>" href="<?= url('backoffice/pdpa') ?>">
                             <i class="fa-solid fa-scale-balanced me-2"></i>จัดการนโยบาย PDPA
+                        </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'footer_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/footer') ?>">
+                            <i class="fa-solid fa-list-check me-2"></i>จัดการข้อมูล Footer
                         </a>
                     <?php endif; ?>
                     

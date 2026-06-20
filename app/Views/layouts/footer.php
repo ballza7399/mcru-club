@@ -14,12 +14,18 @@
                         <span class="footer-brand-text fw-bold">MCRU<span class="fw-light">Clubs</span></span>
                     </div>
                     <p class="footer-desc mb-3">
-                        ระบบจัดการและรวมศูนย์ข้อมูลชมรมนักศึกษา มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง ส่งเสริมการทำกิจกรรม แลกเปลี่ยนเรียนรู้ สร้างมิตรภาพ และพัฒนาทักษะชีวิตของนักศึกษานอกห้องเรียนอย่างสร้างสรรค์
+                        <?= e(getSetting('footer_about_text', 'ระบบจัดการและรวมศูนย์ข้อมูลชมรมนักศึกษา มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง ส่งเสริมการทำกิจกรรม แลกเปลี่ยนเรียนรู้ สร้างมิตรภาพ และพัฒนาทักษะชีวิตของนักศึกษานอกห้องเรียนอย่างสร้างสรรค์')) ?>
                     </p>
                     <div class="footer-socials d-flex gap-2">
-                        <a href="https://facebook.com" target="_blank" class="social-link" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://youtube.com" target="_blank" class="social-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="https://www.mcru.ac.th" target="_blank" class="social-link" title="Website MCRU"><i class="fa-solid fa-globe"></i></a>
+                        <?php if ($fb = getSetting('footer_facebook_url')): ?>
+                            <a href="<?= e($fb) ?>" target="_blank" class="social-link" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                        <?php endif; ?>
+                        <?php if ($yt = getSetting('footer_youtube_url')): ?>
+                            <a href="<?= e($yt) ?>" target="_blank" class="social-link" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <?php endif; ?>
+                        <?php if ($web = getSetting('footer_website_url')): ?>
+                            <a href="<?= e($web) ?>" target="_blank" class="social-link" title="Website MCRU"><i class="fa-solid fa-globe"></i></a>
+                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -42,15 +48,15 @@
                     <ul class="footer-contact-list list-unstyled m-0 p-0">
                         <li class="d-flex align-items-start mb-2">
                             <i class="fa-solid fa-location-dot mt-1 me-2 text-warning"></i>
-                            <span>มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง<br>เลขที่ 46 หมู่ 3 ต.จอมบึง อ.จอมบึง จ.ราชบุรี 70150</span>
+                            <span><?= nl2br(e(getSetting('footer_contact_address', "มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง\nเลขที่ 46 หมู่ 3 ต.จอมบึง อ.จอมบึง จ.ราชบุรี 70150"))) ?></span>
                         </li>
                         <li class="d-flex align-items-center mb-2">
                             <i class="fa-solid fa-phone me-2 text-warning"></i>
-                            <span>โทรศัพท์: 032-261-790</span>
+                            <span>โทรศัพท์: <?= e(getSetting('footer_contact_phone', '032-261-790')) ?></span>
                         </li>
                         <li class="d-flex align-items-center">
                             <i class="fa-solid fa-envelope me-2 text-warning"></i>
-                            <span>อีเมล: info@mcru.ac.th</span>
+                            <span>อีเมล: <?= e(getSetting('footer_contact_email', 'info@mcru.ac.th')) ?></span>
                         </li>
                     </ul>
                 </div>

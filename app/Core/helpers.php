@@ -173,4 +173,19 @@ function getMyConsents(): array
     }
 }
 
+/** ดึงค่าการตั้งค่าจากฐานข้อมูล */
+function getSetting(string $key, string $default = ''): string
+{
+    try {
+        $db = \App\Core\Database::instance();
+        $stmt = $db->prepare("SELECT setting_value FROM site_settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        $val = $stmt->fetchColumn();
+        return ($val !== false) ? (string)$val : $default;
+    } catch (\Exception $e) {
+        return $default;
+    }
+}
+
+
 
