@@ -91,10 +91,9 @@ $router->get('/backoffice/clubs',      'App\Controllers\ClubController', 'manage
 $router->post('/backoffice/clubs/store',      'App\Controllers\ClubController', 'store');
 $router->post('/backoffice/clubs/update',     'App\Controllers\ClubController', 'update');
 $router->get('/backoffice/clubs/delete/{id}', 'App\Controllers\ClubController', 'delete');
-$router->get('/backoffice/clubs/approve/{id}', 'App\Controllers\ClubController', 'approveClub');
-$router->get('/backoffice/clubs/reject/{id}',  'App\Controllers\ClubController', 'rejectClub');
-$router->post('/backoffice/clubs/correct', 'App\Controllers\ClubController', 'correctClub');
-$router->post('/backoffice/clubs/reject',  'App\Controllers\ClubController', 'rejectClubSubmit');
+$router->get('/backoffice/clubs/requests', 'App\Controllers\ClubController', 'requests');
+$router->get('/backoffice/clubs/requests/detail/{id}', 'App\Controllers\ClubController', 'requestDetail');
+$router->post('/backoffice/clubs/requests/action', 'App\Controllers\ClubController', 'requestAction');
 $router->post('/backoffice/clubs/verify-members/approve', 'App\Controllers\ClubController', 'approveVerification');
 $router->post('/backoffice/clubs/verify-members/correct', 'App\Controllers\ClubController', 'correctVerification');
 $router->get('/backoffice/clubs/members',     'App\Controllers\ClubController', 'members');

@@ -68,25 +68,12 @@
                     </td>
                     <td>
                         <div class="d-flex gap-1 flex-wrap">
-                            <!-- View Proposal Details Button -->
-                            <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#viewProposalModal<?= (int) $row['id'] ?>">
-                                <i class="fa-solid fa-file-invoice me-1"></i>ดูใบเสนอขอ
-                            </button>
-
-                            <?php if ($row['status'] === 'pending' && ($role === 'admin' || $role === 'staff')): ?>
-                                <a href="<?= url('backoffice/clubs/approve/' . (int) $row['id']) ?>" 
-                                   class="btn btn-sm btn-success text-white"
-                                   data-confirm="ยืนยันการอนุมัติจัดตั้งชมรมนี้ในระยะแรก?">
-                                    <i class="fa-solid fa-circle-check me-1"></i>อนุมัติจัดตั้ง
+                            <?php if ($row['status'] !== 'approved'): ?>
+                                <a href="<?= url('backoffice/clubs/requests/detail/' . (int) $row['id']) ?>" class="btn btn-sm btn-outline-info">
+                                    <i class="fa-solid fa-eye me-1"></i>ดูรายละเอียดการเสนอขอ
                                 </a>
-                                <button class="btn btn-sm btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#correctModal<?= $row['id'] ?>">
-                                    <i class="fa-solid fa-pen-to-square me-1"></i>ส่งกลับแก้ไข
-                                </button>
-                                <button class="btn btn-sm btn-danger text-white" data-bs-toggle="modal" data-bs-target="#rejectModal<?= $row['id'] ?>">
-                                    <i class="fa-solid fa-circle-xmark me-1"></i>ปฏิเสธ
-                                </button>
                             <?php endif; ?>
-                            
+
                             <?php if ($row['status'] === 'approved' && $row['member_verification_status'] === 'pending' && ($role === 'admin' || $role === 'staff')): ?>
                                 <button class="btn btn-sm btn-primary text-white" data-bs-toggle="modal" data-bs-target="#verifyMembersModal<?= $row['id'] ?>">
                                     <i class="fa-solid fa-users-viewfinder me-1"></i>ตรวจรายชื่อสมาชิก
@@ -121,119 +108,7 @@
 
 <!-- Modals -->
 <?php foreach ($clubs as $row): ?>
-<!-- Modal: View Proposal Details -->
-<div class="modal fade" id="viewProposalModal<?= (int) $row['id'] ?>" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header modal-header--brand">
-                <h5 class="modal-title"><i class="fa-solid fa-file-invoice me-2"></i>รายละเอียดการเสนอขอก่อตั้งชมรม: <?= e($row['club_name']) ?></h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-start">
-                <div class="mb-3">
-                    <label class="fw-bold text-muted small">ชื่อชมรม</label>
-                    <div class="fs-5 fw-bold text-primary-custom"><?= e($row['club_name']) ?></div>
-                </div>
-                <div class="mb-3">
-                    <label class="fw-bold text-muted small">รายละเอียดชมรมเบื้องต้น</label>
-                    <p class="border p-3 rounded bg-light"><?= nl2br(e($row['description'])) ?></p>
-                </div>
-                <div class="mb-3">
-                    <label class="fw-bold text-muted small">อาจารย์ที่ปรึกษาชมรม</label>
-                    <div class="fw-bold"><i class="fa-solid fa-user-tie text-primary me-2"></i><?= e($row['advisor_name'] ?: 'ไม่ระบุ') ?></div>
-                </div>
-                <div class="mb-3">
-                    <label class="fw-bold text-muted small">วัตถุประสงค์ของการจัดตั้ง</label>
-                    <ul class="list-group">
-                        <?php 
-                        $objs = [];
-                        if (!empty($row['objectives'])) {
-                            $objs = json_decode($row['objectives'], true) ?: [];
-                        }
-                        if (empty($objs)):
-                        ?>
-                            <li class="list-group-item text-muted">ไม่ระบุวัตถุประสงค์</li>
-                        <?php else: ?>
-                            <?php foreach ($objs as $idx => $obj): ?>
-                                <li class="list-group-item"><strong>ข้อที่ <?= $idx + 1 ?>:</strong> <?= e($obj) ?></li>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </ul>
-                </div>
-                <?php if ($row['establishment_document']): ?>
-                <div class="mb-3 border-top pt-3">
-                    <label class="fw-bold text-muted d-block mb-2">เอกสารเสนอขอก่อตั้งที่แนบมา</label>
-                    <a href="<?= url($row['establishment_document']) ?>" class="btn btn-primary text-white" target="_blank">
-                        <i class="fa-solid fa-download me-1"></i> ดาวน์โหลดไฟล์เอกสารเสนอจัดตั้ง (<?= e(pathinfo($row['establishment_document'], PATHINFO_EXTENSION)) ?>)
-                    </a>
-                </div>
-                <?php endif; ?>
-                
-                <?php if ($row['rejection_reason']): ?>
-                <div class="mb-3 border-top pt-3">
-                    <label class="fw-bold text-danger d-block mb-1">รายละเอียดคำสั่งให้แก้ไข / เหตุผลที่ปฏิเสธ</label>
-                    <div class="p-3 bg-danger-subtle text-danger border rounded border-danger-subtle font-monospace" style="white-space: pre-wrap;"><?= e($row['rejection_reason']) ?></div>
-                </div>
-                <?php endif; ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Modal: Send Back for Correction -->
-<div class="modal fade" id="correctModal<?= (int) $row['id'] ?>" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning text-dark">
-                <h5 class="modal-title fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i>ส่งกลับแก้ไขคำขอจัดตั้งชมรม</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="<?= url('backoffice/clubs/correct') ?>">
-                <input type="hidden" name="club_id" value="<?= (int) $row['id'] ?>">
-                <div class="modal-body text-start">
-                    <p>ชมรม: <strong><?= e($row['club_name']) ?></strong></p>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">ระบุรายละเอียดสิ่งที่ต้องการให้แก้ไข <span class="text-danger">*</span></label>
-                        <textarea name="rejection_reason" class="form-control" rows="5" placeholder="กรุณาระบุสิ่งที่ต้องการให้นักศึกษาดำเนินการแก้ไขข้อมูล เช่น เอกสารเสนอขอก่อตั้งไม่ลงลายมือชื่อ, ให้ปรับแก้ชื่อชมรม หรือวัตถุประสงค์..." required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-warning text-dark">ส่งกลับแก้ไข</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Reject Club Proposal -->
-<div class="modal fade" id="rejectModal<?= (int) $row['id'] ?>" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold"><i class="fa-solid fa-circle-xmark me-2"></i>ปฏิเสธคำขอเสนอจัดตั้งชมรม</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="<?= url('backoffice/clubs/reject') ?>">
-                <input type="hidden" name="club_id" value="<?= (int) $row['id'] ?>">
-                <div class="modal-body text-start">
-                    <p>ชมรม: <strong><?= e($row['club_name']) ?></strong></p>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">ระบุเหตุผลการปฏิเสธจัดตั้ง <span class="text-danger">*</span></label>
-                        <textarea name="rejection_reason" class="form-control" rows="5" placeholder="ระบุเหตุผลการปฏิเสธการพิจารณาคำขอ..." required></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn btn-danger text-white">ปฏิเสธจัดตั้ง</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <!-- Modal: Verify Members Phase II -->
 <div class="modal fade" id="verifyMembersModal<?= (int) $row['id'] ?>" tabindex="-1">

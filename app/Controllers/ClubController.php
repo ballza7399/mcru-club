@@ -180,14 +180,89 @@ class ClubController extends Controller
         $this->redirect('/clubs');
     }
 
-    public function approveClub(string $id): void
+    public function requests(): void
     {
         $this->requireRole('admin', 'staff');
+
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+        $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
+        $offset = ($currentPage - 1) * $limit;
+
+        $db = \App\Core\Database::instance();
         
+        $stmtCount = $db->query('SELECT COUNT(*) FROM clubs WHERE president_id IS NOT NULL OR status != "approved"');
+        $totalRequests = (int)$stmtCount->fetchColumn();
+        $totalPages = (int)ceil($totalRequests / $limit);
+
+        $stmtList = $db->prepare('
+            SELECT c.*, u.name AS proposer_name, u.student_id AS proposer_student_id
+            FROM clubs c
+            LEFT JOIN users u ON c.president_id = u.id
+            WHERE c.president_id IS NOT NULL OR c.status != "approved"
+            ORDER BY CASE c.status 
+                WHEN "pending" THEN 1 
+                WHEN "correcting" THEN 2 
+                WHEN "approved" THEN 3 
+                ELSE 4 
+            END ASC, c.id DESC
+            LIMIT ? OFFSET ?
+        ');
+        $stmtList->bindValue(1, $limit, \PDO::PARAM_INT);
+        $stmtList->bindValue(2, $offset, \PDO::PARAM_INT);
+        $stmtList->execute();
+        $requests = $stmtList->fetchAll();
+
+        $this->view('clubs/requests', [
+            'requests' => $requests,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'limit' => $limit,
+            'pageTitle' => 'ตรวจสอบรายการคำขอจัดตั้งชมรมใหม่'
+        ], 'backoffice');
+    }
+
+    public function requestDetail(string $id): void
+    {
+        $this->requireRole('admin', 'staff');
         $clubId = (int)$id;
+
+        $db = \App\Core\Database::instance();
+        $stmt = $db->prepare('
+            SELECT c.*, u.name AS proposer_name, u.student_id AS proposer_student_id, 
+                   u.faculty AS proposer_faculty, u.major AS proposer_major, u.phone AS proposer_phone
+            FROM clubs c
+            LEFT JOIN users u ON c.president_id = u.id
+            WHERE c.id = ?
+        ');
+        $stmt->execute([$clubId]);
+        $club = $stmt->fetch();
+
+        if (!$club) {
+            throw new \Exception('ไม่พบข้อมูลคำขอก่อตั้งชมรมนี้', 404);
+        }
+
+        $this->view('clubs/request_detail', [
+            'club' => $club,
+            'pageTitle' => 'รายละเอียดคำเสนอขอก่อตั้งชมรม: ' . $club['club_name']
+        ], 'backoffice');
+    }
+
+    public function requestAction(): void
+    {
+        $this->requireRole('admin', 'staff');
+
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        $action = trim($_POST['action'] ?? '');
+        $reason = trim($_POST['rejection_reason'] ?? '');
+
         $clubModel = new Club;
         $club = $clubModel->findWithDetail($clubId);
-        if ($club) {
+
+        if (!$club) {
+            throw new \Exception('ไม่พบข้อมูลชมรมที่ต้องการดำเนินการ', 404);
+        }
+
+        if ($action === 'approve') {
             $clubModel->update($clubId, ['status' => 'approved', 'rejection_reason' => null]);
             
             // Upgrade submitting student user to president system role
@@ -199,7 +274,6 @@ class ClubController extends Controller
                 $stmtMemberCheck = $db->prepare('SELECT COUNT(*) FROM club_members WHERE club_id = ? AND user_id = ?');
                 $stmtMemberCheck->execute([$clubId, $club['president_id']]);
                 if ((int)$stmtMemberCheck->fetchColumn() === 0) {
-                    // President role in roles table is ID = 3
                     $stmtAddMember = $db->prepare('INSERT INTO club_members (club_id, user_id, role_id) VALUES (?, ?, 3)');
                     $stmtAddMember->execute([$clubId, $club['president_id']]);
                 }
@@ -212,49 +286,19 @@ class ClubController extends Controller
                 );
             }
             $this->flash('อนุมัติคำเสนอจัดตั้งชมรมเข้าระบบเรียบร้อยแล้ว');
-        }
-        $this->redirect('/backoffice/clubs');
-    }
 
-    public function rejectClub(string $id): void
-    {
-        $this->requireRole('admin', 'staff');
-        
-        $clubId = (int)$id;
-        $clubModel = new Club;
-        $club = $clubModel->findWithDetail($clubId);
-        if ($club) {
-            $clubModel->update($clubId, ['status' => 'rejected']);
-
-            if ($club['president_id']) {
-                // Send Notification
-                (new \App\Models\Notification)->createNotification(
-                    (int)$club['president_id'],
-                    'คำขอเสนอจัดตั้งชมรมถูกปฏิเสธ',
-                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณไม่ผ่านการอนุมัติ'
-                );
+        } elseif ($action === 'correct') {
+            if ($reason === '') {
+                $this->flash('กรุณาระบุรายละเอียดสิ่งที่ต้องการให้แก้ไข');
+                $this->redirect('/backoffice/clubs/requests/detail/' . $clubId);
+                return;
             }
 
-            $this->flash('ปฏิเสธการเสนอจัดตั้งชมรมเรียบร้อยแล้ว');
-        }
-        $this->redirect('/backoffice/clubs');
-    }
-
-    public function correctClub(): void
-    {
-        $this->requireRole('admin', 'staff');
-        
-        $clubId = (int)($_POST['club_id'] ?? 0);
-        $reason = trim($_POST['rejection_reason'] ?? '');
-        
-        $clubModel = new Club;
-        $club = $clubModel->findWithDetail($clubId);
-        if ($club) {
             $clubModel->update($clubId, [
                 'status' => 'correcting',
                 'rejection_reason' => $reason
             ]);
-            
+
             if ($club['president_id']) {
                 (new \App\Models\Notification)->createNotification(
                     (int)$club['president_id'],
@@ -263,25 +307,19 @@ class ClubController extends Controller
                 );
             }
             $this->flash('ส่งกลับแก้ไขข้อมูลชมรมเรียบร้อยแล้ว');
-        }
-        $this->redirect('/backoffice/clubs');
-    }
 
-    public function rejectClubSubmit(): void
-    {
-        $this->requireRole('admin', 'staff');
-        
-        $clubId = (int)($_POST['club_id'] ?? 0);
-        $reason = trim($_POST['rejection_reason'] ?? '');
-        
-        $clubModel = new Club;
-        $club = $clubModel->findWithDetail($clubId);
-        if ($club) {
+        } elseif ($action === 'reject') {
+            if ($reason === '') {
+                $this->flash('กรุณาระบุเหตุผลการปฏิเสธจัดตั้ง');
+                $this->redirect('/backoffice/clubs/requests/detail/' . $clubId);
+                return;
+            }
+
             $clubModel->update($clubId, [
                 'status' => 'rejected',
                 'rejection_reason' => $reason
             ]);
-            
+
             if ($club['president_id']) {
                 (new \App\Models\Notification)->createNotification(
                     (int)$club['president_id'],
@@ -290,8 +328,11 @@ class ClubController extends Controller
                 );
             }
             $this->flash('ปฏิเสธคำขอก่อตั้งชมรมเรียบร้อยแล้ว');
+        } else {
+            throw new \Exception('การทำงานไม่ถูกต้อง', 400);
         }
-        $this->redirect('/backoffice/clubs');
+
+        $this->redirect('/backoffice/clubs/requests');
     }
 
     public function approveVerification(): void

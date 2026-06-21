@@ -10,6 +10,8 @@ $uri = $_SERVER['REQUEST_URI'] ?? '';
 $activePage = 'dashboard';
 if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'members';
+} elseif (str_contains($uri, 'backoffice/clubs/requests')) {
+    $activePage = 'requests';
 } elseif (str_contains($uri, 'backoffice/clubs')) {
     $activePage = 'clubs';
 } elseif (str_contains($uri, 'backoffice/applications')) {
@@ -88,6 +90,9 @@ window.addEventListener('error', function(e) {
                     </div>
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
                         <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'requests' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/requests') ?>">
+                        <i class="fa-solid fa-file-signature me-2"></i>ตรวจสอบการขอจัดตั้งชมรม
                     </a>
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('backoffice/applications') ?>">
                         <i class="fa-solid fa-user-check me-2"></i>จัดการคำขอสมัครสมาชิก
