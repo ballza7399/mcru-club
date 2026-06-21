@@ -19,13 +19,21 @@ class Queue
             return;
         }
 
+        if (!self::canEnter()) {
+            header('Location: ' . BASE_URL . '/waiting-room');
+            exit;
+        }
+    }
+
+    public static function canEnter(): bool
+    {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
         $sessionId = session_id();
         if (!$sessionId) {
-            return;
+            return false;
         }
 
         if (!is_dir(self::QUEUE_DIR)) {
@@ -35,29 +43,22 @@ class Queue
         $now = time();
         $userFile = self::QUEUE_DIR . '/' . $sessionId;
 
-        // รันสุ่ม 10% ลบประวัติคิวที่หมดอายุแล้วเพื่อระบายทรัพยากรดิสก์
         if (rand(1, 100) <= 10) {
             self::cleanExpired($now);
         }
 
-        // ตรวจสอบว่าผู้ใช้คนนี้มีสิทธิ์เข้าใช้งานอยู่แล้วหรือไม่
         $hasAccess = file_exists($userFile);
 
         if (!$hasAccess) {
-            // นับจำนวนผู้ใช้ที่กำลังใช้งานระบบอยู่ ณ ปัจจุบัน
             $activeCount = self::getActiveCount($now);
-
             if ($activeCount >= self::MAX_ACTIVE_USERS) {
-                // คิวเต็ม! นำทางผู้ใช้คนนี้ไปยังหน้าพักคอย (Waiting Room)
-                header('Location: ' . BASE_URL . '/waiting-room');
-                exit;
+                return false;
             }
-
-            // ถ้าห้องว่าง ให้จองคิวการใช้งานโดยเขียนเวลาปัจจุบันลงในไฟล์
             @file_put_contents($userFile, $now);
+            return true;
         } else {
-            // หากมีคิวอยู่แล้ว ให้อัปเดตเวลาการใช้งานล่าสุด
             @touch($userFile);
+            return true;
         }
     }
 
