@@ -39,8 +39,8 @@ class Role extends Model
         return $stmt->fetch() ?: null;
     }
 
-    /** สร้างบทบาท/ตำแหน่งใหม่สำหรับชมรม */
-    public function createClubRole(int $clubId, string $roleKey, string $roleName): bool
+    /** สร้างบทบาท/ตำแหน่งใหม่สำหรับชมรม (หากกำหนดเป็น NULL จะเป็นตำแหน่งชมรมส่วนกลางที่ทุกชมรมใช้ร่วมกัน) */
+    public function createClubRole(?int $clubId, string $roleKey, string $roleName): bool
     {
         $stmt = $this->db->prepare(
             'INSERT INTO roles (role_key, role_name, scope, club_id) 
@@ -50,10 +50,10 @@ class Role extends Model
     }
 
     /** ลบบทบาท/ตำแหน่งของชมรม */
-    public function deleteClubRole(int $roleId, int $clubId): bool
+    public function deleteClubRole(int $roleId): bool
     {
-        $stmt = $this->db->prepare('DELETE FROM roles WHERE id = ? AND club_id = ?');
-        return $stmt->execute([$roleId, $clubId]);
+        $stmt = $this->db->prepare('DELETE FROM roles WHERE id = ?');
+        return $stmt->execute([$roleId]);
     }
 
     /** ดึงรายการสิทธิ์ใช้งานระบบแบ่งตามระดับขอบเขต */

@@ -12,40 +12,24 @@ class RoleController extends Controller
         $this->requireRole('admin');
         
         $roleModel = new Role;
-        $clubModel = new Club;
         
-        $userId = $_SESSION['user_id'];
-        $userRole = $_SESSION['role'];
-        
-        $clubId = isset($_GET['club_id']) ? (int)$_GET['club_id'] : 0;
-        
-        if ($userRole === 'president') {
-            // ค้นหาชมรมที่คนนี้เป็นประธาน
-            $db = \App\Core\Database::instance();
-            $stmt = $db->prepare('SELECT id FROM clubs WHERE president_id = ?');
-            $stmt->execute([$userId]);
-            $myClub = $stmt->fetch();
-            if (!$myClub) {
-                throw new \Exception('คุณไม่ได้เป็นประธานชมรมในระบบ', 403);
-            }
-            $clubId = (int)$myClub['id'];
+        $type = isset($_GET['type']) ? $_GET['type'] : 'system';
+        if ($type !== 'club') {
+            $type = 'system';
         }
         
         // ดึงบทบาททั้งหมดตามขอบเขต
-        if ($userRole === 'admin' && $clubId === 0) {
+        if ($type === 'system') {
             // แอดมินหลักกำลังจัดการสิทธิ์ระบบทั่วไป
             $roles = $roleModel->listSystemRoles();
             $permissions = $roleModel->listPermissions('system');
             $scopeLabel = 'ระบบหลัก';
         } else {
-            // จัดการระดับสิทธิ์ของตำแหน่งในชมรม
-            $roles = $roleModel->listClubRoles($clubId);
+            // จัดการระดับสิทธิ์ของตำแหน่งในชมรมส่วนกลาง (club_id เป็น NULL)
+            $roles = $roleModel->listClubRoles(null);
             $permissions = $roleModel->listPermissions('club');
-            $scopeLabel = 'ระดับชมรม';
+            $scopeLabel = 'ตำแหน่งชมรมส่วนกลาง';
         }
-        
-        $club = $clubId > 0 ? $clubModel->findWithDetail($clubId) : null;
-        $allClubsList = ($userRole === 'admin') ? $clubModel->allWithMemberCount() : [];
         
         // หา Permission mapping ของแต่ละ Role เพื่อส่งไปเช็คใน View
         $rolePerms = [];
@@ -57,10 +41,8 @@ class RoleController extends Controller
             'roles' => $roles,
             'permissions' => $permissions,
             'rolePerms' => $rolePerms,
-            'club' => $club,
-            'allClubsList' => $allClubsList,
-            'currentClubId' => $clubId,
-            'scopeLabel' => $scopeLabel
+            'scopeLabel' => $scopeLabel,
+            'type' => $type
         ], 'backoffice');
     }
 
@@ -69,28 +51,22 @@ class RoleController extends Controller
         $this->requireRole('admin');
         
         $roleModel = new Role;
-        $clubModel = new Club;
-        
-        $clubId = (int)($_POST['club_id'] ?? 0);
         $roleName = trim($_POST['role_name'] ?? '');
+        $type = $_POST['type'] ?? 'club';
         
         if ($roleName === '') {
             $this->flash('กรุณากรอกชื่อตำแหน่ง');
-            $this->redirect('/backoffice/roles?club_id=' . $clubId);
+            $this->redirect('/backoffice/roles?type=' . $type);
         }
         
-        // เช็คสิทธิ์การจัดการชมรม
-        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
-        if (!$canManage) {
-            $this->redirect('/');
-        }
-        
-        // สร้าง role_key แบบสุ่มหรือตามตัวอักษร
+        // สร้าง role_key แบบสุ่ม
         $roleKey = 'custom_' . time() . '_' . rand(10, 99);
         
-        $roleModel->createClubRole($clubId, $roleKey, $roleName);
+        // สร้างตำแหน่งกลาง (club_id = NULL)
+        $roleModel->createClubRole(null, $roleKey, $roleName);
+        
         $this->flash('เพิ่มตำแหน่งใหม่สำเร็จแล้ว');
-        $this->redirect('/backoffice/roles?club_id=' . $clubId);
+        $this->redirect('/backoffice/roles?type=' . $type);
     }
 
     public function delete(string $id): void
@@ -99,25 +75,17 @@ class RoleController extends Controller
         
         $roleId = (int)$id;
         $roleModel = new Role;
-        $clubModel = new Club;
         
         $role = $roleModel->find($roleId);
-        if (!$role || $role['scope'] !== 'club' || $role['club_id'] === null) {
-            $this->flash('ไม่สามารถลบตำแหน่งของระบบหลักได้');
-            $this->redirect('/backoffice/roles');
+        // สามารถลบได้เฉพาะบทบาทระดับชมรมที่เป็น custom ที่สร้างขึ้นใหม่ (เริ่มต้นด้วย custom_)
+        if (!$role || $role['scope'] !== 'club' || strpos($role['role_key'], 'custom_') !== 0) {
+            $this->flash('ไม่สามารถลบตำแหน่งระบบหลักหรือตำแหน่งเริ่มต้นได้');
+            $this->redirect('/backoffice/roles?type=club');
         }
         
-        $clubId = (int)$role['club_id'];
-        
-        // เช็คสิทธิ์
-        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
-        if (!$canManage) {
-            $this->redirect('/');
-        }
-        
-        $roleModel->deleteClubRole($roleId, $clubId);
-        $this->flash('ลบตำแหน่งชมรมเรียบร้อยแล้ว');
-        $this->redirect('/backoffice/roles?club_id=' . $clubId);
+        $roleModel->deleteClubRole($roleId);
+        $this->flash('ลบตำแหน่งชมรมส่วนกลางเรียบร้อยแล้ว');
+        $this->redirect('/backoffice/roles?type=club');
     }
 
     public function syncPermissions(): void
@@ -125,37 +93,19 @@ class RoleController extends Controller
         $this->requireRole('admin');
         
         $roleModel = new Role;
-        $clubModel = new Club;
         
         $roleId = (int)$_POST['role_id'];
-        $clubId = (int)($_POST['club_id'] ?? 0);
         $permissionIds = $_POST['permissions'] ?? [];
         
         $role = $roleModel->find($roleId);
         if (!$role) {
-            $this->redirect('/');
-        }
-        
-        // เช็คสิทธิ์
-        if ($role['scope'] === 'system') {
-            if ($_SESSION['role'] !== 'admin') {
-                $this->redirect('/');
-            }
-        } else {
-            $targetClubId = $role['club_id'] ?? $clubId;
-            $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($targetClubId, $_SESSION['user_id']);
-            if (!$canManage) {
-                $this->redirect('/');
-            }
+            $this->redirect('/backoffice/roles');
         }
         
         $roleModel->syncRolePermissions($roleId, $permissionIds);
         $this->flash('บันทึกการตั้งค่าสิทธิ์เรียบร้อยแล้ว');
         
-        $redirectUrl = '/backoffice/roles';
-        if ($clubId > 0) {
-            $redirectUrl .= '?club_id=' . $clubId;
-        }
-        $this->redirect($redirectUrl);
+        $type = $role['scope'] === 'system' ? 'system' : 'club';
+        $this->redirect('/backoffice/roles?type=' . $type);
     }
 }
