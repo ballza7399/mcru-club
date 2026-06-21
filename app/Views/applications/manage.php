@@ -17,11 +17,14 @@
                     <td><?= e($row['phone']) ?></td>
                     <td><span class="badge bg-light text-dark border px-2 py-1"><?= e($row['club_name']) ?></span></td>
                     <td>
-                        <?php match ($row['status']) {
-                            'pending'  => print '<span class="status-badge status-badge--pending"><i class="fa-solid fa-clock"></i> รอตรวจสอบ</span>',
-                            'approved' => print '<span class="status-badge status-badge--approved"><i class="fa-solid fa-circle-check"></i> อนุมัติแล้ว</span>',
-                            default    => print '<span class="status-badge status-badge--rejected"><i class="fa-solid fa-circle-xmark"></i> ปฏิเสธ</span>',
-                        }; ?>
+                        <?php if ($row['status'] === 'pending'): ?>
+                            <span class="status-badge status-badge--pending"><i class="fa-solid fa-clock"></i> รอตรวจสอบ</span>
+                        <?php elseif ($row['status'] === 'approved'): ?>
+                            <span class="status-badge status-badge--approved"><i class="fa-solid fa-circle-check"></i> อนุมัติแล้ว</span>
+                        <?php else: ?>
+                            <span class="status-badge status-badge--rejected"><i class="fa-solid fa-circle-xmark"></i> ปฏิเสธ</span>
+                        <?php endif; ?>
+
                     </td>
                     <td>
                         <?php if ($row['status'] === 'pending'): ?>

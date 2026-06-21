@@ -48,16 +48,50 @@ class Image
         if ($info === false) {
             return '';
         }
+
+        // เช็คว่า GD extension ถูกติดตั้งและเปิดใช้งานหรือไม่
+        if (!extension_loaded('gd')) {
+            // หากไม่มี GD extension ให้ใช้โหมดทดแทน (Fallback) โดยย้ายไฟล์ที่อัปโหลดไปเก็บโดยตรง
+            $dir = BASE_PATH . '/uploads/';
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            $origName = $file['name'] ?? '';
+            $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) {
+                $ext = 'jpg';
+            }
+            if ($ext === 'jpeg') $ext = 'jpg';
+            
+            $name    = time() . '_' . $prefix . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $relPath = 'uploads/' . $name;
+            $absPath = $dir . $name;
+            
+            if (@move_uploaded_file($tmp, $absPath)) {
+                return $relPath;
+            }
+            return '';
+        }
+
         [$srcW, $srcH] = $info;
         $mime = $info['mime'];
 
-        $src = match ($mime) {
-            'image/jpeg' => @imagecreatefromjpeg($tmp),
-            'image/png'  => @imagecreatefrompng($tmp),
-            'image/webp' => @imagecreatefromwebp($tmp),
-            'image/gif'  => @imagecreatefromgif($tmp),
-            default      => null,
-        };
+        $src = null;
+        switch ($mime) {
+            case 'image/jpeg':
+                $src = @imagecreatefromjpeg($tmp);
+                break;
+            case 'image/png':
+                $src = @imagecreatefrompng($tmp);
+                break;
+            case 'image/webp':
+                $src = @imagecreatefromwebp($tmp);
+                break;
+            case 'image/gif':
+                $src = @imagecreatefromgif($tmp);
+                break;
+        }
+
         if (!$src) {
             return '';
         }
@@ -87,22 +121,36 @@ class Image
         }
 
         // gif → png เพื่อคงความโปร่งใส, ที่เหลือคงชนิดเดิม
-        $ext = match ($mime) {
-            'image/jpeg' => 'jpg',
-            'image/png'  => 'png',
-            'image/webp' => 'webp',
-            'image/gif'  => 'png',
-        };
+        $ext = 'png';
+        switch ($mime) {
+            case 'image/jpeg':
+                $ext = 'jpg';
+                break;
+            case 'image/png':
+            case 'image/gif':
+                $ext = 'png';
+                break;
+            case 'image/webp':
+                $ext = 'webp';
+                break;
+        }
 
         $name    = time() . '_' . $prefix . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
         $relPath = 'uploads/' . $name;
         $absPath = $dir . $name;
 
-        $ok = match ($ext) {
-            'jpg'  => imagejpeg($dst, $absPath, self::JPEG_QUALITY),
-            'png'  => imagepng($dst, $absPath, self::PNG_LEVEL),
-            'webp' => imagewebp($dst, $absPath, self::WEBP_QUALITY),
-        };
+        $ok = false;
+        switch ($ext) {
+            case 'jpg':
+                $ok = imagejpeg($dst, $absPath, self::JPEG_QUALITY);
+                break;
+            case 'png':
+                $ok = imagepng($dst, $absPath, self::PNG_LEVEL);
+                break;
+            case 'webp':
+                $ok = imagewebp($dst, $absPath, self::WEBP_QUALITY);
+                break;
+        }
 
         imagedestroy($src);
         imagedestroy($dst);
@@ -110,3 +158,4 @@ class Image
         return $ok ? $relPath : '';
     }
 }
+

@@ -109,12 +109,18 @@ class ErrorHandler
         $debug   = self::$debug;
         $status  = self::statusFor($e);
 
-        // ข้อความที่ปลอดภัยสำหรับผู้ใช้ทั่วไป
-        $userMessage = match ($status) {
-            403     => 'คุณไม่มีสิทธิ์เข้าถึงส่วนนี้',
-            404     => 'ไม่พบหน้าที่คุณต้องการ',
-            default => 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง',
-        };
+        switch ($status) {
+            case 403:
+                $userMessage = 'คุณไม่มีสิทธิ์เข้าถึงส่วนนี้';
+                break;
+            case 404:
+                $userMessage = 'ไม่พบหน้าที่คุณต้องการ';
+                break;
+            default:
+                $userMessage = 'เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง';
+                break;
+        }
+
 
         // รายละเอียดเชิงเทคนิคแบบเต็ม (เหมือน developer exception page ของ .NET)
         // แสดงเฉพาะตอน debug — มี exception chain (inner) + stack trace
