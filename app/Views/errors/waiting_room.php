@@ -520,71 +520,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // แม่แบบ SVG นักศึกษาฝั่งคลายเอนต์สำหรับการเรนเดอร์คิวไดนามิก
     const studentTemplates = [
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 0 (เดิมคือ Student 12)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="36" r="10" fill="#ffedd5" />
             <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0369a1" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 1 (เดิมคือ Student 1)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="34" r="10" fill="#fed7aa" />
             <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
             <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
             <line x1="40" y1="24" x2="22" y2="33" stroke="#f9a826" stroke-width="1.5" />
             <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#1a4980" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 2 (เดิมคือ Student 2)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
             <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#475569" />
             <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#ea580c" />
             <rect x="20" y="62" width="7" height="18" rx="2" fill="#f9a826" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 3 (เดิมคือ Student 3)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="36" r="10" fill="#ffedd5" />
             <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
             <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
             <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
             <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#059669" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 4 (เดิมคือ Student 4)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="34" r="10" fill="#fbcfe8" />
             <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
             <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
             <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#0284c7" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 5 (เดิมคือ Student 5)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="35" r="9" fill="#fed7aa" />
             <path d="M30,35 C30,22 50,22 50,35 C50,42 30,42 30,35" fill="#475569" />
             <path d="M26,85 L54,85 L48,56 L32,56 Z" fill="#db2777" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 6 (เดิมคือ Student 6)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="34" r="10" fill="#ffedd5" />
             <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
             <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
             <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#a21caf" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 7 (เดิมคือ Student 7)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="37" r="9" fill="#fed7aa" />
             <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#0b2c5c" />
             <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#be185d" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 8 (เดิมคือ Student 8)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="36" r="10" fill="#fbcfe8" />
             <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
             <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
             <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
             <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0f766e" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 9 (เดิมคือ Student 9)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="38" r="9" fill="#ffedd5" />
             <path d="M30,38 C30,25 50,25 50,38 C50,45 30,45 30,38" fill="#475569" />
             <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#6d28d9" />
         </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 10 (เดิมคือ Student 10)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="35" r="10" fill="#fed7aa" />
             <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
             <rect x="38" y="32" width="4" height="5" fill="#475569" />
             <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
-        </svg>`,
-        `<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75">
+        // Template 11 (เดิมคือ Student 11)
+        `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
             <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#1e293b" />
             <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#b91c1c" />
@@ -599,28 +610,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentQueuePosition === queuePosition) return;
         currentQueuePosition = queuePosition;
 
-        queueWrapper.innerHTML = '';
+        let htmlContent = '';
         const count = Math.min(queuePosition, 20);
 
         for (let i = count; i >= 1; i--) {
             const delay = (i * 0.15) + 's';
             const templateIndex = i % 12;
-            const html = studentTemplates[templateIndex];
+            let html = studentTemplates[templateIndex];
 
-            // แปลง SVG String เป็น DOM Node
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'image/svg+xml');
-            const svgNode = doc.documentElement;
+            // แทรกคลาสเงาสีเทา (Silhouette) หากเป็น 5 ตัวสุดท้ายของแถวเมื่อคิวเกิน 20
+            const silhouetteClass = (queuePosition > 20 && i > 15) ? 'silhouette' : '';
+            
+            html = html.replace('{silhouette}', silhouetteClass)
+                       .replace('{delay}', delay);
 
-            svgNode.style.animationDelay = delay;
-
-            // หากมีคิวมากกว่า 20 และตัวนี้อยู่ที่ท้ายแถว (5 ตัวสุดท้ายของความยาว 20) ให้ทำเป็นเงาสีเทา (Silhouette)
-            if (queuePosition > 20 && i > 15) {
-                svgNode.classList.add('silhouette');
-            }
-
-            queueWrapper.appendChild(svgNode);
+            htmlContent += html;
         }
+
+        queueWrapper.innerHTML = htmlContent;
     }
 
     // ระบบตรวจสอบคิวแบบ AJAX ทุกๆ 5 วินาที เพื่อหลีกเลี่ยงการรีเฟรชหน้าเบราว์เซอร์
