@@ -293,5 +293,28 @@ document.addEventListener('DOMContentLoaded', () => {
         f.value = currentFaculty;
         updateMajors();
     }
+
+    // Form submit confirmation
+    const form = document.getElementById('profile-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'ยืนยันการเปลี่ยนแปลง?',
+                text: 'คุณต้องการบันทึกการแก้ไขข้อมูลส่วนตัวใช่หรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0b2c5c',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ยืนยัน',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    }
 });
+
 </script>
