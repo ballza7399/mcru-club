@@ -51,6 +51,9 @@ $router->post('/auth/login',    'App\Controllers\AuthController', 'login');
 $router->get('/auth/register',  'App\Controllers\AuthController', 'register');
 $router->post('/auth/register', 'App\Controllers\AuthController', 'register');
 $router->get('/auth/logout',    'App\Controllers\AuthController', 'logout');
+$router->get('/profile',        'App\Controllers\AuthController', 'profile');
+$router->post('/profile/update', 'App\Controllers\AuthController', 'profileUpdate');
+
 
 $router->get('/clubs',             'App\Controllers\ClubController', 'list');
 $router->get('/clubs/detail/{id}', 'App\Controllers\ClubController', 'detail');

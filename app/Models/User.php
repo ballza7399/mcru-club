@@ -72,6 +72,51 @@ class User extends Model
         return $stmt->fetch() ?: null;
     }
 
+    /** ค้นหาข้อมูลผู้ใช้ด้วยรหัสผู้ใช้ ID */
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    /** ตรวจสอบว่าอีเมลนี้ถูกใช้งานโดยผู้ใช้คนอื่นหรือไม่ */
+    public function isEmailTakenByAnother(string $email, int $currentUserId): bool
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM users WHERE email = ? AND id != ?');
+        $stmt->execute([$email, $currentUserId]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /** อัปเดตข้อมูลส่วนตัว (Profile) ของผู้ใช้งาน */
+    public function updateProfile(int $id, array $data): bool
+    {
+        $sql = 'UPDATE users SET email = ?, faculty = ?, major = ?, phone = ?';
+        $params = [
+            $data['email'],
+            $data['faculty'],
+            $data['major'],
+            $data['phone']
+        ];
+
+        if (!empty($data['password'])) {
+            $sql .= ', password = ?';
+            $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+
+        if (array_key_exists('avatar', $data)) {
+            $sql .= ', avatar = ?';
+            $params[] = $data['avatar'];
+        }
+
+        $sql .= ' WHERE id = ?';
+        $params[] = $id;
+
+        $stmt = $this->db->prepare($sql);
+        return $stmt->execute($params);
+    }
+
+
     public function setRole(int $userId, string $role): void
     {
         $stmtRole = $this->db->prepare('SELECT id FROM roles WHERE role_key = ?');

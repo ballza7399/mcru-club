@@ -50,23 +50,43 @@
                     </div>
                 </li>
 
-                <li class="nav-item ms-lg-3 my-2 my-lg-0">
-                    <div class="user-profile-badge">
-                        <div class="avatar"><i class="fa-solid fa-user"></i></div>
-                        <div class="user-info text-start">
-                            <span class="name"><?= e($_SESSION['name'] ?? '') ?></span>
-                            <span class="role"><?php
-                                $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
-                                echo $roleLabel[$_SESSION['role'] ?? ''] ?? '';
-                            ?></span>
+                <li class="nav-item dropdown ms-lg-3 my-2 my-lg-0">
+                    <a class="nav-link p-0 d-inline-block text-decoration-none border-0" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
+
+                        <div class="user-profile-badge d-flex align-items-center">
+                            <div class="avatar overflow-hidden d-flex align-items-center justify-content-center" style="position: relative;">
+                                <?php if (!empty($_SESSION['avatar'])): ?>
+                                    <img src="<?= asset($_SESSION['avatar']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                <?php else: ?>
+                                    <i class="fa-solid fa-user"></i>
+                                <?php endif; ?>
+                            </div>
+                            <div class="user-info text-start me-1">
+                                <span class="name"><?= e($_SESSION['name'] ?? '') ?></span>
+                                <span class="role"><?php
+                                    $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
+                                    echo $roleLabel[$_SESSION['role'] ?? ''] ?? '';
+                                ?></span>
+                            </div>
                         </div>
-                    </div>
-                </li>
-                <li class="nav-item ms-lg-2">
-                    <a class="btn-logout" href="<?= url('auth/logout') ?>" title="ออกจากระบบ">
-                        <i class="fa-solid fa-right-from-bracket"></i>
                     </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" aria-labelledby="profileDropdown" style="border-radius: 12px; min-width: 200px;">
+                        <li>
+                            <a class="dropdown-item py-2 px-3 text-dark d-flex align-items-center gap-2 rounded-3" href="<?= url('profile') ?>">
+                                <i class="fa-solid fa-circle-user text-primary-custom" style="width: 18px;"></i>
+                                <span>ข้อมูลส่วนตัวของฉัน</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider my-1"></li>
+                        <li>
+                            <a class="dropdown-item py-2 px-3 text-danger d-flex align-items-center gap-2 rounded-3" href="<?= url('auth/logout') ?>">
+                                <i class="fa-solid fa-right-from-bracket" style="width: 18px;"></i>
+                                <span>ออกจากระบบ</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
             <?php else: ?>
                 <li class="nav-item ms-lg-3 my-2 my-lg-0">
                     <a class="btn btn-outline-light rounded-pill px-3" href="<?= url('auth/login') ?>">

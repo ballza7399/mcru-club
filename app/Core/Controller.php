@@ -55,15 +55,16 @@ abstract class Controller
                 $db = Database::instance();
                 
                 $stmt = $db->prepare(
-                    'SELECT r.role_key AS role 
+                    'SELECT u.name, u.avatar, r.role_key AS role 
                      FROM users u
                      JOIN roles r ON u.role_id = r.id
                      WHERE u.id = ?'
                 );
                 $stmt->execute([$userId]);
-                $role = $stmt->fetchColumn();
+                $user = $stmt->fetch();
                 
-                if ($role) {
+                if ($user) {
+                    $role = $user['role'];
                     if ($role === 'student') {
                         // Check if they are a president of any approved club
                         $stmtPres = $db->prepare('SELECT COUNT(*) FROM clubs WHERE president_id = ? AND status = "approved"');
@@ -73,10 +74,13 @@ abstract class Controller
                         }
                     }
                     $_SESSION['role'] = $role;
+                    $_SESSION['name'] = $user['name'];
+                    $_SESSION['avatar'] = $user['avatar'];
                 }
             } catch (\Exception $e) {
                 // Fail silently if database is not connected or initialized yet
             }
         }
     }
+
 }
