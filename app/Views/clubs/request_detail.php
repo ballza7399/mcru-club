@@ -178,6 +178,7 @@
     </h5>
     <form method="POST" action="<?= url('backoffice/clubs/requests/action') ?>">
         <input type="hidden" name="club_id" value="<?= (int)$club['id'] ?>">
+        <input type="hidden" id="form-action" name="action" value="">
         
         <div class="mb-4">
             <label class="form-label text-dark fw-bold mb-2">ระบุหมายเหตุ / เหตุผลการพิจารณา (กรณีส่งกลับแก้ไข หรือปฏิเสธจำเป็นต้องระบุ)</label>
@@ -204,20 +205,20 @@
             <div class="d-flex gap-2">
                 <?php if ($club['status'] !== 'approved'): ?>
                     <!-- ปุ่มอนุมัติจัดตั้งชมรม -->
-                    <button type="submit" name="action" value="approve" class="btn btn-success px-4 py-2 text-white" 
-                            onclick="this.form.setAttribute('data-confirm', 'ยืนยันการพิจารณาอนุมัติจัดตั้งชมรมนี้ในระยะแรก? นักศึกษาจะได้รับยศเป็นประธานชมรมและสามารถรวบรวมสมาชิกได้ต่อไป'); this.form.setAttribute('data-confirm-color', '#198754');">
+                    <button type="submit" class="btn btn-success px-4 py-2 text-white" 
+                            onclick="document.getElementById('form-action').value='approve'; this.form.setAttribute('data-confirm', 'ยืนยันการพิจารณาอนุมัติจัดตั้งชมรมนี้ในระยะแรก? นักศึกษาจะได้รับยศเป็นประธานชมรมและสามารถรวบรวมสมาชิกได้ต่อไป'); this.form.setAttribute('data-confirm-color', '#198754');">
                         <i class="fa-solid fa-circle-check me-1"></i> อนุมัติจัดตั้งชมรม
                     </button>
                     
                     <!-- ปุ่มส่งกลับแก้ไขข้อมูล -->
-                    <button type="submit" name="action" value="correct" class="btn btn-warning px-4 py-2 text-dark" 
-                            onclick="this.form.setAttribute('data-confirm', 'ยืนยันการส่งคำขอนี้กลับแก้ไขเพิ่มเติมให้นักศึกษา? (ต้องกรอกหมายเหตุ/เหตุผลด้านบน)'); this.form.setAttribute('data-confirm-color', '#ffc107');">
+                    <button type="submit" class="btn btn-warning px-4 py-2 text-dark" 
+                            onclick="document.getElementById('form-action').value='correct'; this.form.setAttribute('data-confirm', 'ยืนยันการส่งคำขอนี้กลับแก้ไขเพิ่มเติมให้นักศึกษา? (ต้องกรอกหมายเหตุ/เหตุผลด้านบน)'); this.form.setAttribute('data-confirm-color', '#ffc107');">
                         <i class="fa-solid fa-pen-to-square me-1"></i> ส่งกลับแก้ไข
                     </button>
                     
                     <!-- ปุ่มปฏิเสธจัดตั้งชมรม -->
-                    <button type="submit" name="action" value="reject" class="btn btn-danger px-4 py-2 text-white" 
-                            onclick="this.form.setAttribute('data-confirm', 'ยืนยันปฏิเสธการจัดตั้งชมรมนี้อย่างถาวร? (ต้องกรอกหมายเหตุ/เหตุผลด้านบน)'); this.form.setAttribute('data-confirm-color', '#dc3545');">
+                    <button type="submit" class="btn btn-danger px-4 py-2 text-white" 
+                            onclick="document.getElementById('form-action').value='reject'; this.form.setAttribute('data-confirm', 'ยืนยันปฏิเสธการจัดตั้งชมรมนี้อย่างถาวร? (ต้องกรอกหมายเหตุ/เหตุผลด้านบน)'); this.form.setAttribute('data-confirm-color', '#dc3545');">
                         <i class="fa-solid fa-circle-xmark me-1"></i> ปฏิเสธจัดตั้ง
                     </button>
                 <?php else: ?>

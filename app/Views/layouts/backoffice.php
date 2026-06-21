@@ -396,6 +396,9 @@ document.addEventListener('submit', function(e) {
             });
             
             const formData = new FormData(form);
+            if (e.submitter && e.submitter.name) {
+                formData.append(e.submitter.name, e.submitter.value);
+            }
             const method = (form.getAttribute('method') || 'POST').toUpperCase();
             
             const options = {
