@@ -22,6 +22,8 @@
             --surface: #ffffff;
             --text-dark: #233143;
             --text-muted: #586577;
+            --shadow-sm: 0 2px 8px rgba(11, 44, 92, 0.08);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         body {
@@ -29,6 +31,7 @@
             font-family: 'Kanit', sans-serif;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             margin: 0;
@@ -299,7 +302,7 @@
 </div>
 
 <!-- Bottom Queue Graphics Container -->
-<div class="fixed-bottom w-100 overflow-hidden" id="queue-container" style="height: 140px; background: linear-gradient(180deg, rgba(244, 247, 246, 0) 0%, rgba(15, 44, 92, 0.05) 100%); border-top: 1px dashed rgba(11, 44, 92, 0.12); z-index: 5; position: relative;">
+<div class="fixed-bottom w-100 overflow-hidden" id="queue-container" style="height: 140px; background: linear-gradient(180deg, rgba(244, 247, 246, 0) 0%, rgba(15, 44, 92, 0.05) 100%); border-top: 1px dashed rgba(11, 44, 92, 0.12); z-index: 5;">
     
     <!-- Bubble Chat Wrapper -->
     <div id="speech-bubble" class="speech-bubble">
