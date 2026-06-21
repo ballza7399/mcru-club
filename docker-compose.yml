@@ -15,5 +15,9 @@ services:
       # ⚠️ ต้องเป็น false หรือเอาออกบน production เพราะหลุดข้อมูล internal
       APP_DEBUG: "true"
     volumes:
+      # สำหรับ Development: เมาท์โค้ดทั้งหมดในเครื่องเพื่อแก้ไขงานแบบ Real-time
       - .:/var/www/html
+      # สำหรับ Production: ควรปิดการเมาท์โค้ดทั้งหมด (บรรทัดบน) และเปิดเฉพาะโฟลเดอร์เก็บรูปภาพ uploads
+      # - ./uploads:/var/www/html/uploads
+
     restart: unless-stopped
