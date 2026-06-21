@@ -31,11 +31,27 @@ spl_autoload_register(function (string $class): void {
 
 require BASE_PATH . '/app/Core/helpers.php';
 
+// --- ดักจับหน้าจัดคิว (Waiting Room) โดยข้ามการเปิดใช้ฐานข้อมูลเพื่อลด Load ---
+$uri = $_SERVER['REQUEST_URI'] ?? '';
+$path = parse_url($uri, PHP_URL_PATH);
+$relPath = $path;
+if (!empty(BASE_URL) && str_starts_with($path, BASE_URL)) {
+    $relPath = substr($path, strlen(BASE_URL));
+}
+if ($relPath === '/waiting-room') {
+    require BASE_PATH . '/app/Views/errors/waiting_room.php';
+    exit;
+}
+
+// --- ตรวจสอบคิวทราฟฟิกการเข้าใช้งานเพื่อป้องกันเซิร์ฟเวอร์ล่ม ---
+App\Core\Queue::check();
+
 // --- error handling middleware (ติดตั้งให้เร็วที่สุด เพื่อดักทุก error หลังจากนี้) ---
 App\Core\ErrorHandler::register($config['debug'] ?? false);
 
 // --- เชื่อมต่อฐานข้อมูล ---
 App\Core\Database::connect($config['db']);
+
 
 // --- routes ---
 use App\Core\Router;
