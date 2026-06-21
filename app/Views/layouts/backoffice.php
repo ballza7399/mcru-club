@@ -74,9 +74,18 @@ window.addEventListener('error', function(e) {
                     <i class="fa-solid fa-screwdriver-wrench me-2" style="color: var(--accent-gold) !important;"></i>เมนูจัดการระบบ
                 </h5>
                 <div class="nav flex-column nav-pills gap-1">
+                    <!-- กลุ่มภาพรวม -->
+                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        ภาพรวมระบบ
+                    </div>
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'dashboard' ? 'active' : '' ?>" href="<?= url('backoffice') ?>">
                         <i class="fa-solid fa-chart-pie me-2"></i>ภาพรวมระบบ (Dashboard)
                     </a>
+                    
+                    <!-- กลุ่มการจัดการชมรม -->
+                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        การจัดการชมรม
+                    </div>
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
                         <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
                     </a>
@@ -86,13 +95,37 @@ window.addEventListener('error', function(e) {
                     <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
                         <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
                     </a>
+                    
+                    <!-- กลุ่มเนื้อหา & กิจกรรม -->
+                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        เนื้อหา & ประชาสัมพันธ์
+                    </div>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
+                        <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
+                        <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
+                    </a>
+                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
+                        <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
+                    </a>
+
                     <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
-                            <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
-                        </a>
+                        <!-- กลุ่มความปลอดภัย & สิทธิ์ -->
+                        <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            ผู้ใช้งาน & สิทธิ์การใช้งาน
+                        </div>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
                             <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
                         </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
+                            <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
+                        </a>
+
+                        <!-- กลุ่มการตั้งค่าระบบ -->
+                        <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            การตั้งค่าระบบ
+                        </div>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
                             <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
                         </a>
@@ -108,25 +141,17 @@ window.addEventListener('error', function(e) {
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'og_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/og') ?>">
                             <i class="fa-solid fa-share-nodes me-2"></i>ตั้งค่าการแชร์ (Open Graph)
                         </a>
-
                     <?php endif; ?>
                     
-                    <div class="my-2 border-top"></div>
-
+                    <!-- กลุ่มอื่น ๆ -->
+                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                        เอกสารการใช้งาน
+                    </div>
                     <a class="nav-link admin-sidebar-link" href="<?= url('policy') ?>" onclick="openPdpaViewerModal(event)">
                         <i class="fa-solid fa-user-shield me-2 text-success"></i>นโยบาย & ข้อตกลง (PDPA)
                     </a>
-                    
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
-                        <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
-                        <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
-                        <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
-                    </a>
                 </div>
+
             </div>
         </div>
         
