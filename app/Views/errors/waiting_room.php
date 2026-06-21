@@ -193,10 +193,70 @@
             animation: idle-bounce 2s infinite ease-in-out;
         }
         .bounce-delay-1 { animation-delay: 0.2s; }
-        .bounce-delay-2 { animation-delay: 0.6s; }
-        .bounce-delay-3 { animation-delay: 1.0s; }
-        .bounce-delay-4 { animation-delay: 1.4s; }
-        .bounce-delay-5 { animation-delay: 1.8s; }
+        .bounce-delay-2 { animation-delay: 0.4s; }
+        .bounce-delay-3 { animation-delay: 0.6s; }
+        .bounce-delay-4 { animation-delay: 0.8s; }
+        .bounce-delay-5 { animation-delay: 1.0s; }
+        .bounce-delay-6 { animation-delay: 1.2s; }
+        .bounce-delay-7 { animation-delay: 1.4s; }
+        .bounce-delay-8 { animation-delay: 1.6s; }
+        .bounce-delay-9 { animation-delay: 1.8s; }
+        .bounce-delay-10 { animation-delay: 2.0s; }
+        .bounce-delay-11 { animation-delay: 2.2s; }
+        .bounce-delay-12 { animation-delay: 2.4s; }
+
+        /* --- Bubble Chat Animations --- */
+        .speech-bubble {
+            position: absolute;
+            bottom: 90px;
+            background: white;
+            color: var(--text-dark);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 550;
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px) translateX(-50%);
+            transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+            pointer-events: none;
+        }
+        .speech-bubble::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid var(--primary-blue);
+        }
+        .speech-bubble::before {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid white;
+            z-index: 2;
+        }
+        .speech-bubble.fade-in {
+            opacity: 1;
+            transform: translateY(0) translateX(-50%);
+        }
+        .speech-bubble.fade-out {
+            opacity: 0;
+            transform: translateY(-10px) translateX(-50%);
+        }
     </style>
 </head>
 <body>
@@ -239,22 +299,79 @@
 </div>
 
 <!-- Bottom Queue Graphics Container -->
-<div class="fixed-bottom w-100 overflow-hidden" style="height: 140px; background: linear-gradient(180deg, rgba(244, 247, 246, 0) 0%, rgba(15, 44, 92, 0.05) 100%); border-top: 1px dashed rgba(11, 44, 92, 0.12); z-index: 5;">
-    <div class="container h-100 d-flex align-items-end justify-content-between">
+<div class="fixed-bottom w-100 overflow-hidden" id="queue-container" style="height: 140px; background: linear-gradient(180deg, rgba(244, 247, 246, 0) 0%, rgba(15, 44, 92, 0.05) 100%); border-top: 1px dashed rgba(11, 44, 92, 0.12); z-index: 5; position: relative;">
+    
+    <!-- Bubble Chat Wrapper -->
+    <div id="speech-bubble" class="speech-bubble">
+        <span id="bubble-text">ข้อความพรีวิว...</span>
+    </div>
+
+    <div class="container-fluid h-100 d-flex align-items-end justify-content-between px-0">
         
-        <!-- Student Queue Section (Aligned to the left and center) -->
-        <div class="d-flex align-items-end gap-3 pb-1 flex-grow-1 overflow-hidden" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 15%);">
-            <div class="flex-grow-1"></div>
+        <!-- Student Queue Section (Stretching all the way to the left) -->
+        <div class="d-flex align-items-end justify-content-end gap-2 pb-1 flex-grow-1 overflow-hidden" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%);">
             
+            <!-- Student 12 (Leftmost, visible on large screens) -->
+            <svg class="student-char student-node bounce-delay-12 d-none d-xxl-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="36" r="10" fill="#ffedd5" />
+                <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0369a1" />
+            </svg>
+
+            <!-- Student 11 -->
+            <svg class="student-char student-node bounce-delay-11 d-none d-xxl-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
+                <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#1e293b" />
+                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#b91c1c" />
+            </svg>
+
+            <!-- Student 10 -->
+            <svg class="student-char student-node bounce-delay-10 d-none d-xl-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="35" r="10" fill="#fed7aa" />
+                <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
+                <rect x="38" y="32" width="4" height="5" fill="#475569" />
+                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
+            </svg>
+
+            <!-- Student 9 -->
+            <svg class="student-char student-node bounce-delay-9 d-none d-xl-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="38" r="9" fill="#ffedd5" />
+                <path d="M30,38 C30,25 50,25 50,38 C50,45 30,45 30,38" fill="#475569" />
+                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#6d28d9" />
+            </svg>
+
+            <!-- Student 8 -->
+            <svg class="student-char student-node bounce-delay-8 d-none d-lg-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="36" r="10" fill="#fbcfe8" />
+                <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
+                <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0f766e" />
+            </svg>
+
+            <!-- Student 7 -->
+            <svg class="student-char student-node bounce-delay-7 d-none d-lg-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="37" r="9" fill="#fed7aa" />
+                <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#0b2c5c" />
+                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#be185d" />
+            </svg>
+
+            <!-- Student 6 -->
+            <svg class="student-char student-node bounce-delay-6 d-none d-md-block" viewBox="0 0 80 100" width="55" height="75">
+                <circle cx="40" cy="34" r="10" fill="#ffedd5" />
+                <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
+                <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
+                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#a21caf" />
+            </svg>
+
             <!-- Student 5 -->
-            <svg class="student-char bounce-delay-5 d-none d-lg-block" viewBox="0 0 80 100" width="55" height="75">
+            <svg class="student-char student-node bounce-delay-5" viewBox="0 0 80 100" width="55" height="75">
                 <circle cx="40" cy="35" r="9" fill="#fed7aa" />
                 <path d="M30,35 C30,22 50,22 50,35 C50,42 30,42 30,35" fill="#475569" />
                 <path d="M26,85 L54,85 L48,56 L32,56 Z" fill="#db2777" />
             </svg>
             
             <!-- Student 4 -->
-            <svg class="student-char bounce-delay-4 d-none d-md-block" viewBox="0 0 80 100" width="55" height="75">
+            <svg class="student-char student-node bounce-delay-4" viewBox="0 0 80 100" width="55" height="75">
                 <circle cx="40" cy="34" r="10" fill="#fbcfe8" />
                 <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
                 <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
@@ -262,7 +379,7 @@
             </svg>
             
             <!-- Student 3 -->
-            <svg class="student-char bounce-delay-3" viewBox="0 0 80 100" width="55" height="75">
+            <svg class="student-char student-node bounce-delay-3" viewBox="0 0 80 100" width="55" height="75">
                 <circle cx="40" cy="36" r="10" fill="#ffedd5" />
                 <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
                 <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
@@ -271,15 +388,15 @@
             </svg>
             
             <!-- Student 2 -->
-            <svg class="student-char bounce-delay-2" viewBox="0 0 80 100" width="55" height="75">
+            <svg class="student-char student-node bounce-delay-2" viewBox="0 0 80 100" width="55" height="75">
                 <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
                 <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#475569" />
                 <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#ea580c" />
                 <rect x="20" y="62" width="7" height="18" rx="2" fill="#f9a826" />
             </svg>
             
-            <!-- Student 1 -->
-            <svg class="student-char bounce-delay-1" viewBox="0 0 80 100" width="55" height="75">
+            <!-- Student 1 (Rightmost student, closest to server) -->
+            <svg class="student-char student-node bounce-delay-1" viewBox="0 0 80 100" width="55" height="75">
                 <circle cx="40" cy="34" r="10" fill="#fed7aa" />
                 <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
                 <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
@@ -289,7 +406,7 @@
         </div>
         
         <!-- Server & IT Staff Section (Aligned to the far right) -->
-        <div class="pb-1 ps-2" style="min-width: 140px;">
+        <div class="pb-1 ps-2" style="min-width: 140px; z-index: 10;">
             <svg viewBox="0 0 130 100" width="130" height="95">
                 <!-- Server Cabinet -->
                 <rect x="5" y="10" width="45" height="80" rx="4" fill="#334155" />
@@ -343,6 +460,78 @@
         
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // รายการข้อความสุ่มพูดคุยของนักศึกษา
+    const messages = [
+        "ชมรมบอร์ดเกมจะเต็มก่อนไหมเนี่ยยย 😭",
+        "เน็ตมหาลัยช้าจังเล้ยยย! ช้อนสิทธิ์ไม่ทัน!",
+        "คุณพี่ IT สู้เขา! ขันน็อตทีคร้าบบบ!",
+        "จะทันโควตาชมรมคอมไหมนะ เสียวจัง...",
+        "รอรีเฟรช 5 วินาทีช้าเหมือน 5 ชั่วโมง",
+        "อย่าเพิ่งล่มนะคุณพี่เซิร์ฟเวอร์ สาธุ!",
+        "เมื่อยขาแล้วนะครับอาจารย์ ยืนรอตั้งแต่บ่าย",
+        "มีใครสนใจเข้าชมรมพัฒนาเว็บกับเราบ้าง?",
+        "อยากรู้จังว่าชมรมสัตว์เลี้ยงมีสัตว์อะไรบ้าง",
+        "IT ขันน็อตตัวสีน้ำเงินตัวนั้นด่วนเลย!",
+        "โควตาชมรมจะเพิ่มสิทธิ์รับไหมน้าาา",
+        "ปีนี้มีชมรมเปิดใหม่เพียบเลย ลุ้นมาก"
+    ];
+
+    const bubble = document.getElementById('speech-bubble');
+    const bubbleText = document.getElementById('bubble-text');
+    const queueContainer = document.getElementById('queue-container');
+
+    function triggerSpeechBubble() {
+        // ดึงเฉพาะนักศึกษาที่กำลังแสดงผลอยู่ในขนาดหน้าจอปัจจุบัน (ตัดตัวที่ซ่อนผ่าน d-none ออก)
+        const allNodes = document.querySelectorAll('.student-node');
+        const visibleNodes = Array.from(allNodes).filter(el => {
+            return window.getComputedStyle(el).display !== 'none';
+        });
+
+        if (visibleNodes.length > 0 && bubble && bubbleText && queueContainer) {
+            // สุ่มเลือกตัวละครนักศึกษา 1 ตัว
+            const randomStudent = visibleNodes[Math.floor(Math.random() * visibleNodes.length)];
+            
+            // คำนวณตำแหน่งพิกัดเพื่อแสดง Bubble ตรงกับหัวของนักศึกษาตัวที่สุ่มได้
+            const containerRect = queueContainer.getBoundingClientRect();
+            const studentRect = randomStudent.getBoundingClientRect();
+            
+            // จัดกึ่งกลางพิกัด Left สัมพัทธ์กับ parent container
+            const leftOffset = (studentRect.left - containerRect.left) + (studentRect.width / 2);
+            
+            // สุ่มข้อความและกำหนดพิกัด
+            bubbleText.innerText = messages[Math.floor(Math.random() * messages.length)];
+            bubble.style.left = `${leftOffset}px`;
+            
+            // แสดงผลแอนิเมชัน Fade In
+            bubble.style.display = 'block';
+            // ปล่อยให้เบราว์เซอร์รับรู้การแสดงผลก่อนเปลี่ยนคลาสเพื่อแอนิเมชัน
+            setTimeout(() => {
+                bubble.classList.remove('fade-out');
+                bubble.classList.add('fade-in');
+            }, 10);
+
+            // ซ่อน Bubble หลังจากแสดงผลไปแล้ว 2.8 วินาที
+            setTimeout(() => {
+                bubble.classList.remove('fade-in');
+                bubble.classList.add('fade-out');
+                // รอแอนิเมชันจางหายเสร็จสิ้นแล้วค่อยซ่อนถาวร
+                setTimeout(() => {
+                    bubble.style.display = 'none';
+                }, 300);
+            }, 2800);
+        }
+    }
+
+    // เริ่มทำงานสุ่มคำพูดครั้งแรกหลังจากเข้าหน้า 1.2 วินาที
+    setTimeout(triggerSpeechBubble, 1200);
+
+    // วนรอบสุ่มแสดงคำพูดทุกๆ 4.5 วินาที
+    setInterval(triggerSpeechBubble, 4500);
+});
+</script>
 
 </body>
 </html>

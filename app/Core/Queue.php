@@ -8,7 +8,7 @@ namespace App\Core;
 class Queue
 {
     private const QUEUE_DIR = BASE_PATH . '/uploads/queue';
-    private const MAX_ACTIVE_USERS = 150; // จำนวนผู้ใช้ที่อนุญาตให้เข้าใช้งานได้พร้อมกัน (ปรับลด/เพิ่มตามสมรรถนะโฮสต์)
+    private const MAX_ACTIVE_USERS = 1; // จำนวนผู้ใช้ที่อนุญาตให้เข้าใช้งานได้พร้อมกัน (ปรับลด/เพิ่มตามสมรรถนะโฮสต์)
     private const SESSION_TIMEOUT = 60;   // ระยะเวลาที่ถือว่าผู้ใช้ยังใช้งานอยู่ (วินาที) หากไม่มีกิจกรรมใน 1 นาทีคิวจะหมดอายุ
 
     public static function check(): void
