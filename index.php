@@ -41,8 +41,8 @@ if (!empty(BASE_URL) && str_starts_with($path, BASE_URL)) {
 
 if ($relPath === '/api/queue-status') {
     header('Content-Type: application/json');
-    $canEnter = App\Core\Queue::canEnter();
-    echo json_encode(['can_enter' => $canEnter]);
+    $status = App\Core\Queue::getQueueStatus();
+    echo json_encode($status);
     exit;
 }
 

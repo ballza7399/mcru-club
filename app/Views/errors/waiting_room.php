@@ -278,7 +278,21 @@
         </div>
 
         <div class="status-badge mb-2">
-            <i class="fa-solid fa-users-viewfinder me-2"></i> กำลังรอสิทธิ์การเข้าใช้งานระบบ...
+            <i class="fa-solid fa-users-viewfinder me-2"></i> <span id="queue-status-text">กำลังรอสิทธิ์การเข้าใช้งานระบบ...</span>
+        </div>
+
+        <!-- รายละเอียดลำดับคิวที่จะอัปเดตแบบเรียลไทม์ -->
+        <div class="mt-3 p-3 rounded-3" id="queue-info-box" style="background: rgba(11, 44, 92, 0.04); border: 1px solid rgba(11, 44, 92, 0.08); display: none;">
+            <div class="row align-items-center">
+                <div class="col-6 border-end">
+                    <span class="text-muted d-block small mb-1" style="font-size: 0.75rem;">คิวของคุณคือ</span>
+                    <span class="h3 mb-0 text-primary fw-bold" id="queue-position-val">0</span>
+                </div>
+                <div class="col-6">
+                    <span class="text-muted d-block small mb-1" style="font-size: 0.75rem;">คิวรอทั้งหมด</span>
+                    <span class="h4 mb-0 text-secondary fw-semibold"><span id="queue-total-val">0</span> คิว</span>
+                </div>
+            </div>
         </div>
 
         <p class="small text-muted mb-0 mt-3" style="font-size: 0.8rem;">
@@ -493,14 +507,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const bubbleText = document.getElementById('bubble-text');
     const queueContainer = document.getElementById('queue-container');
 
+    const queueInfoBox = document.getElementById('queue-info-box');
+    const queuePositionVal = document.getElementById('queue-position-val');
+    const queueTotalVal = document.getElementById('queue-total-val');
+    const queueStatusText = document.getElementById('queue-status-text');
+
     // ระบบตรวจสอบคิวแบบ AJAX ทุกๆ 5 วินาที เพื่อหลีกเลี่ยงการรีเฟรชหน้าเบราว์เซอร์
     function checkQueueStatus() {
         fetch('<?= BASE_URL ?>/api/queue-status')
             .then(response => response.json())
             .then(data => {
-                if (data && data.can_enter) {
-                    // เมื่อคิวผ่านแล้ว พาเข้าหน้าเว็บทันที
-                    window.location.href = '<?= BASE_URL ?>/';
+                if (data) {
+                    if (data.can_enter) {
+                        // เมื่อคิวผ่านแล้ว พาเข้าหน้าเว็บทันที
+                        window.location.href = '<?= BASE_URL ?>/';
+                    } else {
+                        // อัปเดตข้อมูลคิวในหน้าจอ
+                        if (queueInfoBox && queuePositionVal && queueTotalVal && queueStatusText) {
+                            queuePositionVal.innerText = data.queue_position;
+                            queueTotalVal.innerText = data.total_waiting;
+                            queueStatusText.innerText = 'ขณะนี้คิวเต็ม กำลังจัดคิวเข้าใช้งาน...';
+                            queueInfoBox.style.display = 'block';
+                        }
+                    }
                 }
             })
             .catch(err => console.error('Error checking queue:', err));
