@@ -106,6 +106,16 @@ class ClubController extends Controller
         $existingClub = $stmt->fetch();
         
         if ($existingClub) {
+            if (isset($_GET['edit']) && $existingClub['status'] === 'correcting') {
+                $this->view('clubs/register', [
+                    'error' => null,
+                    'club' => $existingClub,
+                    'isEdit' => true,
+                    'pageTitle' => 'แก้ไขข้อมูลการเสนอขอก่อตั้งชมรม'
+                ]);
+                return;
+            }
+
             $this->view('clubs/register_status', [
                 'club' => $existingClub,
                 'pageTitle' => 'สถานะการยื่นเสนอขอเพิ่มข้อมูลชมรม'
@@ -139,44 +149,130 @@ class ClubController extends Controller
         $error = null;
         $clubName = trim($_POST['club_name'] ?? '');
         $description = trim($_POST['description'] ?? '');
+        $advisorName = trim($_POST['advisor_name'] ?? '');
         $maxMembers = (int)($_POST['max_members'] ?? 50);
+        $objectivesInput = $_POST['objectives'] ?? [];
+
+        // Clean objectives
+        $objectives = array_filter(array_map('trim', $objectivesInput), function($val) {
+            return $val !== '';
+        });
+        $objectivesJson = !empty($objectives) ? json_encode(array_values($objectives), JSON_UNESCAPED_UNICODE) : null;
         
         $db = \App\Core\Database::instance();
+        
+        // Find if this user already has an existing proposal
+        $stmtExist = $db->prepare('SELECT * FROM clubs WHERE president_id = ? ORDER BY id DESC LIMIT 1');
+        $stmtExist->execute([$_SESSION['user_id']]);
+        $existingClub = $stmtExist->fetch();
+
         if ($clubName === '' || $description === '') {
             $error = 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน';
+        } elseif ($advisorName === '') {
+            $error = 'กรุณาระบุชื่ออาจารย์ที่ปรึกษาชมรม';
+        } elseif (empty($objectives)) {
+            $error = 'กรุณาระบุวัตถุประสงค์ในการจัดตั้งชมรมอย่างน้อย 1 ข้อ';
         } else {
-            $stmt = $db->prepare('SELECT COUNT(*) FROM clubs WHERE club_name = ?');
-            $stmt->execute([$clubName]);
-            if ((int)$stmt->fetchColumn() > 0) {
-                $error = 'มีชมรมชื่อนี้อยู่ในระบบแล้ว';
+            // Check for unique club name, ignoring the one being edited
+            $stmtCheck = $db->prepare('SELECT id FROM clubs WHERE club_name = ?');
+            $stmtCheck->execute([$clubName]);
+            $rowCheck = $stmtCheck->fetch();
+
+            if ($rowCheck) {
+                if (!$existingClub || (int)$existingClub['id'] !== (int)$rowCheck['id']) {
+                    $error = 'มีชมรมชื่อนี้อยู่ในระบบแล้ว';
+                }
             }
+        }
+
+        // Handle document upload
+        $docPath = $this->uploadDocument('establishment_document');
+        if ($docPath === '' && $existingClub) {
+            $docPath = $existingClub['establishment_document'];
+        }
+
+        if (!$existingClub && $docPath === '') {
+            $error = 'กรุณาแนบไฟล์เอกสารขอก่อตั้งชมรม (.doc, .docx, .pdf)';
         }
         
         if ($error) {
             $this->view('clubs/register', [
                 'error' => $error,
-                'pageTitle' => 'ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ'
+                'club' => [
+                    'club_name' => $clubName,
+                    'description' => $description,
+                    'advisor_name' => $advisorName,
+                    'objectives' => $objectivesJson,
+                    'max_members' => $maxMembers,
+                    'club_logo' => $existingClub ? $existingClub['club_logo'] : '',
+                    'qr_code' => $existingClub ? $existingClub['qr_code'] : '',
+                    'establishment_document' => $existingClub ? $existingClub['establishment_document'] : '',
+                    'rejection_reason' => $existingClub ? $existingClub['rejection_reason'] : null
+                ],
+                'isEdit' => (bool)$existingClub,
+                'pageTitle' => $existingClub ? 'แก้ไขข้อมูลการเสนอขอก่อตั้งชมรม' : 'ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ'
             ]);
             return;
         }
         
         $logoPath = $this->uploadFile('logo');
-        $qrPath   = $this->uploadFile('qr_code');
+        if ($logoPath === '' && $existingClub) {
+            $logoPath = $existingClub['club_logo'];
+        }
+
+        $qrPath = $this->uploadFile('qr_code');
+        if ($qrPath === '' && $existingClub) {
+            $qrPath = $existingClub['qr_code'];
+        }
         
-        $stmtInsert = $db->prepare(
-            'INSERT INTO clubs (club_name, description, max_members, club_logo, qr_code, president_id, status)
-             VALUES (?, ?, ?, ?, ?, ?, "pending")'
-        );
-        $stmtInsert->execute([
-            $clubName,
-            $description,
-            $maxMembers,
-            $logoPath ?: null,
-            $qrPath ?: null,
-            $_SESSION['user_id']
-        ]);
+        if ($existingClub) {
+            // Update existing club request and set status back to pending
+            $stmtUpdate = $db->prepare('
+                UPDATE clubs 
+                SET club_name = ?, 
+                    description = ?, 
+                    objectives = ?, 
+                    advisor_name = ?, 
+                    max_members = ?, 
+                    club_logo = ?, 
+                    qr_code = ?, 
+                    establishment_document = ?, 
+                    status = "pending",
+                    rejection_reason = NULL
+                WHERE id = ?
+            ');
+            $stmtUpdate->execute([
+                $clubName,
+                $description,
+                $objectivesJson,
+                $advisorName,
+                $maxMembers,
+                $logoPath ?: null,
+                $qrPath ?: null,
+                $docPath ?: null,
+                $existingClub['id']
+            ]);
+            $this->flash('แก้ไขข้อมูลข้อเสนอขอจัดตั้งชมรมเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบอีกครั้ง');
+        } else {
+            // Insert new club request
+            $stmtInsert = $db->prepare('
+                INSERT INTO clubs (club_name, description, objectives, advisor_name, max_members, club_logo, qr_code, establishment_document, president_id, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, "pending")
+            ');
+            $stmtInsert->execute([
+                $clubName,
+                $description,
+                $objectivesJson,
+                $advisorName,
+                $maxMembers,
+                $logoPath ?: null,
+                $qrPath ?: null,
+                $docPath ?: null,
+                $_SESSION['user_id']
+            ]);
+            $this->flash('ส่งข้อเสนอขอเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบและอนุมัติ');
+        }
         
-        $this->flash('ส่งข้อเสนอขอเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว โปรดรอผู้ดูแลระบบตรวจสอบและอนุมัติ');
         $this->redirect('/clubs');
     }
 
