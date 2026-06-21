@@ -276,6 +276,77 @@ class HomeController extends Controller
         
         $this->redirect('/backoffice/settings/mourning');
     }
+
+    public function ogSettings(): void
+    {
+        $this->requireRole('admin');
+        
+        $db = \App\Core\Database::instance();
+        $settingsRaw = $db->query("SELECT * FROM site_settings WHERE setting_group = 'opengraph'")->fetchAll();
+        
+        $settings = [];
+        foreach ($settingsRaw as $s) {
+            $settings[$s['setting_key']] = $s['setting_value'];
+        }
+        
+        $this->view('home/og_settings', [
+            'settings'   => $settings,
+            'activePage' => 'og_settings',
+            'pageTitle'  => 'จัดการการแชร์และ Open Graph Meta Tags'
+        ], 'backoffice');
+    }
+
+    public function ogSettingsUpdate(): void
+    {
+        $this->requireRole('admin');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $db = \App\Core\Database::instance();
+            
+            $ogTitle = trim($_POST['og_title'] ?? '');
+            $ogDescription = trim($_POST['og_description'] ?? '');
+            $ogImagePath = $_POST['og_image_old'] ?? '';
+            
+            // จัดการอัปโหลดรูปภาพสำหรับการแชร์
+            if (isset($_FILES['og_image']) && $_FILES['og_image']['error'] === UPLOAD_ERR_OK) {
+                $allowedMime = ['image/jpeg', 'image/png', 'image/webp'];
+                $info = @getimagesize($_FILES['og_image']['tmp_name']);
+                if ($info !== false && in_array($info['mime'], $allowedMime, true)) {
+                    // ลบรูปภาพเก่าถ้ามี
+                    if (!empty($ogImagePath) && file_exists(BASE_PATH . '/' . $ogImagePath)) {
+                        @unlink(BASE_PATH . '/' . $ogImagePath);
+                    }
+                    
+                    // อัปโหลดและปรับขนาดตามสัดส่วนการแชร์ของสื่อสังคมออนไลน์ (1200x630)
+                    $uploaded = \App\Core\Image::uploadResized($_FILES['og_image'], 'og_share', 1200, 630);
+                    if ($uploaded) {
+                        $ogImagePath = $uploaded;
+                    }
+                } else {
+                    $this->flash('ประเภทไฟล์รูปภาพสำหรับการแชร์ไม่ถูกต้อง รองรับเฉพาะ JPG, PNG และ WEBP');
+                    $this->redirect('/backoffice/settings/og');
+                }
+            }
+            
+            try {
+                $db->beginTransaction();
+                
+                $stmt = $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                $stmt->execute([$ogTitle, 'og_title']);
+                $stmt->execute([$ogDescription, 'og_description']);
+                $stmt->execute([$ogImagePath, 'og_image']);
+                
+                $db->commit();
+                $this->flash('อัปเดตการตั้งค่าการแชร์ (Open Graph) สำเร็จเรียบร้อยแล้ว');
+            } catch (\Exception $e) {
+                $db->rollBack();
+                $this->flash('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+            }
+        }
+        
+        $this->redirect('/backoffice/settings/og');
+    }
 }
+
 
 

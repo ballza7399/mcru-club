@@ -30,7 +30,10 @@ if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'footer_settings';
 } elseif (str_contains($uri, 'backoffice/settings/mourning')) {
     $activePage = 'mourning_settings';
+} elseif (str_contains($uri, 'backoffice/settings/og')) {
+    $activePage = 'og_settings';
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -102,6 +105,10 @@ window.addEventListener('error', function(e) {
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'mourning_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/mourning') ?>">
                             <i class="fa-solid fa-ribbon me-2"></i>ตั้งค่าหน้าไว้อาลัย
                         </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'og_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/og') ?>">
+                            <i class="fa-solid fa-share-nodes me-2"></i>ตั้งค่าการแชร์ (Open Graph)
+                        </a>
+
                     <?php endif; ?>
                     
                     <div class="my-2 border-top"></div>

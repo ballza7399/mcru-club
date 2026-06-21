@@ -3,6 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Open Graph / Facebook / LINE / Discord / Telegram -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="<?= absoluteUrl($_SERVER['REQUEST_URI'] ?? '') ?>">
+<meta property="og:title" content="<?= e(getSetting('og_title', 'MCRU Clubs - แหล่งรวมกิจกรรมและชมรมนักศึกษา')) ?>">
+<meta property="og:description" content="<?= e(getSetting('og_description', 'ระบบจัดการและรวมศูนย์ข้อมูลชมรมนักศึกษา มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง มาร่วมทำกิจกรรมและค้นหาสิ่งที่คุณรักไปด้วยกัน')) ?>">
+<?php 
+$ogImage = getSetting('og_image');
+if (!empty($ogImage) && file_exists(BASE_PATH . '/' . $ogImage)): ?>
+<meta property="og:image" content="<?= absoluteUrl($ogImage) ?>">
+<?php else: ?>
+<meta property="og:image" content="<?= absoluteUrl('favicon.png') ?>">
+<?php endif; ?>
+
+<!-- Twitter / X -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="<?= absoluteUrl($_SERVER['REQUEST_URI'] ?? '') ?>">
+<meta property="twitter:title" content="<?= e(getSetting('og_title', 'MCRU Clubs - แหล่งรวมกิจกรรมและชมรมนักศึกษา')) ?>">
+<meta property="twitter:description" content="<?= e(getSetting('og_description', 'ระบบจัดการและรวมศูนย์ข้อมูลชมรมนักศึกษา มหาวิทยาลัยราชภัฏหมู่บ้านจอมบึง มาร่วมทำกิจกรรมและค้นหาสิ่งที่คุณรักไปด้วยกัน')) ?>">
+<?php if (!empty($ogImage) && file_exists(BASE_PATH . '/' . $ogImage)): ?>
+<meta property="twitter:image" content="<?= absoluteUrl($ogImage) ?>">
+<?php else: ?>
+<meta property="twitter:image" content="<?= absoluteUrl('favicon.png') ?>">
+<?php endif; ?>
+
 <title><?= isset($pageTitle) ? e($pageTitle) . ' - ' : '' ?>ระบบจัดการชมรม MCRU</title>
 <link rel="shortcut icon" href="<?= asset('favicon.ico') ?>" type="image/x-icon">
 <link rel="icon" href="<?= asset('favicon.png') ?>" type="image/png">

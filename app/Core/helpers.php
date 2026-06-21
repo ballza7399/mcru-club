@@ -13,6 +13,15 @@ function asset(string $path): string
     return url($path);
 }
 
+/** สร้าง URL แบบสัมบูรณ์ (Absolute URL) มี protocol และ domain สำหรับระบุใน Meta Tags */
+function absoluteUrl(string $path = ''): string
+{
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? 80) == 443) ? 'https://' : 'http://';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    return $protocol . $host . url($path);
+}
+
+
 /** escape สำหรับแสดงผลใน HTML */
 function e(?string $value): string
 {
