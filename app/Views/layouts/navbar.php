@@ -51,7 +51,8 @@
                 </li>
 
                 <li class="nav-item dropdown ms-lg-3 my-2 my-lg-0">
-                    <a class="nav-link p-0 d-inline-block text-decoration-none border-0" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
+                    <a class="p-0 d-inline-block text-decoration-none border-0" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="outline: none;">
+
 
                         <div class="user-profile-badge d-flex align-items-center">
                             <div class="avatar overflow-hidden d-flex align-items-center justify-content-center" style="position: relative;">
