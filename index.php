@@ -93,6 +93,10 @@ $router->post('/backoffice/clubs/update',     'App\Controllers\ClubController', 
 $router->get('/backoffice/clubs/delete/{id}', 'App\Controllers\ClubController', 'delete');
 $router->get('/backoffice/clubs/approve/{id}', 'App\Controllers\ClubController', 'approveClub');
 $router->get('/backoffice/clubs/reject/{id}',  'App\Controllers\ClubController', 'rejectClub');
+$router->post('/backoffice/clubs/correct', 'App\Controllers\ClubController', 'correctClub');
+$router->post('/backoffice/clubs/reject',  'App\Controllers\ClubController', 'rejectClubSubmit');
+$router->post('/backoffice/clubs/verify-members/approve', 'App\Controllers\ClubController', 'approveVerification');
+$router->post('/backoffice/clubs/verify-members/correct', 'App\Controllers\ClubController', 'correctVerification');
 $router->get('/backoffice/clubs/members',     'App\Controllers\ClubController', 'members');
 $router->post('/backoffice/clubs/members/assign-role', 'App\Controllers\ClubController', 'assignRole');
 $router->get('/backoffice/clubs/members/remove/{club_id}/{user_id}', 'App\Controllers\ClubController', 'removeMember');
@@ -150,6 +154,7 @@ $router->get('/cluboffice',                           'App\Controllers\ClubOffic
 $router->get('/cluboffice/info',                      'App\Controllers\ClubOfficeController', 'info');
 $router->post('/cluboffice/info/update',              'App\Controllers\ClubOfficeController', 'updateInfo');
 $router->get('/cluboffice/members',                   'App\Controllers\ClubOfficeController', 'members');
+$router->post('/cluboffice/verify-members',            'App\Controllers\ClubOfficeController', 'submitVerification');
 $router->post('/cluboffice/members/assign-role',      'App\Controllers\ClubOfficeController', 'assignRole');
 $router->get('/cluboffice/members/remove/{user_id}',  'App\Controllers\ClubOfficeController', 'removeMember');
 $router->get('/cluboffice/applications',              'App\Controllers\ClubOfficeController', 'applications');

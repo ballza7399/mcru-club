@@ -5,6 +5,8 @@
 $progressWidth = '0%';
 if ($club['status'] === 'pending') {
     $progressWidth = '50%';
+} elseif ($club['status'] === 'correcting') {
+    $progressWidth = '50%';
 } elseif ($club['status'] === 'approved' || $club['status'] === 'rejected') {
     $progressWidth = '100%';
 }
@@ -18,8 +20,8 @@ if ($club['status'] === 'pending') {
                 <div class="academic-pattern"></div>
                 <div class="position-relative z-index-2">
                     <span class="badge badge-academic-accent mb-2">MCRU ONLINE DIRECTORY</span>
-                    <h2 class="fw-bold mb-2 text-white">สถานะการยื่นเสนอขอเพิ่มข้อมูลชมรม</h2>
-                    <p class="mb-0 text-white opacity-75 fw-light">ตรวจสอบขั้นตอนและติดตามความคืบหน้าการยื่นขอเพิ่มข้อมูลเข้าสู่ระบบออนไลน์</p>
+                    <h2 class="fw-bold mb-2 text-white">สถานะการยื่นเสนอขอก่อตั้งชมรม</h2>
+                    <p class="mb-0 text-white opacity-75 fw-light">ตรวจสอบขั้นตอนและติดตามความคืบหน้าการยื่นขอจัดตั้งชมรมเข้าระบบออนไลน์</p>
                 </div>
             </div>
 
@@ -36,26 +38,13 @@ if ($club['status'] === 'pending') {
                         <div class="mt-3 mt-sm-0">
                             <?php if ($club['status'] === 'pending'): ?>
                                 <span class="badge badge-status badge-status-pending"><i class="fa-solid fa-spinner fa-spin me-2"></i>อยู่ระหว่างตรวจสอบ</span>
+                            <?php elseif ($club['status'] === 'correcting'): ?>
+                                <span class="badge badge-status badge-status-warning"><i class="fa-solid fa-circle-exclamation me-2"></i>ส่งกลับแก้ไข</span>
                             <?php elseif ($club['status'] === 'approved'): ?>
                                 <span class="badge badge-status badge-status-approved"><i class="fa-solid fa-circle-check me-2"></i>อนุมัติสำเร็จ</span>
                             <?php else: ?>
-                                <span class="badge badge-status badge-status-rejected"><i class="fa-solid fa-circle-xmark me-2"></i>ปฏิเสธข้อเสนอ</span>
+                                <span class="badge badge-status badge-status-rejected"><i class="fa-solid fa-circle-xmark me-2"></i>ปฏิเสธคำขอ</span>
                             <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Academic Notice (Disclaimer) -->
-                <div class="academic-notice mb-5">
-                    <div class="d-flex align-items-start">
-                        <div class="notice-icon-wrapper me-3">
-                            <i class="fa-solid fa-scale-balanced"></i>
-                        </div>
-                        <div>
-                            <h5 class="notice-title">ชี้แจงบทบาทและข้อกำหนดของระบบ</h5>
-                            <p class="notice-text mb-0">
-                                <strong>หมายเหตุสำคัญ:</strong> ระบบออนไลน์นี้เป็นเพียงช่องทางเสนอขอเพิ่มข้อมูลรายละเอียดชมรมเข้าสู่ระบบสารสนเทศของมหาวิทยาลัยเท่านั้น <strong>ไม่ใช่การจัดตั้งชมรมอย่างเป็นทางการ</strong> โดยการพิจารณาอนุมัติจัดตั้งชมรมจริงตามระเบียบสถาบันจะต้องดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามขั้นตอนทางเอกสารของมหาวิทยาลัย
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -71,7 +60,7 @@ if ($club['status'] === 'pending') {
                         <div class="step-icon-outer">
                             <div class="step-icon-inner"><i class="fa-solid fa-check"></i></div>
                         </div>
-                        <div class="step-label">ยื่นเสนอคำขอ</div>
+                        <div class="step-label">ยื่นเสนอขอก่อตั้ง</div>
                         <div class="step-date text-muted small mt-1">ส่งคำขอสำเร็จ</div>
                     </div>
                     
@@ -82,13 +71,28 @@ if ($club['status'] === 'pending') {
                                 <div class="step-icon-inner"><i class="fa-solid fa-hourglass-half"></i></div>
                             </div>
                             <div class="step-label text-warning-ink fw-bold">รอการตรวจสอบ</div>
-                            <div class="step-date text-muted small mt-1">กำลังพิจารณา</div>
+                            <div class="step-date text-muted small mt-1">กำลังพิจารณาเอกสาร</div>
                         </div>
                         <div class="step-node">
                             <div class="step-icon-outer">
                                 <div class="step-icon-inner"><i class="fa-solid fa-circle-check"></i></div>
                             </div>
-                            <div class="step-label">อนุมัติเพิ่มข้อมูล</div>
+                            <div class="step-label">จัดตั้งชมรมสำเร็จ</div>
+                            <div class="step-date text-muted small mt-1">ขั้นตอนสุดท้าย</div>
+                        </div>
+                    <?php elseif ($club['status'] === 'correcting'): ?>
+                        <div class="step-node active pulse warning-glow">
+                            <div class="step-icon-outer" style="border-color: var(--accent-gold);">
+                                <div class="step-icon-inner" style="background-color: var(--accent-gold); color: #fff;"><i class="fa-solid fa-pen-to-square"></i></div>
+                            </div>
+                            <div class="step-label text-warning-ink fw-bold">ส่งกลับแก้ไข</div>
+                            <div class="step-date text-muted small mt-1">โปรดแก้ไขรายละเอียด</div>
+                        </div>
+                        <div class="step-node">
+                            <div class="step-icon-outer">
+                                <div class="step-icon-inner"><i class="fa-solid fa-circle-check"></i></div>
+                            </div>
+                            <div class="step-label">จัดตั้งชมรมสำเร็จ</div>
                             <div class="step-date text-muted small mt-1">ขั้นตอนสุดท้าย</div>
                         </div>
                     <?php elseif ($club['status'] === 'approved'): ?>
@@ -103,8 +107,8 @@ if ($club['status'] === 'pending') {
                             <div class="step-icon-outer">
                                 <div class="step-icon-inner"><i class="fa-solid fa-circle-check"></i></div>
                             </div>
-                            <div class="step-label text-success fw-bold">อนุมัติสำเร็จ</div>
-                            <div class="step-date text-success small mt-1">บันทึกข้อมูลเข้าระบบ</div>
+                            <div class="step-label text-success fw-bold">จัดตั้งสำเร็จ</div>
+                            <div class="step-date text-success small mt-1">ได้รับการจัดตั้งแล้ว</div>
                         </div>
                     <?php else: // rejected ?>
                         <div class="step-node completed">
@@ -118,7 +122,7 @@ if ($club['status'] === 'pending') {
                             <div class="step-icon-outer">
                                 <div class="step-icon-inner"><i class="fa-solid fa-circle-xmark"></i></div>
                             </div>
-                            <div class="step-label text-danger fw-bold">ปฏิเสธข้อเสนอ</div>
+                            <div class="step-label text-danger fw-bold">ปฏิเสธจัดตั้ง</div>
                             <div class="step-date text-danger small mt-1">ไม่ผ่านการอนุมัติ</div>
                         </div>
                     <?php endif; ?>
@@ -133,12 +137,31 @@ if ($club['status'] === 'pending') {
                             </div>
                             <div>
                                 <h5 class="alert-title fw-bold text-dark">อยู่ระหว่างการตรวจสอบรายละเอียดข้อมูล</h5>
-                                <p class="alert-text text-muted mb-0">คณะกรรมการและผู้ดูแลระบบกำลังดำเนินการตรวจสอบข้อมูลเบื้องต้น วัตถุประสงค์ และภาพลักษณ์ที่เกี่ยวข้องกับชมรม โดยปกติจะใช้เวลา 1-3 วันทำการ โปรดกลับมาตรวจสอบหน้าสถานะนี้อีกครั้งภายหลัง</p>
+                                <p class="alert-text text-muted mb-0">เจ้าหน้าที่ฝ่ายกองพัฒนานักศึกษากำลังดำเนินการตรวจสอบเอกสารการเสนอขอก่อตั้งชมรม วัตถุประสงค์ และข้อมูลอาจารย์ที่ปรึกษา โดยปกติจะใช้เวลา 1-3 วันทำการ โปรดกลับมาตรวจสอบหน้าสถานะนี้อีกครั้งภายหลัง</p>
                             </div>
                         </div>
                         <div class="text-center mt-5">
                             <a href="<?= url('clubs') ?>" class="btn btn-academic-secondary">
                                 <i class="fa-solid fa-circle-chevron-left me-2"></i>กลับสู่หน้ารายชื่อชมรม
+                            </a>
+                        </div>
+                    <?php elseif ($club['status'] === 'correcting'): ?>
+                        <div class="alert alert-warning-custom p-4 d-flex align-items-start mb-4">
+                            <div class="alert-icon-wrapper text-warning me-3">
+                                <i class="fa-solid fa-triangle-exclamation fs-3"></i>
+                            </div>
+                            <div class="flex-grow-1 text-start">
+                                <h5 class="alert-title fw-bold text-dark">คำขอจัดตั้งชมรมถูกส่งกลับแก้ไขข้อมูล</h5>
+                                <div class="alert-text text-muted mb-3">
+                                    <strong>รายละเอียด/หมายเหตุการแก้ไขจากเจ้าหน้าที่:</strong>
+                                    <div class="p-3 bg-white rounded-3 border mt-2 text-dark" style="white-space: pre-wrap; font-size: 0.95rem; border-left: 4px solid var(--accent-gold) !important;"><?= e($club['rejection_reason'] ?: 'โปรดตรวจสอบความถูกต้องของข้อมูลหรือเอกสารที่แนบมา') ?></div>
+                                </div>
+                                <p class="alert-text text-muted mb-0">กรุณากดปุ่มด้านล่างเพื่อเข้าสู่ฟอร์มและแก้ไขรายละเอียด วัตถุประสงค์ชมรม หรือแนบไฟล์เอกสารขอก่อตั้งที่ถูกต้องเข้ามาใหม่อีกครั้ง</p>
+                            </div>
+                        </div>
+                        <div class="text-center mt-5">
+                            <a href="<?= url('clubs/register?edit=1') ?>" class="btn btn-academic-primary border-0 px-5 py-3">
+                                <i class="fa-solid fa-pen-to-square me-2 fs-5"></i>แก้ไขข้อมูลและยื่นเสนอใหม่
                             </a>
                         </div>
                     <?php elseif ($club['status'] === 'approved'): ?>
@@ -147,13 +170,13 @@ if ($club['status'] === 'pending') {
                                 <i class="fa-solid fa-circle-check fs-3"></i>
                             </div>
                             <div>
-                                <h5 class="alert-title fw-bold text-dark">บันทึกข้อมูลและอนุมัติเข้าระบบเรียบร้อยแล้ว!</h5>
-                                <p class="alert-text text-muted mb-0">ขอแสดงความยินดี! ข้อเสนอข้อมูลชมรมของคุณผ่านการตรวจสอบและบันทึกเข้าสู่สารสนเทศมหาวิทยาลัยออนไลน์เป็นที่เรียบร้อย และระบบได้อัปเกรดให้บัญชีผู้ใช้งานนี้เป็นผู้ดูแลระบบหลังบ้านของชมรม (ประธานชมรม) ในระบบเรียบร้อยแล้ว</p>
+                                <h5 class="alert-title fw-bold text-dark">ชมรมได้รับการอนุมัติการก่อตั้งเสร็จสิ้น!</h5>
+                                <p class="alert-text text-muted mb-0">ยินดีด้วย! ชมรมของคุณผ่านการตรวจสอบและอนุมัติจัดตั้งในระยะแรกเรียบร้อยแล้ว ในขั้นตอนถัดไปคุณจำเป็นต้องรวบรวมสมาชิกชมรมให้ครบตามเงื่อนไขเพื่อส่งให้ทางกองพัฒนานักศึกษาทำการตรวจสอบในขั้นต่อไป</p>
                             </div>
                         </div>
                         <div class="text-center mt-5">
                             <a href="<?= url('cluboffice') ?>" class="btn btn-academic-primary border-0 px-5 py-3">
-                                <i class="fa-solid fa-arrow-right-to-bracket me-2 fs-5"></i>เข้าสู่แผงจัดการหลังบ้านชมรม
+                                <i class="fa-solid fa-arrow-right-to-bracket me-2 fs-5"></i>เข้าสู่แผงควบคุมชมรมเพื่อหาสมาชิก
                             </a>
                         </div>
                     <?php else: // rejected ?>
@@ -161,14 +184,18 @@ if ($club['status'] === 'pending') {
                             <div class="alert-icon-wrapper text-danger me-3">
                                 <i class="fa-solid fa-triangle-exclamation fs-3"></i>
                             </div>
-                            <div>
-                                <h5 class="alert-title fw-bold text-dark">ข้อเสนอขอเพิ่มข้อมูลชมรมไม่ผ่านการอนุมัติ</h5>
-                                <p class="alert-text text-muted mb-0">ขออภัย คณะกรรมการพิจารณาตรวจสอบข้อมูลแล้วพบว่ารายละเอียดข้อมูลบางส่วนไม่สอดคล้องตามเงื่อนไขหรือระเบียบของระบบสารสนเทศนักศึกษา หรือข้อมูลยังไม่สมบูรณ์เพียงพอ</p>
+                            <div class="flex-grow-1 text-start">
+                                <h5 class="alert-title fw-bold text-dark">ข้อเสนอขอก่อตั้งชมรมไม่ผ่านการอนุมัติ</h5>
+                                <div class="alert-text text-muted mb-3">
+                                    <strong>เหตุผลการปฏิเสธจัดตั้ง:</strong>
+                                    <div class="p-3 bg-white rounded-3 border mt-2 text-dark" style="white-space: pre-wrap; font-size: 0.95rem; border-left: 4px solid var(--danger) !important;"><?= e($club['rejection_reason'] ?: 'ไม่ระบุเหตุผลการปฏิเสธ') ?></div>
+                                </div>
+                                <p class="alert-text text-muted mb-0">หากต้องการแก้ไขและยื่นขอก่อตั้งใหม่อีกครั้ง สามารถกดปุ่มด้านล่างเพื่อล้างประวัติการขอและเริ่มต้นใหม่ได้ครับ</p>
                             </div>
                         </div>
                         <div class="text-center mt-5">
-                            <a href="<?= url('clubs/register/reset') ?>" class="btn btn-academic-danger border-0 px-5 py-3 text-decoration-none" data-confirm="ยืนยันต้องการเคลียร์ประวัติและยื่นเสนอขอเพิ่มข้อมูลชมรมใหม่อีกครั้ง?">
-                                <i class="fa-solid fa-rotate-left me-2 fs-5"></i>ยื่นข้อเสนอใหม่อีกครั้ง
+                            <a href="<?= url('clubs/register/reset') ?>" class="btn btn-academic-danger border-0 px-5 py-3 text-decoration-none" onclick="return confirm('ยืนยันต้องการล้างประวัติคำขอเพื่อขอก่อตั้งใหม่อีกครั้ง?')">
+                                <i class="fa-solid fa-rotate-left me-2 fs-5"></i>ยื่นคำขอก่อตั้งใหม่อีกครั้ง
                             </a>
                         </div>
                     <?php endif; ?>
@@ -256,6 +283,12 @@ if ($club['status'] === 'pending') {
     border: 1px solid rgba(180, 83, 9, 0.2);
 }
 
+.badge-status-warning {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid rgba(180, 83, 9, 0.3);
+}
+
 .badge-status-approved {
     background-color: var(--success-bg);
     color: var(--success-ink);
@@ -266,41 +299,6 @@ if ($club['status'] === 'pending') {
     background-color: var(--danger-bg);
     color: var(--danger-ink);
     border: 1px solid rgba(192, 57, 43, 0.2);
-}
-
-/* Academic Notice (Disclaimer) */
-.academic-notice {
-    background: rgba(249, 168, 38, 0.04);
-    border: 1px dashed rgba(249, 168, 38, 0.4);
-    border-left: 5px solid var(--accent-gold);
-    border-radius: 16px;
-    padding: 20px;
-}
-
-.notice-icon-wrapper {
-    background: rgba(249, 168, 38, 0.12);
-    color: var(--accent-gold-deep);
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    flex-shrink: 0;
-}
-
-.notice-title {
-    color: var(--text-dark);
-    font-weight: 700;
-    font-size: 1.05rem;
-    margin-bottom: 6px;
-}
-
-.notice-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--text-muted);
 }
 
 /* Stepper Modern Custom */
@@ -478,6 +476,13 @@ if ($club['status'] === 'pending') {
     border-radius: 16px;
 }
 
+.alert-warning-custom {
+    background: rgba(249, 168, 38, 0.03);
+    border: 1px solid rgba(249, 168, 38, 0.15);
+    border-left: 4px solid var(--accent-gold) !important;
+    border-radius: 16px;
+}
+
 .alert-icon-wrapper {
     background: #ffffff;
     width: 44px;
@@ -512,6 +517,7 @@ if ($club['status'] === 'pending') {
     transition: all var(--dur) var(--ease-out);
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-academic-primary:hover {
@@ -535,6 +541,7 @@ if ($club['status'] === 'pending') {
     transition: all var(--dur) var(--ease-out);
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-academic-secondary:hover {
@@ -582,9 +589,8 @@ if ($club['status'] === 'pending') {
         transition: height 0.6s ease;
     }
     
-    /* We can dynamically inject vertical height using php if needed, but a simple 100% height line under vertical stack is clean enough */
     .stepper-line-progress {
-        height: <?= $club['status'] === 'pending' ? '50%' : '100%' ?>;
+        height: <?= ($club['status'] === 'pending' || $club['status'] === 'correcting') ? '50%' : '100%' ?>;
     }
     
     .step-node {

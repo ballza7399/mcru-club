@@ -182,13 +182,13 @@ class ClubController extends Controller
 
     public function approveClub(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'staff');
         
         $clubId = (int)$id;
         $clubModel = new Club;
         $club = $clubModel->findWithDetail($clubId);
         if ($club) {
-            $clubModel->update($clubId, ['status' => 'approved']);
+            $clubModel->update($clubId, ['status' => 'approved', 'rejection_reason' => null]);
             
             // Upgrade submitting student user to president system role
             if ($club['president_id']) {
@@ -207,18 +207,18 @@ class ClubController extends Controller
                 // Send Notification
                 (new \App\Models\Notification)->createNotification(
                     (int)$club['president_id'],
-                    'คำขอเพิ่มข้อมูลชมรมได้รับการอนุมัติ',
-                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณได้รับการตรวจสอบและอนุมัติแล้ว คุณได้รับการปรับระดับเป็นประธานชมรม'
+                    'คำเสนอจัดตั้งชมรมได้รับการอนุมัติ',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณได้รับการอนุมัติจัดตั้งในระยะแรกเรียบร้อยแล้ว คุณได้รับการปรับระดับเป็นประธานชมรม'
                 );
             }
-            $this->flash('อนุมัติการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
+            $this->flash('อนุมัติคำเสนอจัดตั้งชมรมเข้าระบบเรียบร้อยแล้ว');
         }
         $this->redirect('/backoffice/clubs');
     }
 
     public function rejectClub(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'staff');
         
         $clubId = (int)$id;
         $clubModel = new Club;
@@ -230,19 +230,126 @@ class ClubController extends Controller
                 // Send Notification
                 (new \App\Models\Notification)->createNotification(
                     (int)$club['president_id'],
-                    'คำขอเพิ่มข้อมูลชมรมถูกปฏิเสธ',
-                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณถูกปฏิเสธ'
+                    'คำขอเสนอจัดตั้งชมรมถูกปฏิเสธ',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณไม่ผ่านการอนุมัติ'
                 );
             }
 
-            $this->flash('ปฏิเสธการเพิ่มข้อมูลชมรมเข้าระบบเรียบร้อยแล้ว');
+            $this->flash('ปฏิเสธการเสนอจัดตั้งชมรมเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
+    }
+
+    public function correctClub(): void
+    {
+        $this->requireRole('admin', 'staff');
+        
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        $reason = trim($_POST['rejection_reason'] ?? '');
+        
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, [
+                'status' => 'correcting',
+                'rejection_reason' => $reason
+            ]);
+            
+            if ($club['president_id']) {
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'คำขอจัดตั้งชมรมถูกส่งกลับแก้ไข',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณต้องแก้ไขเพิ่มเติม: ' . $reason
+                );
+            }
+            $this->flash('ส่งกลับแก้ไขข้อมูลชมรมเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
+    }
+
+    public function rejectClubSubmit(): void
+    {
+        $this->requireRole('admin', 'staff');
+        
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        $reason = trim($_POST['rejection_reason'] ?? '');
+        
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, [
+                'status' => 'rejected',
+                'rejection_reason' => $reason
+            ]);
+            
+            if ($club['president_id']) {
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'คำขอจัดตั้งชมรมไม่ผ่านการอนุมัติ',
+                    'ข้อเสนอขอจัดตั้งชมรม "' . $club['club_name'] . '" ของคุณถูกปฏิเสธ: ' . $reason
+                );
+            }
+            $this->flash('ปฏิเสธคำขอก่อตั้งชมรมเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
+    }
+
+    public function approveVerification(): void
+    {
+        $this->requireRole('admin', 'staff');
+        
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, [
+                'member_verification_status' => 'approved',
+                'member_verification_comment' => NULL
+            ]);
+            
+            if ($club['president_id']) {
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'อนุมัติการตรวจสอบรายชื่อสมาชิกสำเร็จ',
+                    'รายชื่อสมาชิกชมรม "' . $club['club_name'] . '" ของคุณผ่านการตรวจสอบเสร็จสมบูรณ์ ชมรมได้รับการจัดตั้งเสร็จสมบูรณ์และดำเนินกิจกรรมได้เต็มรูปแบบ!'
+                );
+            }
+            $this->flash('อนุมัติการตรวจสอบรายชื่อสมาชิกเรียบร้อยแล้ว');
+        }
+        $this->redirect('/backoffice/clubs');
+    }
+
+    public function correctVerification(): void
+    {
+        $this->requireRole('admin', 'staff');
+        
+        $clubId = (int)($_POST['club_id'] ?? 0);
+        $comment = trim($_POST['member_verification_comment'] ?? '');
+        
+        $clubModel = new Club;
+        $club = $clubModel->findWithDetail($clubId);
+        if ($club) {
+            $clubModel->update($clubId, [
+                'member_verification_status' => 'correcting',
+                'member_verification_comment' => $comment
+            ]);
+            
+            if ($club['president_id']) {
+                (new \App\Models\Notification)->createNotification(
+                    (int)$club['president_id'],
+                    'ส่งกลับแก้ไขรายชื่อสมาชิก',
+                    'คำขอตรวจสอบรายชื่อสมาชิกชมรม "' . $club['club_name'] . '" ของคุณถูกส่งกลับแก้ไข: ' . $comment
+                );
+            }
+            $this->flash('ส่งกลับแก้ไขรายชื่อสมาชิกเรียบร้อยแล้ว');
         }
         $this->redirect('/backoffice/clubs');
     }
 
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'staff', 'president');
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
@@ -264,7 +371,7 @@ class ClubController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'staff');
 
         $logoPath = $this->uploadFile('logo');
         $qrPath   = $this->uploadFile('qr_code');
@@ -282,14 +389,14 @@ class ClubController extends Controller
 
     public function update(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'staff', 'president');
 
         $clubId = (int) $_POST['club_id'];
         $role   = $_SESSION['role'];
         $userId = $_SESSION['user_id'];
         $clubModel = new Club;
 
-        $canEdit = ($role === 'admin') || $clubModel->isPresident($clubId, $userId);
+        $canEdit = ($role === 'admin' || $role === 'staff') || $clubModel->isPresident($clubId, $userId);
         if (!$canEdit) {
             $this->redirect('/backoffice/clubs');
         }
@@ -305,8 +412,8 @@ class ClubController extends Controller
         if ($logo) $fields['club_logo'] = $logo;
         if ($qr)   $fields['qr_code']   = $qr;
 
-        // admin สามารถเปลี่ยนประธานได้
-        if ($role === 'admin') {
+        // admin / staff สามารถเปลี่ยนประธานได้
+        if ($role === 'admin' || $role === 'staff') {
             $presStudentId = trim($_POST['pres_student_id'] ?? '');
             if ($presStudentId !== '') {
                 $presUser = (new User)->findByStudentId($presStudentId);
@@ -325,14 +432,14 @@ class ClubController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin');
+        $this->requireRole('admin', 'staff');
         (new Club)->delete((int) $id);
         $this->redirect('/backoffice/clubs');
     }
 
     public function members(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'staff', 'president');
         
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
@@ -375,7 +482,7 @@ class ClubController extends Controller
 
         $members = $roleModel->getClubMembersPaginated($clubId, $limit, $offset);
         $roles = $roleModel->listClubRoles($clubId);
-        $allClubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
+        $allClubsList = ($role === 'admin' || $role === 'staff') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('clubs/members', [
             'club' => $club,
@@ -391,7 +498,7 @@ class ClubController extends Controller
 
     public function assignRole(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'staff', 'president');
         
         $clubId = (int)($_POST['club_id'] ?? 0);
         $userId = (int)($_POST['user_id'] ?? 0);
@@ -400,7 +507,7 @@ class ClubController extends Controller
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
         
-        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
+        $canManage = ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
         if (!$canManage) {
             $this->redirect('/');
         }
@@ -412,7 +519,7 @@ class ClubController extends Controller
 
     public function removeMember(string $clubId, string $userId): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'staff', 'president');
         
         $cId = (int)$clubId;
         $uId = (int)$userId;
@@ -420,7 +527,7 @@ class ClubController extends Controller
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
         
-        $canManage = ($_SESSION['role'] === 'admin') || $clubModel->isPresident($cId, $_SESSION['user_id']);
+        $canManage = ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') || $clubModel->isPresident($cId, $_SESSION['user_id']);
         if (!$canManage) {
             $this->redirect('/');
         }
@@ -442,5 +549,35 @@ class ClubController extends Controller
             return '';
         }
         return Image::uploadResized($_FILES[$field], $field);
+    }
+
+    private function uploadDocument(string $field): string
+    {
+        if (!isset($_FILES[$field]) || $_FILES[$field]['error'] !== UPLOAD_ERR_OK) {
+            return '';
+        }
+        
+        $file = $_FILES[$field];
+        $origName = $file['name'] ?? '';
+        $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
+        
+        if (!in_array($ext, ['doc', 'docx', 'pdf'], true)) {
+            return '';
+        }
+        
+        $dir = BASE_PATH . '/uploads/';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        
+        $name = time() . '_' . $field . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $relPath = 'uploads/' . $name;
+        $absPath = $dir . $name;
+        
+        if (@move_uploaded_file($file['tmp_name'], $absPath)) {
+            return $relPath;
+        }
+        
+        return '';
     }
 }

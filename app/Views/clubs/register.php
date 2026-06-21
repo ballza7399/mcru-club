@@ -1,7 +1,11 @@
 <?php
 /**
  * @var string|null $error
+ * @var array|null $club
+ * @var bool $isEdit
  */
+$isEdit = $isEdit ?? false;
+$club = $club ?? null;
 ?>
 <div class="row justify-content-center">
     <div class="col-lg-9 col-md-10">
@@ -12,8 +16,8 @@
                 <div class="academic-pattern"></div>
                 <div class="position-relative z-index-2">
                     <span class="badge badge-academic-accent mb-2">MCRU ONLINE DIRECTORY</span>
-                    <h2 class="fw-bold mb-2 text-white">ยื่นเสนอขอเพิ่มข้อมูลชมรมเข้าระบบ</h2>
-                    <p class="mb-0 text-white opacity-75 fw-light">กรอกข้อมูลพื้นฐานเพื่อนำข้อมูลชมรมเข้าสู่ฐานข้อมูลออนไลน์ของมหาวิทยาลัย</p>
+                    <h2 class="fw-bold mb-2 text-white"><?= $isEdit ? 'แก้ไขข้อมูลการเสนอขอก่อตั้งชมรม' : 'ยื่นเสนอขอก่อตั้งชมรมเข้าระบบ' ?></h2>
+                    <p class="mb-0 text-white opacity-75 fw-light">กรอกข้อมูลรายละเอียดเพื่อทำการเสนอขอก่อตั้งชมรมผ่านทางกองพัฒนานักศึกษา</p>
                 </div>
             </div>
 
@@ -25,13 +29,25 @@
                             <i class="fa-solid fa-scale-balanced"></i>
                         </div>
                         <div>
-                            <h5 class="notice-title">ชี้แจงบทบาทและข้อกำหนดของระบบ</h5>
+                            <h5 class="notice-title">ชี้แจงขั้นตอนและข้อกำหนดของระบบ</h5>
                             <p class="notice-text mb-0">
-                                <strong>หมายเหตุสำคัญ:</strong> ระบบออนไลน์นี้เป็นเพียงช่องทางเสนอขอเพิ่มข้อมูลรายละเอียดชมรมเข้าสู่ระบบสารสนเทศของมหาวิทยาลัยเท่านั้น <strong>ไม่ใช่การจัดตั้งชมรมอย่างเป็นทางการ</strong> โดยการพิจารณาอนุมัติจัดตั้งชมรมจริงตามระเบียบสถาบันจะต้องดำเนินการผ่านทาง <strong>กองพัฒนานักศึกษา</strong> ตามขั้นตอนทางเอกสารของมหาวิทยาลัย
+                                <strong>ขั้นตอนขอก่อตั้ง (ระยะที่ 1):</strong> กรอกข้อมูลพื้นฐาน พร้อมระบุวัตถุประสงค์ อาจารย์ที่ปรึกษา และแนบไฟล์เอกสารขอก่อตั้งชมรม (.doc, .docx, .pdf) เจ้าหน้าที่จะทำการตรวจสอบ หากอนุมัติแล้วจึงจะเข้าสู่ระยะที่ 2 (รับสมัครสมาชิกให้ครบ 50 คนจากอย่างน้อย 3 คณะที่ต่างกัน)
                             </p>
                         </div>
                     </div>
                 </div>
+
+                <?php if ($isEdit && $club && $club['rejection_reason']): ?>
+                    <div class="alert alert-warning-custom p-4 d-flex align-items-start mb-4 text-start">
+                        <div class="alert-icon-wrapper text-warning me-3">
+                            <i class="fa-solid fa-triangle-exclamation fs-3"></i>
+                        </div>
+                        <div>
+                            <h5 class="alert-title fw-bold text-dark">หมายเหตุที่ต้องแก้ไขจากเจ้าหน้าที่</h5>
+                            <p class="alert-text text-muted mb-0 font-monospace" style="white-space: pre-wrap; color: #b45309 !important;"><?= e($club['rejection_reason']) ?></p>
+                        </div>
+                    </div>
+                <?php endif; ?>
 
                 <?php if ($error): ?>
                     <div class="alert alert-danger-custom d-flex align-items-center mb-4">
@@ -43,80 +59,161 @@
                 <form method="POST" action="<?= url('clubs/register') ?>" enctype="multipart/form-data">
                     <!-- Form sections -->
                     <div class="form-section-title mb-4">
-                        <span class="section-number">01</span> ข้อมูลพื้นฐานของชมรม
+                        <span class="section-number">01</span> ข้อมูลพื้นฐานและรายละเอียดผู้เสนอจัดตั้ง
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label-custom" for="club_name">
-                            <i class="fa-solid fa-signature label-icon"></i>ชื่อชมรม <span class="text-danger">*</span>
+                            <i class="fa-solid fa-signature label-icon"></i>ชื่อชมรมที่ต้องการจัดตั้ง <span class="text-danger">*</span>
                         </label>
-                        <input type="text" id="club_name" name="club_name" class="form-control-custom" placeholder="ระบุชื่อชมรมของคุณ เช่น ชมรมคอมพิวเตอร์และนวัตกรรม" required>
-                        <div class="form-text-custom">กรุณาระบุชื่อชมรมภาษาไทยที่ต้องการเสนอข้อมูลเข้าระบบ</div>
+                        <input type="text" id="club_name" name="club_name" class="form-control-custom" placeholder="ระบุชื่อชมรมของคุณ เช่น ชมรมคอมพิวเตอร์และนวัตกรรม" value="<?= $club ? e($club['club_name']) : '' ?>" required>
+                        <div class="form-text-custom">กรุณาระบุชื่อชมรมภาษาไทยที่ต้องการเสนอจัดตั้ง</div>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label-custom" for="description">
-                            <i class="fa-solid fa-rectangle-list label-icon"></i>รายละเอียดและวัตถุประสงค์ชมรม <span class="text-danger">*</span>
+                            <i class="fa-solid fa-rectangle-list label-icon"></i>รายละเอียดชมรมเบื้องต้น <span class="text-danger">*</span>
                         </label>
-                        <textarea id="description" name="description" class="form-control-custom" rows="5" placeholder="อธิบายประวัติ วัตถุประสงค์ หรือกิจกรรมหลักของชมรม..." required></textarea>
-                        <div class="form-text-custom">ระบุวัตถุประสงค์ ข้อตกลง หรือเงื่อนไขของชมรมให้ครบถ้วนเพื่อผลการพิจารณาที่รวดเร็ว</div>
+                        <textarea id="description" name="description" class="form-control-custom" rows="4" placeholder="อธิบายประวัติ หรือรายละเอียดเกี่ยวกับชมรมเบื้องต้น..." required><?= $club ? e($club['description']) : '' ?></textarea>
+                        <div class="form-text-custom">ระบุรายละเอียดสั้นๆ เพื่อให้เจ้าหน้าที่และนักศึกษาคนอื่นๆ อ่านทำความเข้าใจได้ง่าย</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom" for="advisor_name">
+                            <i class="fa-solid fa-user-tie label-icon"></i>ชื่อ-นามสกุลอาจารย์ที่ปรึกษาชมรม <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="advisor_name" name="advisor_name" class="form-control-custom" placeholder="ระบุชื่ออาจารย์ที่ปรึกษาชมรม เช่น อ.ดร.สมชาย ใจดี" value="<?= $club ? e($club['advisor_name']) : '' ?>" required>
+                        <div class="form-text-custom">ระบุชื่อและนามสกุลจริงของอาจารย์ที่ปรึกษาประจำชมรม</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label-custom">
+                            <i class="fa-solid fa-bullseye label-icon"></i>วัตถุประสงค์ของการจัดตั้งชมรม (Dynamic List) <span class="text-danger">*</span>
+                        </label>
+                        <div id="objectives-container">
+                            <?php 
+                            $objs = [];
+                            if ($club && !empty($club['objectives'])) {
+                                $objs = json_decode($club['objectives'], true) ?: [];
+                            }
+                            if (empty($objs)) {
+                                $objs = [''];
+                            }
+                            foreach ($objs as $index => $obj):
+                            ?>
+                                <div class="objective-row d-flex align-items-center mb-2 gap-2">
+                                    <input type="text" name="objectives[]" class="form-control-custom" placeholder="ระบุวัตถุประสงค์ข้อที่ <?= $index + 1 ?>" value="<?= e($obj) ?>" required>
+                                    <?php if ($index > 0): ?>
+                                        <button type="button" class="btn btn-outline-danger btn-remove-objective" style="border-radius: 12px; padding: 12px 15px;">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <button type="button" id="btn-add-objective" class="btn btn-academic-secondary btn-sm mt-2">
+                            <i class="fa-solid fa-plus me-1"></i> เพิ่มวัตถุประสงค์
+                        </button>
+                        <div class="form-text-custom">คุณสามารถเพิ่มหัวข้อวัตถุประสงค์ได้แบบไดนามิกโดยกดปุ่มด้านบน</div>
                     </div>
                     
                     <div class="form-section-title mb-4 mt-5">
-                        <span class="section-number">02</span> การตั้งค่าและการรับสมัคร
+                        <span class="section-number">02</span> การจำกัดจำนวนและเอกสารจัดตั้ง
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <label class="form-label-custom" for="max_members">
-                                <i class="fa-solid fa-users label-icon"></i>จำนวนสมาชิกสูงสุดที่เปิดรับ
+                                <i class="fa-solid fa-users label-icon"></i>จำนวนสมาชิกสูงสุดที่สามารถเปิดรับได้
                             </label>
                             <div class="input-group-custom">
-                                <input type="number" id="max_members" name="max_members" class="form-control-custom pe-5" value="50" min="5" max="500" required>
+                                <input type="number" id="max_members" name="max_members" class="form-control-custom pe-5" value="<?= $club ? (int)$club['max_members'] : 50 ?>" min="5" max="500" required>
                                 <span class="input-group-text-custom">คน</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="form-section-title mb-4 mt-4">
-                        <span class="section-number">03</span> สื่อประชาสัมพันธ์และการติดต่อ
+                    <div class="mb-4">
+                        <label class="form-label-custom">
+                            <i class="fa-solid fa-file-pdf label-icon"></i>เอกสารคำขอเสนอจัดตั้งชมรม <span class="text-danger">*</span>
+                        </label>
+                        <div class="file-upload-wrapper" style="height: 130px;">
+                            <input type="file" name="establishment_document" class="file-upload-input" accept=".doc,.docx,.pdf" <?= !$isEdit ? 'required' : '' ?>>
+                            <div class="file-upload-trigger text-center">
+                                <i class="fa-solid fa-file-signature upload-icon mb-2"></i>
+                                <span class="upload-text d-block fw-bold mb-1">
+                                    <?= ($club && $club['establishment_document']) ? basename($club['establishment_document']) : 'เลือกไฟล์เอกสารขอก่อตั้งชมรม' ?>
+                                </span>
+                                <span class="upload-hint d-block text-muted small">รองรับ Word (.doc, .docx) หรือ PDF (.pdf) ขนาดไม่เกิน 5MB</span>
+                            </div>
+                        </div>
+                        <?php if ($club && $club['establishment_document']): ?>
+                            <div class="mt-2 text-start">
+                                <a href="<?= url($club['establishment_document']) ?>" target="_blank" class="small text-primary text-decoration-none">
+                                    <i class="fa-solid fa-download me-1"></i> ดาวน์โหลดเอกสารเสนอจัดตั้งเดิมที่เคยแนบไว้
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                        <div class="form-text-custom">กรุณาแนบไฟล์คำขอก่อตั้งที่ลงชื่อเรียบร้อยแล้วเป็นไฟล์ Word หรือ PDF</div>
+                    </div>
+
+                    <div class="form-section-title mb-4 mt-5">
+                        <span class="section-number">03</span> สื่อประชาสัมพันธ์และการติดต่อ (ไม่จำเป็นต้องใส่ในขั้นแรก)
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6 mb-4">
                             <label class="form-label-custom">
-                                <i class="fa-solid fa-image label-icon"></i>รูปภาพโลโก้ชมรม (ถ้ามี)
+                                <i class="fa-solid fa-image label-icon"></i>รูปภาพโลโก้ชมรม
                             </label>
                             <div class="file-upload-wrapper">
                                 <input type="file" name="logo" class="file-upload-input" accept="image/*">
                                 <div class="file-upload-trigger text-center">
                                     <i class="fa-solid fa-cloud-arrow-up upload-icon mb-2"></i>
-                                    <span class="upload-text d-block fw-bold mb-1">เลือกรูปภาพโลโก้</span>
+                                    <span class="upload-text d-block fw-bold mb-1">
+                                        <?= ($club && $club['club_logo']) ? basename($club['club_logo']) : 'เลือกรูปภาพโลโก้' ?>
+                                    </span>
                                     <span class="upload-hint d-block text-muted small">รองรับ PNG, JPG ขนาดไม่เกิน 2MB</span>
                                 </div>
                             </div>
+                            <?php if ($club && $club['club_logo']): ?>
+                                <div class="mt-2 text-start">
+                                    <a href="<?= url($club['club_logo']) ?>" target="_blank" class="small text-primary text-decoration-none">
+                                        <i class="fa-solid fa-eye me-1"></i> ดูโลโก้เดิม
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-4">
                             <label class="form-label-custom">
-                                <i class="fa-solid fa-qrcode label-icon"></i>QR Code กลุ่มสำหรับติดต่อ (ถ้ามี)
+                                <i class="fa-solid fa-qrcode label-icon"></i>QR Code ช่องทางติดต่อ
                             </label>
                             <div class="file-upload-wrapper">
                                 <input type="file" name="qr_code" class="file-upload-input" accept="image/*">
                                 <div class="file-upload-trigger text-center">
                                     <i class="fa-solid fa-qrcode upload-icon mb-2"></i>
-                                    <span class="upload-text d-block fw-bold mb-1">เลือกไฟล์ QR Code</span>
-                                    <span class="upload-hint d-block text-muted small">คิวอาร์โค้ดกลุ่ม LINE, Facebook หรือดิสคอร์ด</span>
+                                    <span class="upload-text d-block fw-bold mb-1">
+                                        <?= ($club && $club['qr_code']) ? basename($club['qr_code']) : 'เลือกไฟล์ QR Code' ?>
+                                    </span>
+                                    <span class="upload-hint d-block text-muted small">คิวอาร์โค้ด LINE หรือกลุ่มสำหรับตอบคำถามสมาชิก</span>
                                 </div>
                             </div>
+                            <?php if ($club && $club['qr_code']): ?>
+                                <div class="mt-2 text-start">
+                                    <a href="<?= url($club['qr_code']) ?>" target="_blank" class="small text-primary text-decoration-none">
+                                        <i class="fa-solid fa-eye me-1"></i> ดู QR Code เดิม
+                                    </a>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                     
                     <div class="d-flex justify-content-between align-items-center border-top pt-4 mt-5">
-                        <a href="<?= url('clubs') ?>" class="btn btn-academic-secondary">
+                        <a href="<?= $isEdit ? url('clubs/register') : url('clubs') ?>" class="btn btn-academic-secondary">
                             <i class="fa-solid fa-arrow-left me-2"></i>ย้อนกลับ
                         </a>
                         <button type="submit" class="btn btn-academic-primary border-0">
-                            <i class="fa-solid fa-paper-plane me-2"></i>ส่งข้อเสนอขอเพิ่มข้อมูลชมรม
+                            <i class="fa-solid fa-paper-plane me-2"></i><?= $isEdit ? 'บันทึกการแก้ไขและส่งใหม่' : 'ส่งคำขอเสนอตั้งชมรม' ?>
                         </button>
                     </div>
                 </form>
@@ -168,16 +265,17 @@
 
 /* Academic Notice (Disclaimer) */
 .academic-notice {
-    background: rgba(249, 168, 38, 0.04);
-    border: 1px dashed rgba(249, 168, 38, 0.4);
-    border-left: 5px solid var(--accent-gold);
+    background: rgba(26, 73, 128, 0.03);
+    border: 1px dashed rgba(26, 73, 128, 0.3);
+    border-left: 5px solid var(--primary-soft);
     border-radius: 16px;
     padding: 20px;
+    text-align: left;
 }
 
 .notice-icon-wrapper {
-    background: rgba(249, 168, 38, 0.12);
-    color: var(--accent-gold-deep);
+    background: rgba(26, 73, 128, 0.12);
+    color: var(--primary-blue);
     width: 44px;
     height: 44px;
     border-radius: 12px;
@@ -211,6 +309,13 @@
     color: var(--danger-ink);
 }
 
+.alert-warning-custom {
+    background: rgba(249, 168, 38, 0.03);
+    border: 1px solid rgba(249, 168, 38, 0.15);
+    border-left: 4px solid var(--accent-gold) !important;
+    border-radius: 16px;
+}
+
 /* Section Title */
 .form-section-title {
     font-size: 1.15rem;
@@ -220,6 +325,7 @@
     align-items: center;
     border-bottom: 2px solid var(--border);
     padding-bottom: 8px;
+    text-align: left;
 }
 
 .section-number {
@@ -274,6 +380,7 @@
     color: var(--text-muted);
     margin-top: 6px;
     padding-left: 4px;
+    text-align: left;
 }
 
 /* Input Group Custom */
@@ -369,17 +476,14 @@
     transition: all var(--dur) var(--ease-out);
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
+    border: none;
 }
 
 .btn-academic-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(11, 44, 92, 0.3);
     background: linear-gradient(135deg, var(--primary-soft) 0%, #205c9e 100%);
-}
-
-.btn-academic-primary:active {
-    transform: translateY(1px);
-    box-shadow: 0 2px 10px rgba(11, 44, 92, 0.2);
 }
 
 .btn-academic-secondary {
@@ -392,6 +496,7 @@
     transition: all var(--dur) var(--ease-out);
     display: inline-flex;
     align-items: center;
+    text-decoration: none;
 }
 
 .btn-academic-secondary:hover {
@@ -402,6 +507,7 @@
 </style>
 
 <script>
+// File inputs label updater
 document.querySelectorAll('.file-upload-input').forEach(input => {
     input.addEventListener('change', function() {
         const file = this.files[0];
@@ -412,11 +518,46 @@ document.querySelectorAll('.file-upload-input').forEach(input => {
             trigger.querySelector('.upload-text').innerText = fileName;
             trigger.querySelector('.upload-hint').innerText = `ขนาดไฟล์: ${fileSize} MB (คลิกเพื่อเปลี่ยนไฟล์)`;
             trigger.classList.add('has-file');
-        } else {
-            trigger.querySelector('.upload-text').innerText = 'เลือกไฟล์';
-            trigger.querySelector('.upload-hint').innerText = 'รองรับรูปภาพหรือเอกสาร';
-            trigger.classList.remove('has-file');
         }
+    });
+});
+
+// Dynamic objectives logic
+document.getElementById('btn-add-objective').addEventListener('click', function() {
+    const container = document.getElementById('objectives-container');
+    const rows = container.getElementsByClassName('objective-row');
+    const newIndex = rows.length + 1;
+    
+    const div = document.createElement('div');
+    div.className = 'objective-row d-flex align-items-center mb-2 gap-2';
+    div.innerHTML = `
+        <input type="text" name="objectives[]" class="form-control-custom" placeholder="ระบุวัตถุประสงค์ข้อที่ ${newIndex}" required>
+        <button type="button" class="btn btn-outline-danger btn-remove-objective" style="border-radius: 12px; padding: 12px 15px;">
+            <i class="fa-solid fa-trash-can"></i>
+        </button>
+    `;
+    container.appendChild(div);
+    
+    // Add remove event to the new button
+    div.querySelector('.btn-remove-objective').addEventListener('click', function() {
+        div.remove();
+        reindexObjectives();
+    });
+});
+
+function reindexObjectives() {
+    const container = document.getElementById('objectives-container');
+    const inputs = container.querySelectorAll('.objective-row input');
+    inputs.forEach((input, index) => {
+        input.placeholder = `ระบุวัตถุประสงค์ข้อที่ ${index + 1}`;
+    });
+}
+
+// Bind remove event to initial buttons
+document.querySelectorAll('.btn-remove-objective').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.closest('.objective-row').remove();
+        reindexObjectives();
     });
 });
 </script>

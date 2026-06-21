@@ -75,6 +75,16 @@ class ClubOfficeController extends Controller
         $stmtMembers = $db->prepare('SELECT COUNT(*) FROM club_members WHERE club_id = ?');
         $stmtMembers->execute([$this->clubId]);
         $totalMembers = (int)$stmtMembers->fetchColumn();
+
+        // Unique faculties count
+        $stmtFaculties = $db->prepare('
+            SELECT COUNT(DISTINCT u.faculty) 
+            FROM club_members cm 
+            JOIN users u ON cm.user_id = u.id 
+            WHERE cm.club_id = ? AND u.faculty IS NOT NULL AND u.faculty != ""
+        ');
+        $stmtFaculties->execute([$this->clubId]);
+        $uniqueFaculties = (int)$stmtFaculties->fetchColumn();
         
         // Pending applications
         $stmtApps = $db->prepare('SELECT COUNT(*) FROM applications WHERE club_id = ? AND status = "pending"');
@@ -93,11 +103,24 @@ class ClubOfficeController extends Controller
 
         $this->view('cluboffice/dashboard', [
             'totalMembers' => $totalMembers,
+            'uniqueFaculties' => $uniqueFaculties,
             'totalApps' => $totalApps,
             'totalEvents' => $totalEvents,
             'totalNews' => $totalNews,
             'pageTitle' => 'แผงควบคุมชมรม'
         ]);
+    }
+
+    public function submitVerification(): void
+    {
+        $clubModel = new Club;
+        $clubModel->update($this->clubId, [
+            'member_verification_status' => 'pending',
+            'member_verification_comment' => NULL
+        ]);
+        
+        $this->flash('ส่งรายชื่อสมาชิกให้เจ้าหน้าที่ตรวจสอบความหลากหลายของคณะเรียบร้อยแล้ว โปรดรอการพิจารณา');
+        $this->redirect('/cluboffice');
     }
 
     public function info(): void
