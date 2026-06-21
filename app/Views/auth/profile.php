@@ -22,9 +22,10 @@
                         </label>
                     </div>
                     <input type="file" name="avatar" id="avatar-input" class="d-none" accept="image/jpeg,image/png,image/webp,image/gif" onchange="previewAvatar(event)">
-                    <div class="avatar-badge position-absolute bottom-0 end-0 bg-gold-custom text-white rounded-circle shadow d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border: 2.5px solid #fff; cursor: pointer;">
+                    <div class="avatar-badge position-absolute bottom-0 end-0 rounded-circle shadow d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; border: 2.5px solid #fff; cursor: pointer; background-color: var(--accent-gold); color: var(--primary-blue);">
                         <i class="fa-solid fa-pencil" style="font-size: 0.75rem;"></i>
                     </div>
+
                 </div>
 
                 <div class="px-4">
