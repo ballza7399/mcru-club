@@ -1,3 +1,6 @@
+<?php
+$queueStatus = App\Core\Queue::getQueueStatus();
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -286,15 +289,15 @@
         </div>
 
         <!-- รายละเอียดลำดับคิวที่จะอัปเดตแบบเรียลไทม์ -->
-        <div class="mt-3 p-3 rounded-3" id="queue-info-box" style="background: rgba(11, 44, 92, 0.04); border: 1px solid rgba(11, 44, 92, 0.08); display: none;">
+        <div class="mt-3 p-3 rounded-3" id="queue-info-box" style="background: rgba(11, 44, 92, 0.04); border: 1px solid rgba(11, 44, 92, 0.08); <?= $queueStatus['can_enter'] ? 'display: none;' : 'display: block;' ?>">
             <div class="row align-items-center">
                 <div class="col-6 border-end">
                     <span class="text-muted d-block small mb-1" style="font-size: 0.75rem;">คิวของคุณคือ</span>
-                    <span class="h3 mb-0 text-primary fw-bold" id="queue-position-val">0</span>
+                    <span class="h3 mb-0 text-primary fw-bold" id="queue-position-val"><?= htmlspecialchars((string)$queueStatus['queue_position']) ?></span>
                 </div>
                 <div class="col-6">
                     <span class="text-muted d-block small mb-1" style="font-size: 0.75rem;">คิวรอทั้งหมด</span>
-                    <span class="h4 mb-0 text-secondary fw-semibold"><span id="queue-total-val">0</span> คิว</span>
+                    <span class="h4 mb-0 text-secondary fw-semibold"><span id="queue-total-val"><?= htmlspecialchars((string)$queueStatus['total_waiting']) ?></span> คิว</span>
                 </div>
             </div>
         </div>
@@ -325,12 +328,12 @@
             // รายการ SVG แม่แบบของนักศึกษาที่มีหน้าตาหลากหลาย
             $studentTemplates = [
                 // Template 0 (เดิมคือ Student 12)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="36" r="10" fill="#ffedd5" />
                     <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0369a1" />
                 </svg>',
                 // Template 1 (เดิมคือ Student 1)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="34" r="10" fill="#fed7aa" />
                     <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
                     <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
@@ -338,14 +341,14 @@
                     <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#1a4980" />
                 </svg>',
                 // Template 2 (เดิมคือ Student 2)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
                     <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#475569" />
                     <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#ea580c" />
                     <rect x="20" y="62" width="7" height="18" rx="2" fill="#f9a826" />
                 </svg>',
                 // Template 3 (เดิมคือ Student 3)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="36" r="10" fill="#ffedd5" />
                     <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
                     <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
@@ -353,33 +356,33 @@
                     <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#059669" />
                 </svg>',
                 // Template 4 (เดิมคือ Student 4)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="34" r="10" fill="#fbcfe8" />
                     <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
                     <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
                     <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#0284c7" />
                 </svg>',
                 // Template 5 (เดิมคือ Student 5)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="35" r="9" fill="#fed7aa" />
                     <path d="M30,35 C30,22 50,22 50,35 C50,42 30,42 30,35" fill="#475569" />
                     <path d="M26,85 L54,85 L48,56 L32,56 Z" fill="#db2777" />
                 </svg>',
                 // Template 6 (เดิมคือ Student 6)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="34" r="10" fill="#ffedd5" />
                     <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
                     <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
                     <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#a21caf" />
                 </svg>',
                 // Template 7 (เดิมคือ Student 7)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="37" r="9" fill="#fed7aa" />
                     <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#0b2c5c" />
                     <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#be185d" />
                 </svg>',
                 // Template 8 (เดิมคือ Student 8)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="36" r="10" fill="#fbcfe8" />
                     <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
                     <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
@@ -387,31 +390,38 @@
                     <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0f766e" />
                 </svg>',
                 // Template 9 (เดิมคือ Student 9)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="38" r="9" fill="#ffedd5" />
                     <path d="M30,38 C30,25 50,25 50,38 C50,45 30,45 30,38" fill="#475569" />
                     <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#6d28d9" />
                 </svg>',
                 // Template 10 (เดิมคือ Student 10)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="35" r="10" fill="#fed7aa" />
                     <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
                     <rect x="38" y="32" width="4" height="5" fill="#475569" />
                     <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
                 </svg>',
                 // Template 11 (เดิมคือ Student 11)
-                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                '<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
                     <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
                     <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#1e293b" />
                     <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#b91c1c" />
                 </svg>'
             ];
 
-            // แสดงเริ่มต้นสัก 12 คน
-            for ($i = 12; $i >= 1; $i--) {
+            // แสดงเริ่มต้นตามตำแหน่งคิวจริงที่ได้จาก PHP
+            $initialCount = min($queueStatus['queue_position'], 20);
+            if ($initialCount <= 0) {
+                $initialCount = 12; // fallback ถ้าคิวว่างหรือยังไม่ได้เริ่ม
+            }
+            for ($i = $initialCount; $i >= 1; $i--) {
                 $delay = ($i * 0.15) . 's';
                 $template = $studentTemplates[$i % 12];
-                echo str_replace('{delay}', $delay, $template);
+                $silhouetteClass = ($queueStatus['queue_position'] > 20 && $i > 15) ? 'silhouette' : '';
+                
+                $renderedTemplate = str_replace('{silhouette}', $silhouetteClass, $template);
+                echo str_replace('{delay}', $delay, $renderedTemplate);
             }
             ?>
         </div>
@@ -602,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </svg>`
     ];
 
-    let currentQueuePosition = 0;
+    let currentQueuePosition = <?= (int)$queueStatus['queue_position'] ?>;
 
     // เรนเดอร์คนในคิวตามลำดับจริง
     function renderQueue(queuePosition) {
