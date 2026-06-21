@@ -196,6 +196,7 @@
         }
         .student-char {
             animation: idle-bounce 2s infinite ease-in-out;
+            flex-shrink: 0;
         }
 
         /* --- Bubble Chat Animations --- */
@@ -403,7 +404,7 @@
                 </svg>'
             ];
 
-            for ($i = 50; $i >= 1; $i--) {
+            for ($i = 20; $i >= 1; $i--) {
                 $delay = ($i * 0.15) . 's';
                 $template = $studentTemplates[$i % 12];
                 echo str_replace('{delay}', $delay, $template);
