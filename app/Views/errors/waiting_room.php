@@ -197,18 +197,6 @@
         .student-char {
             animation: idle-bounce 2s infinite ease-in-out;
         }
-        .bounce-delay-1 { animation-delay: 0.2s; }
-        .bounce-delay-2 { animation-delay: 0.4s; }
-        .bounce-delay-3 { animation-delay: 0.6s; }
-        .bounce-delay-4 { animation-delay: 0.8s; }
-        .bounce-delay-5 { animation-delay: 1.0s; }
-        .bounce-delay-6 { animation-delay: 1.2s; }
-        .bounce-delay-7 { animation-delay: 1.4s; }
-        .bounce-delay-8 { animation-delay: 1.6s; }
-        .bounce-delay-9 { animation-delay: 1.8s; }
-        .bounce-delay-10 { animation-delay: 2.0s; }
-        .bounce-delay-11 { animation-delay: 2.2s; }
-        .bounce-delay-12 { animation-delay: 2.4s; }
 
         /* --- Bubble Chat Animations --- */
         .speech-bubble {
@@ -315,99 +303,98 @@
         
         <!-- Student Queue Section (Stretching all the way to the left) -->
         <div class="d-flex align-items-end justify-content-end gap-2 pb-1 flex-grow-1 overflow-hidden" style="mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 12%);">
-            
-            <!-- Student 12 (Leftmost, visible on large screens) -->
-            <svg class="student-char student-node bounce-delay-12 d-none d-xxl-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="36" r="10" fill="#ffedd5" />
-                <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0369a1" />
-            </svg>
+            <?php
+            // รายการ SVG แม่แบบของนักศึกษาที่มีหน้าตาหลากหลาย
+            $studentTemplates = [
+                // Template 0 (เดิมคือ Student 12)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="36" r="10" fill="#ffedd5" />
+                    <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0369a1" />
+                </svg>',
+                // Template 1 (เดิมคือ Student 1)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="34" r="10" fill="#fed7aa" />
+                    <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
+                    <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
+                    <line x1="40" y1="24" x2="22" y2="33" stroke="#f9a826" stroke-width="1.5" />
+                    <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#1a4980" />
+                </svg>',
+                // Template 2 (เดิมคือ Student 2)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
+                    <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#475569" />
+                    <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#ea580c" />
+                    <rect x="20" y="62" width="7" height="18" rx="2" fill="#f9a826" />
+                </svg>',
+                // Template 3 (เดิมคือ Student 3)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="36" r="10" fill="#ffedd5" />
+                    <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                    <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                    <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
+                    <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#059669" />
+                </svg>',
+                // Template 4 (เดิมคือ Student 4)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="34" r="10" fill="#fbcfe8" />
+                    <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
+                    <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
+                    <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#0284c7" />
+                </svg>',
+                // Template 5 (เดิมคือ Student 5)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="35" r="9" fill="#fed7aa" />
+                    <path d="M30,35 C30,22 50,22 50,35 C50,42 30,42 30,35" fill="#475569" />
+                    <path d="M26,85 L54,85 L48,56 L32,56 Z" fill="#db2777" />
+                </svg>',
+                // Template 6 (เดิมคือ Student 6)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="34" r="10" fill="#ffedd5" />
+                    <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
+                    <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
+                    <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#a21caf" />
+                </svg>',
+                // Template 7 (เดิมคือ Student 7)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="37" r="9" fill="#fed7aa" />
+                    <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#0b2c5c" />
+                    <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#be185d" />
+                </svg>',
+                // Template 8 (เดิมคือ Student 8)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="36" r="10" fill="#fbcfe8" />
+                    <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                    <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
+                    <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
+                    <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0f766e" />
+                </svg>',
+                // Template 9 (เดิมคือ Student 9)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="38" r="9" fill="#ffedd5" />
+                    <path d="M30,38 C30,25 50,25 50,38 C50,45 30,45 30,38" fill="#475569" />
+                    <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#6d28d9" />
+                </svg>',
+                // Template 10 (เดิมคือ Student 10)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="35" r="10" fill="#fed7aa" />
+                    <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
+                    <rect x="38" y="32" width="4" height="5" fill="#475569" />
+                    <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
+                </svg>',
+                // Template 11 (เดิมคือ Student 11)
+                '<svg class="student-char student-node" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
+                    <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
+                    <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#1e293b" />
+                    <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#b91c1c" />
+                </svg>'
+            ];
 
-            <!-- Student 11 -->
-            <svg class="student-char student-node bounce-delay-11 d-none d-xxl-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
-                <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#1e293b" />
-                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#b91c1c" />
-            </svg>
-
-            <!-- Student 10 -->
-            <svg class="student-char student-node bounce-delay-10 d-none d-xl-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="35" r="10" fill="#fed7aa" />
-                <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
-                <rect x="38" y="32" width="4" height="5" fill="#475569" />
-                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
-            </svg>
-
-            <!-- Student 9 -->
-            <svg class="student-char student-node bounce-delay-9 d-none d-xl-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="38" r="9" fill="#ffedd5" />
-                <path d="M30,38 C30,25 50,25 50,38 C50,45 30,45 30,38" fill="#475569" />
-                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#6d28d9" />
-            </svg>
-
-            <!-- Student 8 -->
-            <svg class="student-char student-node bounce-delay-8 d-none d-lg-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="36" r="10" fill="#fbcfe8" />
-                <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
-                <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
-                <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
-                <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#0f766e" />
-            </svg>
-
-            <!-- Student 7 -->
-            <svg class="student-char student-node bounce-delay-7 d-none d-lg-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="37" r="9" fill="#fed7aa" />
-                <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#0b2c5c" />
-                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#be185d" />
-            </svg>
-
-            <!-- Student 6 -->
-            <svg class="student-char student-node bounce-delay-6 d-none d-md-block" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="34" r="10" fill="#ffedd5" />
-                <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
-                <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
-                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#a21caf" />
-            </svg>
-
-            <!-- Student 5 -->
-            <svg class="student-char student-node bounce-delay-5" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="35" r="9" fill="#fed7aa" />
-                <path d="M30,35 C30,22 50,22 50,35 C50,42 30,42 30,35" fill="#475569" />
-                <path d="M26,85 L54,85 L48,56 L32,56 Z" fill="#db2777" />
-            </svg>
-            
-            <!-- Student 4 -->
-            <svg class="student-char student-node bounce-delay-4" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="34" r="10" fill="#fbcfe8" />
-                <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
-                <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
-                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#0284c7" />
-            </svg>
-            
-            <!-- Student 3 -->
-            <svg class="student-char student-node bounce-delay-3" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="36" r="10" fill="#ffedd5" />
-                <rect x="30" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
-                <rect x="42" y="33" width="8" height="6" rx="1.5" fill="none" stroke="#334155" stroke-width="2" />
-                <line x1="38" y1="36" x2="42" y2="36" stroke="#334155" stroke-width="2" />
-                <path d="M25,85 L55,85 L48,56 L32,56 Z" fill="#059669" />
-            </svg>
-            
-            <!-- Student 2 -->
-            <svg class="student-char student-node bounce-delay-2" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
-                <path d="M30,37 C30,24 50,24 50,37 C50,44 30,44 30,37" fill="#475569" />
-                <path d="M26,85 L54,85 L48,58 L32,58 Z" fill="#ea580c" />
-                <rect x="20" y="62" width="7" height="18" rx="2" fill="#f9a826" />
-            </svg>
-            
-            <!-- Student 1 (Rightmost student, closest to server) -->
-            <svg class="student-char student-node bounce-delay-1" viewBox="0 0 80 100" width="55" height="75">
-                <circle cx="40" cy="34" r="10" fill="#fed7aa" />
-                <polygon points="25,29 40,24 55,29 40,34" fill="#0b2c5c" />
-                <rect x="38" y="31" width="4" height="5" fill="#0b2c5c" />
-                <line x1="40" y1="24" x2="22" y2="33" stroke="#f9a826" stroke-width="1.5" />
-                <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#1a4980" />
-            </svg>
+            for ($i = 50; $i >= 1; $i--) {
+                $delay = ($i * 0.15) . 's';
+                $template = $studentTemplates[$i % 12];
+                echo str_replace('{delay}', $delay, $template);
+            }
+            ?>
         </div>
         
         <!-- Server & IT Staff Section (Aligned to the far right) -->
@@ -524,10 +511,12 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkQueueStatus, 5000);
 
     function triggerSpeechBubble() {
-        // ดึงเฉพาะนักศึกษาที่กำลังแสดงผลอยู่ในขนาดหน้าจอปัจจุบัน (ตัดตัวที่ซ่อนผ่าน d-none ออก)
+        // ดึงเฉพาะนักศึกษาที่กำลังแสดงผลอยู่ใน viewport ปัจจุบัน (ไม่ล้นขอบจอไปฝั่งซ้าย)
         const allNodes = document.querySelectorAll('.student-node');
         const visibleNodes = Array.from(allNodes).filter(el => {
-            return window.getComputedStyle(el).display !== 'none';
+            const rect = el.getBoundingClientRect();
+            // เช็กว่าขอบขวาของโหนดมีค่ามากกว่า 0 และขอบซ้ายยังไม่เลยความกว้างของหน้าจอ
+            return rect.right > 0 && rect.left < window.innerWidth;
         });
 
         if (visibleNodes.length > 0 && bubble && bubbleText && queueContainer) {
