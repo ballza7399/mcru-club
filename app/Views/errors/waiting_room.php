@@ -604,6 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <polygon points="25,30 40,25 55,30 40,35" fill="#475569" />
             <rect x="38" y="32" width="4" height="5" fill="#475569" />
             <path d="M25,85 L55,85 L50,54 L30,54 Z" fill="#15803d" />
+        </svg>`,
         // Template 11 (เดิมคือ Student 11)
         `<svg class="student-char student-node {silhouette}" viewBox="0 0 80 100" width="55" height="75" style="animation-delay: {delay};">
             <circle cx="40" cy="37" r="9" fill="#fbcfe8" />
