@@ -4,7 +4,12 @@
  */
 $startVal = !empty($settings['club_proposal_period_start']) ? date('Y-m-d\TH:i', strtotime($settings['club_proposal_period_start'])) : '';
 $endVal = !empty($settings['club_proposal_period_end']) ? date('Y-m-d\TH:i', strtotime($settings['club_proposal_period_end'])) : '';
-$isEnabled = ($settings['club_proposal_period_enabled'] ?? 'false') === 'true';
+$periodMode = $settings['club_proposal_period_enabled'] ?? 'always_open';
+if ($periodMode === 'false') {
+    $periodMode = 'always_open';
+} elseif ($periodMode === 'true') {
+    $periodMode = 'check_timeline';
+}
 ?>
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="text-primary-custom fw-bold m-0">
@@ -26,17 +31,23 @@ $isEnabled = ($settings['club_proposal_period_enabled'] ?? 'false') === 'true';
                 <!-- Enabled / Disabled Toggle -->
                 <div class="mb-4">
                     <label class="form-label fw-bold text-dark d-block">ระบบการเปิดตรวจสอบช่วงเวลา</label>
-                    <div class="d-flex gap-4 mt-2">
-                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
-                            <input class="form-check-input ms-0 me-2" type="radio" name="club_proposal_period_enabled" id="proposalActive" value="true" <?= $isEnabled ? 'checked' : '' ?> style="width: 18px; height: 18px;">
-                            <label class="form-check-label text-success fw-bold small mb-0" for="proposalActive" style="cursor: pointer;">
-                                <i class="fa-solid fa-circle-check me-1"></i> เปิดตรวจสอบช่วงเวลา (Timeline)
+                    <div class="d-flex flex-column gap-2 mt-2">
+                        <div class="form-check p-3 border rounded-3 d-flex align-items-center" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="club_proposal_period_enabled" id="proposalOpen" value="always_open" <?= $periodMode === 'always_open' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-success fw-bold small mb-0" for="proposalOpen" style="cursor: pointer;">
+                                <i class="fa-solid fa-lock-open me-1"></i> เปิดรับเสนอจัดตั้งได้ตลอดเวลา (ไม่ตรวจสอบเวลา)
                             </label>
                         </div>
-                        <div class="form-check form-check-inline p-3 border rounded-3 d-flex align-items-center flex-grow-1" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
-                            <input class="form-check-input ms-0 me-2" type="radio" name="club_proposal_period_enabled" id="proposalInactive" value="false" <?= !$isEnabled ? 'checked' : '' ?> style="width: 18px; height: 18px;">
-                            <label class="form-check-label text-secondary fw-bold small mb-0" for="proposalInactive" style="cursor: pointer;">
-                                <i class="fa-solid fa-circle-xmark me-1"></i> ปิดตรวจสอบ (เสนอตั้งได้ตลอดเวลา)
+                        <div class="form-check p-3 border rounded-3 d-flex align-items-center" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="club_proposal_period_enabled" id="proposalTimeline" value="check_timeline" <?= $periodMode === 'check_timeline' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-primary fw-bold small mb-0" for="proposalTimeline" style="cursor: pointer;">
+                                <i class="fa-solid fa-calendar-days me-1"></i> เปิดตรวจสอบช่วงเวลา (Timeline) (เปิดเฉพาะช่วงวันเวลาที่ระบุ)
+                            </label>
+                        </div>
+                        <div class="form-check p-3 border rounded-3 d-flex align-items-center" style="cursor: pointer; background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important;">
+                            <input class="form-check-input ms-0 me-2" type="radio" name="club_proposal_period_enabled" id="proposalClosed" value="always_closed" <?= $periodMode === 'always_closed' ? 'checked' : '' ?> style="width: 18px; height: 18px;">
+                            <label class="form-check-label text-danger fw-bold small mb-0" for="proposalClosed" style="cursor: pointer;">
+                                <i class="fa-solid fa-lock me-1"></i> ปิดรับเสนอจัดตั้งตลอดเวลา (ปิดระบบรับเสนอจัดตั้งทุกกรณี)
                             </label>
                         </div>
                     </div>
@@ -88,9 +99,9 @@ $isEnabled = ($settings['club_proposal_period_enabled'] ?? 'false') === 'true';
             <div class="p-3 bg-light rounded-3 border mb-4">
                 <h6 class="fw-bold text-primary-custom mb-2">เงื่อนไขการตรวจสอบช่วงเวลา:</h6>
                 <ul class="small text-muted ps-3 mb-0" style="line-height: 1.7;">
-                    <li>หากเลือก <strong>"เปิดตรวจสอบช่วงเวลา (Timeline)"</strong>: หน้าการขอก่อตั้งชมรมใหม่ (<a href="<?= url('clubs/register') ?>" target="_blank">/clubs/register</a>) จะเปิดให้เข้ากรอกข้อมูลเฉพาะในช่วงวันเวลาที่ระบุเท่านั้น</li>
-                    <li>หากนักศึกษาเข้าใช้งานระบบจัดตั้งชมรมก่อนหรือหลังวันที่กำหนด ระบบจะบล็อกการสมัครและขึ้นข้อความแจ้งเตือน</li>
-                    <li>หากเลือก <strong>"ปิดตรวจสอบ"</strong>: จะอนุญาตให้นักศึกษาสามารถเข้ามายื่นคำขอก่อตั้งได้ตลอดเวลาโดยไม่มีผลเรื่องกำหนดเวลา</li>
+                    <li><strong>เปิดรับเสนอจัดตั้งได้ตลอดเวลา</strong>: จะอนุญาตให้นักศึกษาสามารถเข้ามายื่นคำขอก่อตั้งได้ตลอดเวลาโดยไม่มีผลเรื่องกำหนดเวลา</li>
+                    <li><strong>เปิดตรวจสอบช่วงเวลา (Timeline)</strong>: หน้าการขอก่อตั้งชมรมใหม่ (<a href="<?= url('clubs/register') ?>" target="_blank">/clubs/register</a>) จะเปิดให้เข้ากรอกข้อมูลเฉพาะในช่วงวันเวลาที่ระบุเท่านั้น หากอยู่นอกกำหนดการระบบจะขึ้นหน้าต่างบล็อก</li>
+                    <li><strong>ปิดรับเสนอจัดตั้งตลอดเวลา</strong>: ระบบจะทำการปิดและบล็อกการยื่นคำเสนอขอก่อตั้งชมรมใหม่ในทุกกรณีโดยไม่มีข้อยกเว้น</li>
                 </ul>
             </div>
 

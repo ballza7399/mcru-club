@@ -3,6 +3,9 @@
  * @var string $startDate
  * @var string $endDate
  */
+$periodMode = getSetting('club_proposal_period_enabled', 'always_open');
+$isClosedIndefinitely = ($periodMode === 'always_closed');
+
 $startStr = !empty($startDate) ? date('d/m/Y H:i', strtotime($startDate)) : 'ไม่ระบุ';
 $endStr = !empty($endDate) ? date('d/m/Y H:i', strtotime($endDate)) : 'ไม่ระบุ';
 ?>
@@ -20,19 +23,25 @@ $endStr = !empty($endDate) ? date('d/m/Y H:i', strtotime($endDate)) : 'ไม่
 
             <div class="p-4 p-md-5 bg-white">
                 <!-- Info Panel -->
-                <div class="p-4 rounded-4 mb-4 border text-start" style="background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important; border-left: 5px solid var(--danger) !important;">
-                    <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-calendar-days text-danger me-2"></i>กำหนดการยื่นคำเสนอขอ (Phase I)</h5>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <div class="small text-muted">วันเวลาเริ่มต้นเปิดรับ:</div>
-                            <div class="fw-bold text-primary-custom" style="font-size: 1.1rem;"><?= $startStr ?> น.</div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="small text-muted">วันเวลาสิ้นสุดการปิดรับ:</div>
-                            <div class="fw-bold text-danger-custom" style="font-size: 1.1rem;"><?= $endStr ?> น.</div>
+                <?php if ($isClosedIndefinitely): ?>
+                    <div class="p-4 rounded-4 mb-4 border text-center border-danger-subtle" style="background: #fef2f2; border-left: 5px solid var(--danger) !important;">
+                        <h5 class="fw-bold text-danger mb-0"><i class="fa-solid fa-ban me-2"></i>ระบบปิดรับข้อเสนอขอก่อตั้งชมรมชั่วคราวอย่างไม่มีกำหนด</h5>
+                    </div>
+                <?php else: ?>
+                    <div class="p-4 rounded-4 mb-4 border text-start" style="background: rgba(11, 44, 92, 0.02); border-color: var(--border-strong) !important; border-left: 5px solid var(--danger) !important;">
+                        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-calendar-days text-danger me-2"></i>กำหนดการยื่นคำเสนอขอ (Phase I)</h5>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="small text-muted">วันเวลาเริ่มต้นเปิดรับ:</div>
+                                <div class="fw-bold text-primary-custom" style="font-size: 1.1rem;"><?= $startStr ?> น.</div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="small text-muted">วันเวลาสิ้นสุดการปิดรับ:</div>
+                                <div class="fw-bold text-danger-custom" style="font-size: 1.1rem;"><?= $endStr ?> น.</div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?>
 
                 <p class="text-muted mb-4" style="line-height: 1.7;">
                     ขณะนี้ระบบขอก่อตั้งชมรมออนไลน์อยู่นอกกำหนดการรับสมัครส่งเสริมกิจกรรมนักศึกษา จึงไม่อนุญาตให้นักศึกษายื่นเสนอข้อมูลเข้ามาใหม่ได้ในขณะนี้

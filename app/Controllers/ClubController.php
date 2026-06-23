@@ -105,13 +105,21 @@ class ClubController extends Controller
         $stmt->execute([$userId]);
         $existingClub = $stmt->fetch();
         
-        // Check if timeline check is enabled
-        $checkEnabled = (getSetting('club_proposal_period_enabled', 'false') === 'true');
+        // Normalize period mode
+        $periodMode = getSetting('club_proposal_period_enabled', 'always_open');
+        if ($periodMode === 'false') {
+            $periodMode = 'always_open';
+        } elseif ($periodMode === 'true') {
+            $periodMode = 'check_timeline';
+        }
+
         $isOpen = true;
         $start = getSetting('club_proposal_period_start', '');
         $end = getSetting('club_proposal_period_end', '');
 
-        if ($checkEnabled) {
+        if ($periodMode === 'always_closed') {
+            $isOpen = false;
+        } elseif ($periodMode === 'check_timeline') {
             $nowTime = time();
             $startTime = !empty($start) ? strtotime($start) : null;
             $endTime = !empty($end) ? strtotime($end) : null;
@@ -176,13 +184,21 @@ class ClubController extends Controller
     {
         $this->requireAuth();
 
-        // Check timeline check if not admin or staff
-        $checkEnabled = (getSetting('club_proposal_period_enabled', 'false') === 'true');
+        // Normalize period mode
+        $periodMode = getSetting('club_proposal_period_enabled', 'always_open');
+        if ($periodMode === 'false') {
+            $periodMode = 'always_open';
+        } elseif ($periodMode === 'true') {
+            $periodMode = 'check_timeline';
+        }
+
         $isOpen = true;
         $start = getSetting('club_proposal_period_start', '');
         $end = getSetting('club_proposal_period_end', '');
 
-        if ($checkEnabled) {
+        if ($periodMode === 'always_closed') {
+            $isOpen = false;
+        } elseif ($periodMode === 'check_timeline') {
             $nowTime = time();
             $startTime = !empty($start) ? strtotime($start) : null;
             $endTime = !empty($end) ? strtotime($end) : null;

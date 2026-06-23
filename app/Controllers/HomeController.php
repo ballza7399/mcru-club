@@ -387,7 +387,9 @@ class HomeController extends Controller
                 foreach ($updatableKeys as $key) {
                     $val = trim($_POST[$key] ?? '');
                     if ($key === 'club_proposal_period_enabled') {
-                        $val = ($val === 'true') ? 'true' : 'false';
+                        if (!in_array($val, ['always_open', 'check_timeline', 'always_closed'], true)) {
+                            $val = 'always_open';
+                        }
                     }
                     $stmt->execute([$val, $key]);
                 }
