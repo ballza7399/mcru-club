@@ -34,6 +34,8 @@ if (str_contains($uri, 'backoffice/clubs/members')) {
     $activePage = 'mourning_settings';
 } elseif (str_contains($uri, 'backoffice/settings/og')) {
     $activePage = 'og_settings';
+} elseif (str_contains($uri, 'backoffice/settings/proposal')) {
+    $activePage = 'proposal_settings';
 }
 
 ?>
@@ -145,6 +147,9 @@ window.addEventListener('error', function(e) {
                         </a>
                         <a class="nav-link admin-sidebar-link <?= $activePage === 'og_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/og') ?>">
                             <i class="fa-solid fa-share-nodes me-2"></i>ตั้งค่าการแชร์ (Open Graph)
+                        </a>
+                        <a class="nav-link admin-sidebar-link <?= $activePage === 'proposal_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/proposal') ?>">
+                            <i class="fa-solid fa-clock me-2"></i>ช่วงเวลาเสนอจัดตั้งชมรม
                         </a>
                     <?php endif; ?>
                     

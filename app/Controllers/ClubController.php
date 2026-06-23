@@ -105,6 +105,36 @@ class ClubController extends Controller
         $stmt->execute([$userId]);
         $existingClub = $stmt->fetch();
         
+        // Check if timeline check is enabled
+        $checkEnabled = (getSetting('club_proposal_period_enabled', 'false') === 'true');
+        $isOpen = true;
+        $start = getSetting('club_proposal_period_start', '');
+        $end = getSetting('club_proposal_period_end', '');
+
+        if ($checkEnabled) {
+            $nowTime = time();
+            $startTime = !empty($start) ? strtotime($start) : null;
+            $endTime = !empty($end) ? strtotime($end) : null;
+
+            if ($startTime && $nowTime < $startTime) {
+                $isOpen = false;
+            }
+            if ($endTime && $nowTime > $endTime) {
+                $isOpen = false;
+            }
+        }
+
+        $isAdminOrStaff = in_array($_SESSION['role'] ?? '', ['admin', 'staff'], true);
+
+        if (!$isOpen && !$isAdminOrStaff && (!$existingClub || $existingClub['status'] !== 'correcting' || !isset($_GET['edit']))) {
+            $this->view('clubs/register_closed', [
+                'startDate' => $start,
+                'endDate' => $end,
+                'pageTitle' => 'ระบบเสนอขอจัดตั้งชมรมไม่อยู่ในช่วงเปิดรับ'
+            ]);
+            return;
+        }
+        
         if ($existingClub) {
             if (isset($_GET['edit']) && $existingClub['status'] === 'correcting') {
                 $this->view('clubs/register', [
@@ -145,6 +175,39 @@ class ClubController extends Controller
     public function registerSubmit(): void
     {
         $this->requireAuth();
+
+        // Check timeline check if not admin or staff
+        $checkEnabled = (getSetting('club_proposal_period_enabled', 'false') === 'true');
+        $isOpen = true;
+        $start = getSetting('club_proposal_period_start', '');
+        $end = getSetting('club_proposal_period_end', '');
+
+        if ($checkEnabled) {
+            $nowTime = time();
+            $startTime = !empty($start) ? strtotime($start) : null;
+            $endTime = !empty($end) ? strtotime($end) : null;
+
+            if ($startTime && $nowTime < $startTime) {
+                $isOpen = false;
+            }
+            if ($endTime && $nowTime > $endTime) {
+                $isOpen = false;
+            }
+        }
+
+        $isAdminOrStaff = in_array($_SESSION['role'] ?? '', ['admin', 'staff'], true);
+        
+        $db = \App\Core\Database::instance();
+        
+        // Find if this user already has an existing proposal
+        $stmtExist = $db->prepare('SELECT * FROM clubs WHERE president_id = ? ORDER BY id DESC LIMIT 1');
+        $stmtExist->execute([$_SESSION['user_id']]);
+        $existingClub = $stmtExist->fetch();
+
+        if (!$isOpen && !$isAdminOrStaff && (!$existingClub || $existingClub['status'] !== 'correcting')) {
+            $this->redirect('/clubs/register');
+            return;
+        }
         
         $error = null;
         $clubName = trim($_POST['club_name'] ?? '');
@@ -158,13 +221,6 @@ class ClubController extends Controller
             return $val !== '';
         });
         $objectivesJson = !empty($objectives) ? json_encode(array_values($objectives), JSON_UNESCAPED_UNICODE) : null;
-        
-        $db = \App\Core\Database::instance();
-        
-        // Find if this user already has an existing proposal
-        $stmtExist = $db->prepare('SELECT * FROM clubs WHERE president_id = ? ORDER BY id DESC LIMIT 1');
-        $stmtExist->execute([$_SESSION['user_id']]);
-        $existingClub = $stmtExist->fetch();
 
         if ($clubName === '' || $description === '') {
             $error = 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน';

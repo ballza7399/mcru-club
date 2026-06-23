@@ -346,6 +346,62 @@ class HomeController extends Controller
         
         $this->redirect('/backoffice/settings/og');
     }
+
+    public function proposalSettings(): void
+    {
+        $this->requireRole('admin');
+        
+        $db = \App\Core\Database::instance();
+        $settingsRaw = $db->query("SELECT * FROM site_settings WHERE setting_group = 'club_proposal'")->fetchAll();
+        
+        $settings = [];
+        foreach ($settingsRaw as $s) {
+            $settings[$s['setting_key']] = $s['setting_value'];
+        }
+        
+        $this->view('home/proposal_settings', [
+            'settings'   => $settings,
+            'activePage' => 'proposal_settings',
+            'pageTitle'  => 'ตั้งค่าช่วงเวลาเปิดรับเสนอจัดตั้งชมรม'
+        ], 'backoffice');
+    }
+
+    public function proposalSettingsUpdate(): void
+    {
+        $this->requireRole('admin');
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $db = \App\Core\Database::instance();
+            
+            $updatableKeys = [
+                'club_proposal_period_start',
+                'club_proposal_period_end',
+                'club_proposal_period_enabled'
+            ];
+            
+            try {
+                $db->beginTransaction();
+                
+                $stmt = $db->prepare("UPDATE site_settings SET setting_value = ? WHERE setting_key = ?");
+                
+                foreach ($updatableKeys as $key) {
+                    $val = trim($_POST[$key] ?? '');
+                    if ($key === 'club_proposal_period_enabled') {
+                        $val = ($val === 'true') ? 'true' : 'false';
+                    }
+                    $stmt->execute([$val, $key]);
+                }
+                
+                $db->commit();
+                $this->flash('อัปเดตการตั้งค่าช่วงเวลาเปิดรับเสนอจัดตั้งชมรมสำเร็จเรียบร้อยแล้ว');
+            } catch (\Exception $e) {
+                $db->rollBack();
+                $this->flash('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' . $e->getMessage());
+            }
+        }
+        
+        $this->redirect('/backoffice/settings/proposal');
+    }
 }
 
 
