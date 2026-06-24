@@ -5,3 +5,4 @@
 config/config.php
 uploads/
 deploy.ps1
+.last_deploy_hash
