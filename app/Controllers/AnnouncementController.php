@@ -10,7 +10,7 @@ class AnnouncementController extends Controller
 {
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $annModel = new Announcement;
         $clubModel = new Club;
@@ -45,7 +45,7 @@ class AnnouncementController extends Controller
         }
         
         $totalPages = (int)ceil($totalItems / $limit);
-        $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
+        $clubsList = ($role === 'admin' || $role === 'staff') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('announcements/manage', [
             'announcements' => $announcements,
@@ -60,7 +60,7 @@ class AnnouncementController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $annModel = new Announcement;
         
@@ -104,7 +104,7 @@ class AnnouncementController extends Controller
 
     public function update(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $annModel = new Announcement;
         $clubModel = new Club;
@@ -120,7 +120,7 @@ class AnnouncementController extends Controller
         
         // เช็คสิทธิ์
         $canEdit = false;
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canEdit = true;
         } else {
             if ($ann['club_id'] !== null) {
@@ -165,7 +165,7 @@ class AnnouncementController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $annId = (int)$id;
         $annModel = new Announcement;
@@ -178,7 +178,7 @@ class AnnouncementController extends Controller
         
         // เช็คสิทธิ์
         $canDelete = false;
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canDelete = true;
         } else {
             if ($ann['club_id'] !== null) {

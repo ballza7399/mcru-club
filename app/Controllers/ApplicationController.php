@@ -45,7 +45,7 @@ class ApplicationController extends Controller
 
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
@@ -67,13 +67,13 @@ class ApplicationController extends Controller
 
     public function approve(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         $this->updateStatus((int) $id, 'approved');
     }
 
     public function reject(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         $this->updateStatus((int) $id, 'rejected');
     }
 
@@ -82,7 +82,7 @@ class ApplicationController extends Controller
         $appModel = new Application;
         $canUpdate = false;
 
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canUpdate = true;
         } else {
             $clubId = $appModel->clubIdOf($appId);

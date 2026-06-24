@@ -20,7 +20,7 @@
                 <a class="nav-link" href="<?= url('clubs/register') ?>"><i class="fa-solid fa-file-signature me-1"></i> เสนอเพิ่มข้อมูลชมรม</a>
             </li>
             <?php endif; ?>
-            <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president'])): ?>
+            <?php if (in_array($_SESSION['role'] ?? '', ['admin', 'president', 'staff'])): ?>
             <li class="nav-item">
                 <a class="nav-link" href="<?= url('backoffice') ?>">
                     <i class="fa-solid fa-gear me-1"></i> จัดการระบบ
@@ -65,7 +65,12 @@
                             <div class="user-info text-start me-1">
                                 <span class="name"><?= e($_SESSION['name'] ?? '') ?></span>
                                 <span class="role"><?php
-                                    $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
+                                    $roleLabel = [
+                                        'admin' => 'ผู้ดูแลระบบ (Admin)', 
+                                        'president' => 'ประธานชมรม', 
+                                        'student' => 'นักศึกษา',
+                                        'staff' => 'เจ้าหน้าที่กองพัฒนานักศึกษา'
+                                    ];
                                     echo $roleLabel[$_SESSION['role'] ?? ''] ?? '';
                                 ?></span>
                             </div>

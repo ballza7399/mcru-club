@@ -41,7 +41,7 @@ class Application extends Model
                 FROM applications a
                 JOIN users u ON a.user_id = u.id
                 JOIN clubs c ON a.club_id = c.id';
-        if ($role === 'admin') {
+        if ($role === 'admin' || $role === 'staff') {
             $stmt = $this->db->prepare($sql . ' ORDER BY a.id DESC LIMIT ? OFFSET ?');
             $stmt->bindValue(1, $limit, \PDO::PARAM_INT);
             $stmt->bindValue(2, $offset, \PDO::PARAM_INT);
@@ -61,7 +61,7 @@ class Application extends Model
     /** นับจำนวนรายการคำขอทั้งหมดตามบทบาทหลัก */
     public function countForManage(string $role, int $userId): int
     {
-        if ($role === 'admin') {
+        if ($role === 'admin' || $role === 'staff') {
             return (int)$this->db->query('SELECT COUNT(*) FROM applications')->fetchColumn();
         }
         $stmt = $this->db->prepare(

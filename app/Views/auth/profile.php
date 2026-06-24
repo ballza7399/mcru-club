@@ -32,7 +32,12 @@
                     <h4 class="mb-1 text-dark fw-bold" style="color: var(--primary-blue) !important;"><?= e($user['name']) ?></h4>
                     <div class="badge rounded-pill px-3 py-2 mb-4" style="background-color: var(--info-bg); color: var(--info-ink); font-weight: 600; font-size: 0.8rem;">
                         <?php
-                            $roleLabel = ['admin' => 'ผู้ดูแลระบบ (Admin)', 'president' => 'ประธานชมรม', 'student' => 'นักศึกษา'];
+                            $roleLabel = [
+                                'admin' => 'ผู้ดูแลระบบ (Admin)', 
+                                'president' => 'ประธานชมรม', 
+                                'student' => 'นักศึกษา',
+                                'staff' => 'เจ้าหน้าที่กองพัฒนานักศึกษา'
+                            ];
                             echo $roleLabel[$_SESSION['role'] ?? ''] ?? 'นักศึกษา';
                         ?>
                     </div>

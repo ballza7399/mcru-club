@@ -17,7 +17,7 @@
 
 <!-- Statistics Cards Grid -->
 <div class="row g-3 mb-4">
-    <?php if ($role === 'admin'): ?>
+    <?php if ($role === 'admin' || $role === 'staff'): ?>
         <div class="col-sm-6 col-lg-3">
             <div class="card-custom p-3 border-0 h-100 d-flex align-items-center justify-content-between shadow-sm" style="background-color: var(--info-bg); color: var(--info-ink) !important;">
                 <div>

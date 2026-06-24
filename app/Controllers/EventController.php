@@ -9,7 +9,7 @@ class EventController extends Controller
 {
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $eventModel = new Event;
         $clubModel = new Club;
@@ -41,7 +41,7 @@ class EventController extends Controller
         }
         
         $totalPages = (int)ceil($totalItems / $limit);
-        $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
+        $clubsList = ($role === 'admin' || $role === 'staff') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('events/manage', [
             'events' => $events,
@@ -56,7 +56,7 @@ class EventController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $eventModel = new Event;
         
@@ -101,7 +101,7 @@ class EventController extends Controller
 
     public function update(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $eventModel = new Event;
         $clubModel = new Club;
@@ -121,7 +121,7 @@ class EventController extends Controller
         
         // เช็คสิทธิ์
         $canEdit = false;
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canEdit = true;
         } else {
             if ($event['club_id'] !== null) {
@@ -148,7 +148,7 @@ class EventController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $eventId = (int)$id;
         $eventModel = new Event;
@@ -161,7 +161,7 @@ class EventController extends Controller
         
         // เช็คสิทธิ์
         $canDelete = false;
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canDelete = true;
         } else {
             if ($event['club_id'] !== null) {

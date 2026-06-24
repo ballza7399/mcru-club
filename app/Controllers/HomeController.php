@@ -44,7 +44,7 @@ class HomeController extends Controller
 
     public function backoffice(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $role = $_SESSION['role'];
         $userId = $_SESSION['user_id'];
@@ -56,7 +56,7 @@ class HomeController extends Controller
         $totalAnnouncements = 0;
         $totalEvents = 0;
         
-        if ($role === 'admin') {
+        if ($role === 'admin' || $role === 'staff') {
             $totalClubs = (int)$db->query('SELECT COUNT(*) FROM clubs')->fetchColumn();
             $pendingApps = (int)$db->query('SELECT COUNT(*) FROM applications WHERE status = "pending"')->fetchColumn();
             $totalAnnouncements = (int)$db->query('SELECT COUNT(*) FROM announcements')->fetchColumn();

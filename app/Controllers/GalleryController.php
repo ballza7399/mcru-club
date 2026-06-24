@@ -10,7 +10,7 @@ class GalleryController extends Controller
 {
     public function manage(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $galModel = new Gallery;
         $clubModel = new Club;
@@ -42,7 +42,7 @@ class GalleryController extends Controller
         }
         
         $totalPages = (int)ceil($totalItems / $limit);
-        $clubsList = ($role === 'admin') ? $clubModel->allWithMemberCount() : [];
+        $clubsList = ($role === 'admin' || $role === 'staff') ? $clubModel->allWithMemberCount() : [];
         
         $this->view('gallery/manage', [
             'gallery' => $gallery,
@@ -57,7 +57,7 @@ class GalleryController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $galModel = new Gallery;
         
@@ -100,7 +100,7 @@ class GalleryController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin', 'president');
+        $this->requireRole('admin', 'president', 'staff');
         
         $galId = (int)$id;
         $galModel = new Gallery;
@@ -113,7 +113,7 @@ class GalleryController extends Controller
         
         // เช็คสิทธิ์
         $canDelete = false;
-        if ($_SESSION['role'] === 'admin') {
+        if ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') {
             $canDelete = true;
         } else {
             if ($photo['club_id'] !== null) {
