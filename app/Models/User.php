@@ -65,6 +65,25 @@ class User extends Model
         ]);
     }
 
+    public function createWithRole(array $data): bool
+    {
+        $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+        $stmt = $this->db->prepare(
+            'INSERT INTO users (student_id, email, password, name, faculty, major, phone, role_id)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+        );
+        return $stmt->execute([
+            $data['student_id'],
+            $data['email'] ?: null,
+            $hashedPassword,
+            $data['name'],
+            $data['faculty'] ?: null,
+            $data['major'] ?: null,
+            $data['phone'] ?: null,
+            (int)$data['role_id']
+        ]);
+    }
+
     public function findByStudentId(string $studentId): ?array
     {
         $stmt = $this->db->prepare('SELECT id FROM users WHERE student_id = ?');

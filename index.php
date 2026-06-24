@@ -110,6 +110,7 @@ $router->get('/backoffice/roles/delete/{id}',       'App\Controllers\RoleControl
 $router->post('/backoffice/roles/permissions/sync', 'App\Controllers\RoleController', 'syncPermissions');
 
 $router->get('/backoffice/users',            'App\Controllers\UserController', 'manage');
+$router->post('/backoffice/users/store',          'App\Controllers\UserController', 'store');
 $router->post('/backoffice/users/update-role',      'App\Controllers\UserController', 'updateRole');
 $router->post('/backoffice/users/toggle-status',    'App\Controllers\UserController', 'toggleStatus');
 $router->post('/backoffice/users/reset-password',   'App\Controllers\UserController', 'resetPassword');

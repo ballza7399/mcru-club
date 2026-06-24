@@ -18,16 +18,19 @@ class UserController extends Controller
 
         $userModel = new User;
         $roleModel = new Role;
+        $facultyModel = new \App\Models\Faculty;
 
         $totalUsers = $userModel->countAll();
         $totalPages = (int)ceil($totalUsers / $limit);
 
         $users = $userModel->allWithRole($limit, $offset);
         $roles = $roleModel->listSystemRoles();
+        $majorsData = $facultyModel->allWithMajors();
 
         $this->view('users/manage', [
             'users' => $users,
             'roles' => $roles,
+            'majorsData' => $majorsData,
             'currentPage' => $currentPage,
             'totalPages' => $totalPages,
             'limit' => $limit,
@@ -95,6 +98,71 @@ class UserController extends Controller
         $userModel->resetPassword($userId, $newPassword);
 
         $this->flash('รีเซ็ตรหัสผ่านใหม่ให้กับผู้ใช้งานสำเร็จเสร็จสิ้น');
+        $this->redirect('/backoffice/users');
+    }
+
+    /** เพิ่มผู้ใช้งานใหม่จากระบบหลังบ้าน (Add New User) */
+    public function store(): void
+    {
+        $this->requireRole('admin');
+
+        $studentId = trim($_POST['student_id'] ?? '');
+        $email     = trim($_POST['email'] ?? '');
+        $password  = $_POST['password'] ?? '';
+        $name      = trim($_POST['name'] ?? '');
+        $faculty   = $_POST['faculty'] ?? '';
+        $major     = $_POST['major'] ?? '';
+        $phone     = trim($_POST['phone'] ?? '');
+        $roleId    = (int)($_POST['role_id'] ?? 0);
+
+        if ($studentId === '' || $name === '' || $password === '' || $roleId <= 0) {
+            $this->flash('ผิดพลาด: กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน (รหัสผู้ใช้งาน, รหัสผ่าน, ชื่อ-นามสกุล, และบทบาท)');
+            $this->redirect('/backoffice/users');
+        }
+
+        $userModel = new User;
+        
+        // ตรวจสอบรหัสผู้ใช้ซ้ำ
+        $db = \App\Core\Database::instance();
+        $stmt = $db->prepare('SELECT COUNT(*) FROM users WHERE student_id = ?');
+        $stmt->execute([$studentId]);
+        if ((int)$stmt->fetchColumn() > 0) {
+            $this->flash('ผิดพลาด: รหัสผู้ใช้งาน/รหัสนักศึกษานี้ ถูกใช้งานในระบบแล้ว');
+            $this->redirect('/backoffice/users');
+        }
+
+        // ตรวจสอบอีเมลซ้ำ
+        if ($email !== '') {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $this->flash('ผิดพลาด: รูปแบบอีเมลไม่ถูกต้อง');
+                $this->redirect('/backoffice/users');
+            }
+            $stmt = $db->prepare('SELECT COUNT(*) FROM users WHERE email = ?');
+            $stmt->execute([$email]);
+            if ((int)$stmt->fetchColumn() > 0) {
+                $this->flash('ผิดพลาด: อีเมลนี้ ถูกใช้งานในระบบแล้ว');
+                $this->redirect('/backoffice/users');
+            }
+        }
+
+        // บันทึกข้อมูล
+        $ok = $userModel->createWithRole([
+            'student_id' => $studentId,
+            'email'      => $email,
+            'password'   => $password,
+            'name'       => $name,
+            'faculty'    => $faculty,
+            'major'      => $major,
+            'phone'      => $phone,
+            'role_id'    => $roleId
+        ]);
+
+        if ($ok) {
+            $this->flash('เพิ่มผู้ใช้งานใหม่เข้าสู่ระบบเรียบร้อยแล้ว');
+        } else {
+            $this->flash('ผิดพลาด: เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+        }
+
         $this->redirect('/backoffice/users');
     }
 }
