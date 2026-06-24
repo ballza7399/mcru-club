@@ -47,6 +47,15 @@ abstract class Controller
         }
     }
 
+    protected function requirePermission(string $permissionKey): void
+    {
+        $this->requireAuth();
+        if (!hasBackofficePermission($permissionKey)) {
+            $this->flash('ขออภัย คุณไม่มีสิทธิ์เข้าถึงส่วนงานนี้');
+            $this->redirect('/');
+        }
+    }
+
     private function syncUserSession(): void
     {
         if (!empty($_SESSION['user_id'])) {

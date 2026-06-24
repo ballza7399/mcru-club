@@ -350,7 +350,7 @@ class ClubController extends Controller
 
     public function requests(): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_club_proposals');
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
@@ -391,7 +391,7 @@ class ClubController extends Controller
 
     public function requestDetail(string $id): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_club_proposals');
         $clubId = (int)$id;
 
         $db = \App\Core\Database::instance();
@@ -417,7 +417,7 @@ class ClubController extends Controller
 
     public function requestAction(): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_club_proposals');
 
         $clubId = (int)($_POST['club_id'] ?? 0);
         $action = trim($_POST['action'] ?? '');
@@ -505,7 +505,7 @@ class ClubController extends Controller
 
     public function approveVerification(): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_clubs');
         
         $clubId = (int)($_POST['club_id'] ?? 0);
         
@@ -531,7 +531,7 @@ class ClubController extends Controller
 
     public function correctVerification(): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_clubs');
         
         $clubId = (int)($_POST['club_id'] ?? 0);
         $comment = trim($_POST['member_verification_comment'] ?? '');
@@ -558,7 +558,10 @@ class ClubController extends Controller
 
     public function manage(): void
     {
-        $this->requireRole('admin', 'staff', 'president');
+        if (!hasBackofficePermission('manage_clubs') && !hasBackofficePermission('manage_club_info')) {
+            $this->flash('ขออภัย คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+            $this->redirect('/');
+        }
 
         $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         $limit = isset($_GET['limit']) ? max(5, min(100, (int)$_GET['limit'])) : 10;
@@ -580,7 +583,7 @@ class ClubController extends Controller
 
     public function store(): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_clubs');
 
         $logoPath = $this->uploadFile('logo');
         $qrPath   = $this->uploadFile('qr_code');
@@ -598,14 +601,17 @@ class ClubController extends Controller
 
     public function update(): void
     {
-        $this->requireRole('admin', 'staff', 'president');
+        if (!hasBackofficePermission('manage_clubs') && !hasBackofficePermission('manage_club_info')) {
+            $this->flash('ขออภัย คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+            $this->redirect('/');
+        }
 
         $clubId = (int) $_POST['club_id'];
         $role   = $_SESSION['role'];
         $userId = $_SESSION['user_id'];
         $clubModel = new Club;
 
-        $canEdit = ($role === 'admin' || $role === 'staff') || $clubModel->isPresident($clubId, $userId);
+        $canEdit = hasBackofficePermission('manage_clubs') || ($clubModel->isPresident($clubId, $userId) && hasBackofficePermission('manage_club_info'));
         if (!$canEdit) {
             $this->redirect('/backoffice/clubs');
         }
@@ -641,14 +647,17 @@ class ClubController extends Controller
 
     public function delete(string $id): void
     {
-        $this->requireRole('admin', 'staff');
+        $this->requirePermission('manage_clubs');
         (new Club)->delete((int) $id);
         $this->redirect('/backoffice/clubs');
     }
 
     public function members(): void
     {
-        $this->requireRole('admin', 'staff', 'president');
+        if (!hasBackofficePermission('manage_clubs') && !hasBackofficePermission('manage_club_roles')) {
+            $this->flash('ขออภัย คุณไม่มีสิทธิ์เข้าถึงหน้านี้');
+            $this->redirect('/');
+        }
         
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
@@ -707,8 +716,6 @@ class ClubController extends Controller
 
     public function assignRole(): void
     {
-        $this->requireRole('admin', 'staff', 'president');
-        
         $clubId = (int)($_POST['club_id'] ?? 0);
         $userId = (int)($_POST['user_id'] ?? 0);
         $roleId = !empty($_POST['role_id']) ? (int)$_POST['role_id'] : null;
@@ -716,7 +723,7 @@ class ClubController extends Controller
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
         
-        $canManage = ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') || $clubModel->isPresident($clubId, $_SESSION['user_id']);
+        $canManage = hasBackofficePermission('manage_clubs') || ($clubModel->isPresident($clubId, $_SESSION['user_id']) && hasBackofficePermission('manage_club_roles'));
         if (!$canManage) {
             $this->redirect('/');
         }
@@ -728,15 +735,13 @@ class ClubController extends Controller
 
     public function removeMember(string $clubId, string $userId): void
     {
-        $this->requireRole('admin', 'staff', 'president');
-        
         $cId = (int)$clubId;
         $uId = (int)$userId;
         
         $roleModel = new \App\Models\Role;
         $clubModel = new Club;
         
-        $canManage = ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'staff') || $clubModel->isPresident($cId, $_SESSION['user_id']);
+        $canManage = hasBackofficePermission('manage_clubs') || ($clubModel->isPresident($cId, $_SESSION['user_id']) && hasBackofficePermission('manage_club_roles'));
         if (!$canManage) {
             $this->redirect('/');
         }

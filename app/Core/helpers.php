@@ -218,6 +218,37 @@ if (!function_exists('str_ends_with')) {
     }
 }
 
+/** ตรวจสอบสิทธิ์การเข้าถึงหลังบ้านตามบทบาทในเซสชัน */
+function hasBackofficePermission(string $permissionKey): bool
+{
+    if (empty($_SESSION['user_id'])) {
+        return false;
+    }
+    $roleKey = $_SESSION['role'] ?? '';
+    if ($roleKey === 'admin') {
+        return true;
+    }
+    try {
+        $db = \App\Core\Database::instance();
+        $stmtRole = $db->prepare('SELECT id FROM roles WHERE role_key = ?');
+        $stmtRole->execute([$roleKey]);
+        $roleId = $stmtRole->fetchColumn();
+        if (!$roleId) {
+            return false;
+        }
+        $stmtCheck = $db->prepare('
+            SELECT COUNT(*) 
+            FROM role_permissions rp
+            JOIN permissions p ON rp.permission_id = p.id
+            WHERE rp.role_id = ? AND p.perm_key = ?
+        ');
+        $stmtCheck->execute([$roleId, $permissionKey]);
+        return (int)$stmtCheck->fetchColumn() > 0;
+    } catch (\Exception $e) {
+        return false;
+    }
+}
+
 
 
 

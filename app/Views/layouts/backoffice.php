@@ -87,70 +87,118 @@ window.addEventListener('error', function(e) {
                     </a>
                     
                     <!-- กลุ่มการจัดการชมรม -->
-                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
-                        การจัดการชมรม
-                    </div>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
-                        <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'requests' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/requests') ?>">
-                        <i class="fa-solid fa-file-signature me-2"></i>ตรวจสอบการขอจัดตั้งชมรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('backoffice/applications') ?>">
-                        <i class="fa-solid fa-user-check me-2"></i>จัดการคำขอสมัครสมาชิก
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
-                        <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
-                    </a>
+                    <?php 
+                    $showClubCategory = hasBackofficePermission('manage_clubs') || hasBackofficePermission('manage_club_info') || hasBackofficePermission('manage_club_proposals') || hasBackofficePermission('manage_club_members') || hasBackofficePermission('manage_club_roles');
+                    if ($showClubCategory): 
+                    ?>
+                        <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            การจัดการชมรม
+                        </div>
+                        <?php if (hasBackofficePermission('manage_clubs') || hasBackofficePermission('manage_club_info')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'clubs' ? 'active' : '' ?>" href="<?= url('backoffice/clubs') ?>">
+                                <i class="fa-solid fa-layer-group me-2"></i>จัดการข้อมูลชมรม
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_club_proposals')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'requests' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/requests') ?>">
+                                <i class="fa-solid fa-file-signature me-2"></i>ตรวจสอบการขอจัดตั้งชมรม
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_club_members')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'applications' ? 'active' : '' ?>" href="<?= url('backoffice/applications') ?>">
+                                <i class="fa-solid fa-user-check me-2"></i>จัดการคำขอสมัครสมาชิก
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_club_roles')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'members' ? 'active' : '' ?>" href="<?= url('backoffice/clubs/members') ?>">
+                                <i class="fa-solid fa-users me-2"></i>จัดการสมาชิก & ตำแหน่ง
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
                     
                     <!-- กลุ่มเนื้อหา & กิจกรรม -->
-                    <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
-                        เนื้อหา & ประชาสัมพันธ์
-                    </div>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
-                        <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
-                        <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
-                    </a>
-                    <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
-                        <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
-                    </a>
+                    <?php 
+                    $showPRCategory = hasBackofficePermission('manage_system_news') || hasBackofficePermission('post_club_news') || hasBackofficePermission('manage_system_events') || hasBackofficePermission('manage_club_events') || hasBackofficePermission('manage_club_gallery');
+                    if ($showPRCategory): 
+                    ?>
+                        <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
+                            เนื้อหา & ประชาสัมพันธ์
+                        </div>
+                        <?php if (hasBackofficePermission('manage_system_news') || hasBackofficePermission('post_club_news')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'announcements' ? 'active' : '' ?>" href="<?= url('backoffice/announcements') ?>">
+                                <i class="fa-solid fa-bullhorn me-2"></i>จัดการข่าวสาร PR
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_system_events') || hasBackofficePermission('manage_club_events')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'events' ? 'active' : '' ?>" href="<?= url('backoffice/events') ?>">
+                                <i class="fa-regular fa-calendar-check me-2"></i>จัดการปฏิทินกิจกรรม
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_club_gallery')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'gallery' ? 'active' : '' ?>" href="<?= url('backoffice/gallery') ?>">
+                                <i class="fa-regular fa-images me-2"></i>จัดการภาพกิจกรรม
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
-                    <?php if ($_SESSION['role'] === 'admin'): ?>
-                        <!-- กลุ่มความปลอดภัย & สิทธิ์ -->
+                    <!-- กลุ่มความปลอดภัย & สิทธิ์ -->
+                    <?php 
+                    $showSecurityCategory = hasBackofficePermission('manage_users') || hasBackofficePermission('manage_roles');
+                    if ($showSecurityCategory): 
+                    ?>
                         <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
                             ผู้ใช้งาน & สิทธิ์การใช้งาน
                         </div>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
-                            <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
-                            <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
-                        </a>
+                        <?php if (hasBackofficePermission('manage_users')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'users' ? 'active' : '' ?>" href="<?= url('backoffice/users') ?>">
+                                <i class="fa-solid fa-users-gear me-2"></i>จัดการผู้ใช้ในระบบ
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_roles')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'roles' ? 'active' : '' ?>" href="<?= url('backoffice/roles') ?>">
+                                <i class="fa-solid fa-shield-halved me-2"></i>จัดการสิทธิ์การใช้งาน
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
 
-                        <!-- กลุ่มการตั้งค่าระบบ -->
+                    <!-- กลุ่มการตั้งค่าระบบ -->
+                    <?php 
+                    $showSettingsCategory = hasBackofficePermission('manage_faculties') || hasBackofficePermission('manage_pdpa') || hasBackofficePermission('manage_footer') || hasBackofficePermission('manage_mourning') || hasBackofficePermission('manage_opengraph') || hasBackofficePermission('manage_proposal_period');
+                    if ($showSettingsCategory): 
+                    ?>
                         <div class="sidebar-category-header text-uppercase text-muted fw-bold mb-1 mt-3 px-2" style="font-size: 0.72rem; letter-spacing: 0.5px;">
                             การตั้งค่าระบบ
                         </div>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
-                            <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'pdpa' ? 'active' : '' ?>" href="<?= url('backoffice/pdpa') ?>">
-                            <i class="fa-solid fa-scale-balanced me-2"></i>จัดการนโยบาย PDPA
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'footer_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/footer') ?>">
-                            <i class="fa-solid fa-list-check me-2"></i>จัดการข้อมูล Footer
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'mourning_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/mourning') ?>">
-                            <i class="fa-solid fa-ribbon me-2"></i>ตั้งค่าหน้าไว้อาลัย
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'og_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/og') ?>">
-                            <i class="fa-solid fa-share-nodes me-2"></i>ตั้งค่าการแชร์ (Open Graph)
-                        </a>
-                        <a class="nav-link admin-sidebar-link <?= $activePage === 'proposal_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/proposal') ?>">
-                            <i class="fa-solid fa-clock me-2"></i>ช่วงเวลาเสนอจัดตั้งชมรม
-                        </a>
+                        <?php if (hasBackofficePermission('manage_faculties')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'faculties' ? 'active' : '' ?>" href="<?= url('backoffice/faculties') ?>">
+                                <i class="fa-solid fa-building-columns me-2"></i>จัดการคณะ & สาขาวิชา
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_pdpa')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'pdpa' ? 'active' : '' ?>" href="<?= url('backoffice/pdpa') ?>">
+                                <i class="fa-solid fa-scale-balanced me-2"></i>จัดการนโยบาย PDPA
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_footer')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'footer_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/footer') ?>">
+                                <i class="fa-solid fa-list-check me-2"></i>จัดการข้อมูล Footer
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_mourning')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'mourning_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/mourning') ?>">
+                                <i class="fa-solid fa-ribbon me-2"></i>ตั้งค่าหน้าไว้อาลัย
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_opengraph')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'og_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/og') ?>">
+                                <i class="fa-solid fa-share-nodes me-2"></i>ตั้งค่าการแชร์ (Open Graph)
+                            </a>
+                        <?php endif; ?>
+                        <?php if (hasBackofficePermission('manage_proposal_period')): ?>
+                            <a class="nav-link admin-sidebar-link <?= $activePage === 'proposal_settings' ? 'active' : '' ?>" href="<?= url('backoffice/settings/proposal') ?>">
+                                <i class="fa-solid fa-clock me-2"></i>ช่วงเวลาเสนอจัดตั้งชมรม
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
                     
                     <!-- กลุ่มอื่น ๆ -->

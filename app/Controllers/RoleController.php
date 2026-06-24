@@ -12,37 +12,24 @@ class RoleController extends Controller
         $this->requireRole('admin');
         
         $roleModel = new Role;
+        $db = \App\Core\Database::instance();
         
-        $type = isset($_GET['type']) ? $_GET['type'] : 'system';
-        if ($type !== 'club') {
-            $type = 'system';
-        }
+        // Fetch all roles (both system and club scope)
+        $roles = $db->query('SELECT * FROM roles ORDER BY scope DESC, id ASC')->fetchAll();
+        // Fetch all permissions
+        $permissions = $db->query('SELECT * FROM permissions ORDER BY scope DESC, id ASC')->fetchAll();
         
-        // ดึงบทบาททั้งหมดตามขอบเขต
-        if ($type === 'system') {
-            // แอดมินหลักกำลังจัดการสิทธิ์ระบบทั่วไป
-            $roles = $roleModel->listSystemRoles();
-            $permissions = $roleModel->listPermissions('system');
-            $scopeLabel = 'ระบบหลัก';
-        } else {
-            // จัดการระดับสิทธิ์ของตำแหน่งในชมรมส่วนกลาง (club_id เป็น NULL)
-            $roles = $roleModel->listClubRoles(null);
-            $permissions = $roleModel->listPermissions('club');
-            $scopeLabel = 'ตำแหน่งชมรมส่วนกลาง';
-        }
-        
-        // หา Permission mapping ของแต่ละ Role เพื่อส่งไปเช็คใน View
+        // Fetch permission mapping for each role
         $rolePerms = [];
         foreach ($roles as $r) {
-            $rolePerms[$r['id']] = $roleModel->getRolePermissions($r['id']);
+            $rolePerms[$r['id']] = $roleModel->getRolePermissions((int)$r['id']);
         }
         
         $this->view('roles/manage', [
             'roles' => $roles,
             'permissions' => $permissions,
             'rolePerms' => $rolePerms,
-            'scopeLabel' => $scopeLabel,
-            'type' => $type
+            'pageTitle' => 'จัดการตารางสิทธิ์การใช้งาน (Role Matrix)'
         ], 'backoffice');
     }
 
@@ -93,19 +80,18 @@ class RoleController extends Controller
         $this->requireRole('admin');
         
         $roleModel = new Role;
+        $matrix = $_POST['matrix'] ?? []; // Associative array: [role_id => [permission_id_1, permission_id_2, ...]]
         
-        $roleId = (int)$_POST['role_id'];
-        $permissionIds = $_POST['permissions'] ?? [];
+        $db = \App\Core\Database::instance();
+        $roles = $db->query('SELECT id FROM roles')->fetchAll(\PDO::FETCH_COLUMN);
         
-        $role = $roleModel->find($roleId);
-        if (!$role) {
-            $this->redirect('/backoffice/roles');
+        foreach ($roles as $roleId) {
+            $permissionIds = $matrix[$roleId] ?? [];
+            $permissionIds = array_map('intval', $permissionIds);
+            $roleModel->syncRolePermissions((int)$roleId, $permissionIds);
         }
         
-        $roleModel->syncRolePermissions($roleId, $permissionIds);
-        $this->flash('บันทึกการตั้งค่าสิทธิ์เรียบร้อยแล้ว');
-        
-        $type = $role['scope'] === 'system' ? 'system' : 'club';
-        $this->redirect('/backoffice/roles?type=' . $type);
+        $this->flash('บันทึกตารางสิทธิ์การใช้งาน (Role Matrix) เรียบร้อยแล้ว');
+        $this->redirect('/backoffice/roles');
     }
 }

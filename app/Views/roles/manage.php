@@ -3,135 +3,157 @@
  * @var array $roles
  * @var array $permissions
  * @var array $rolePerms
- * @var string $scopeLabel
- * @var string $type
+ * @var string $pageTitle
  */
-$userRole = $_SESSION['role'];
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
     <div>
-        <h4 class="text-primary-custom fw-bold m-0"><i class="fa-solid fa-shield-halved me-2"></i>จัดการบทบาท ตำแหน่ง และสิทธิ์การใช้งาน</h4>
-        <p class="text-muted m-0">ขอบเขต: <strong><?= $scopeLabel ?></strong></p>
-    </div>
-    
-    <div class="d-flex align-items-center gap-2 flex-wrap">
-        <label class="form-label m-0 fw-bold text-nowrap">ขอบเขต:</label>
-        <select class="form-select shadow-sm" onchange="window.location.href='<?= url('backoffice/roles?type=') ?>' + this.value">
-            <option value="system" <?= $type === 'system' ? 'selected' : '' ?>>-- ระบบหลัก (System Roles) --</option>
-            <option value="club" <?= $type === 'club' ? 'selected' : '' ?>>-- ตำแหน่งชมรมส่วนกลาง (Shared Club Positions) --</option>
-        </select>
-        
-        <?php if ($type === 'club'): ?>
-            <!-- Add Custom Role Button -->
-            <button class="btn-gold-custom" data-bs-toggle="modal" data-bs-target="#addRoleModal">
-                <i class="fa-solid fa-plus me-1"></i> เพิ่มตำแหน่งใหม่
-            </button>
-        <?php endif; ?>
+        <h4 class="text-primary-custom fw-bold m-0">
+            <i class="fa-solid fa-shield-halved text-warning me-2" style="color: var(--accent-gold) !important;"></i>จัดการตารางสิทธิ์การใช้งาน (Role Matrix)
+        </h4>
+        <p class="text-muted small m-0 mt-1">กำหนดสิทธิ์การเข้าถึงเมนูและฟังก์ชันหลังบ้านของแต่ละบทบาทและตำแหน่ง</p>
     </div>
 </div>
 
-<!-- List of Roles and Permissions Form -->
-<div class="row g-4">
-    <?php if (empty($roles)): ?>
-        <div class="col-12 text-center py-5 text-muted bg-white rounded shadow-sm">
-            <i class="fa-solid fa-shield-slash fs-2 mb-2"></i>
-            <p class="m-0">ยังไม่มีบทบาทในขอบเขตนี้</p>
-        </div>
-    <?php else: ?>
-        <?php foreach ($roles as $r): ?>
-            <?php 
-                $isBuiltIn = ($r['scope'] === 'system' || in_array($r['role_key'], ['president', 'officer', 'member'], true)); 
-                $isPresident = ($r['role_key'] === 'president');
-            ?>
-            <div class="col-md-6 col-lg-4">
-                <div class="card-custom h-100 d-flex flex-column p-4">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <div>
-                            <h5 class="fw-bold text-primary-custom m-0"><?= e($r['role_name']) ?></h5>
-                            <span class="badge <?= $isBuiltIn ? 'bg-secondary' : 'bg-info' ?> text-white" style="font-size: 0.7rem;">
-                                <?= $isBuiltIn ? 'ตำแหน่งเริ่มต้น' : 'ตำแหน่งที่เพิ่มเอง' ?>
-                            </span>
-                        </div>
-                        <?php if (!$isBuiltIn): ?>
-                            <a href="<?= url('backoffice/roles/delete/' . (int) $r['id']) ?>" 
-                               class="text-danger" 
-                               title="ลบตำแหน่งนี้" 
-                               onclick="return confirm('คุณต้องการลบตำแหน่งนี้หรือไม่? สมาชิกที่สวมตำแหน่งนี้จะกลับไปเป็นสมาชิกทั่วไป')">
-                                <i class="fa-regular fa-trash-can fs-5"></i>
-                            </a>
-                        <?php endif; ?>
-                    </div>
-                    
-                    <hr class="my-2 opacity-10">
-                    
-                    <form method="POST" action="<?= url('backoffice/roles/permissions/sync') ?>" class="flex-grow-1 d-flex flex-column">
-                        <input type="hidden" name="role_id" value="<?= $r['id'] ?>">
-                        
-                        <p class="small fw-bold text-muted mb-2">สิทธิ์การใช้งานที่อนุญาต:</p>
-                        
-                        <div class="flex-grow-1 overflow-auto pe-2" style="max-height: 250px;">
-                            <?php if ($isPresident): ?>
-                                <div class="text-success small mb-3">
-                                    <i class="fa-solid fa-circle-check me-1"></i> ประธานชมรมได้รับสิทธิ์การจัดการชมรมทั้งหมดโดยอัตโนมัติ
-                                </div>
-                            <?php endif; ?>
-                            
-                            <?php foreach ($permissions as $perm): ?>
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" 
-                                           type="checkbox" 
-                                           name="permissions[]" 
-                                           value="<?= $perm['id'] ?>" 
-                                           id="perm_<?= $r['id'] ?>_<?= $perm['id'] ?>"
-                                           <?= in_array($perm['id'], $rolePerms[$r['id']], true) ? 'checked' : '' ?>
-                                           <?= ($isPresident && $userRole !== 'admin') ? 'disabled' : '' ?>>
-                                    <label class="form-check-label small text-dark" for="perm_<?= $r['id'] ?>_<?= $perm['id'] ?>">
-                                        <?= e($perm['perm_name']) ?>
-                                    </label>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        
-                        <div class="mt-4 pt-3 border-top">
-                            <button type="submit" class="btn-primary-custom w-100 py-2" <?= ($isPresident && $userRole !== 'admin') ? 'disabled' : '' ?>>
-                                <i class="fa-solid fa-circle-check me-1"></i> บันทึกสิทธิ์
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
-</div>
+<form method="POST" action="<?= url('backoffice/roles/permissions/sync') ?>" data-confirm="ยืนยันการบันทึกตารางสิทธิ์การใช้งาน (Role Matrix) ใหม่ทั้งหมดหรือไม่?">
+    <div class="card-custom p-4 border shadow-sm mb-4" style="background: var(--surface); border-color: var(--border);">
+        <div class="table-responsive">
+            <table class="table align-middle table-bordered role-matrix-table">
+                <thead class="table-light">
+                    <tr>
+                        <th class="align-middle text-start" style="min-width: 280px; background-color: #f8fafc;">
+                            <span class="fw-bold text-dark"><i class="fa-solid fa-list-check me-2 text-primary"></i>เมนูระบบ / สิทธิ์การเข้าถึง</span>
+                        </th>
+                        <?php foreach ($roles as $r): ?>
+                            <?php 
+                                $isSystem = ($r['scope'] === 'system');
+                                $roleBadgeTone = $isSystem ? 'bg-primary-soft' : 'bg-warning-soft text-warning-ink';
+                            ?>
+                            <th class="text-center align-middle" style="width: 140px; background-color: #f8fafc;">
+                                <div class="fw-bold text-primary-custom" style="font-size: 0.95rem;"><?= e($r['role_name']) ?></div>
+                                <span class="badge <?= $roleBadgeTone ?> mt-1 font-monospace" style="font-size: 0.65rem;">
+                                    <?= e($r['role_key']) ?>
+                                </span>
+                            </th>
+                        <?php endforeach; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // จัดกลุ่มสิทธิ์ตามหมวดหมู่เพื่อการอ่านที่ง่ายขึ้น
+                    $groups = [
+                        'การจัดการชมรม' => [
+                            'icon' => 'fa-solid fa-layer-group text-primary',
+                            'keys' => ['manage_clubs', 'manage_club_proposals', 'manage_club_members', 'manage_club_roles', 'manage_club_info']
+                        ],
+                        'เนื้อหา & ประชาสัมพันธ์' => [
+                            'icon' => 'fa-solid fa-bullhorn text-danger',
+                            'keys' => ['manage_system_news', 'post_club_news', 'manage_system_events', 'manage_club_events', 'manage_club_gallery']
+                        ],
+                        'ผู้ใช้งาน & ความปลอดภัย' => [
+                            'icon' => 'fa-solid fa-users-gear text-success',
+                            'keys' => ['manage_users', 'manage_roles']
+                        ],
+                        'การตั้งค่าระบบ' => [
+                            'icon' => 'fa-solid fa-gears text-warning',
+                            'keys' => ['manage_faculties', 'manage_pdpa', 'manage_footer', 'manage_mourning', 'manage_opengraph', 'manage_proposal_period']
+                        ]
+                    ];
 
-<!-- Modal: Add Club Role -->
-<?php if ($type === 'club'): ?>
-<div class="modal fade" id="addRoleModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header modal-header--gold">
-                <h5 class="modal-title fw-bold text-white">เพิ่มตำแหน่งชมรมส่วนกลางใหม่</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form method="POST" action="<?= url('backoffice/roles/store') ?>">
-                <div class="modal-body">
-                    <input type="hidden" name="type" value="club">
-                    
-                    <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">ชื่อตำแหน่งหน้าที่</label>
-                        <input type="text" name="role_name" class="form-control" placeholder="เช่น เหรัญญิก, ฝ่ายประชาสัมพันธ์, ฝ่ายวิชาการ" required>
-                        <small class="text-muted d-block mt-2">
-                            * เมื่อเพิ่มตำแหน่งสำเร็จแล้ว คุณสามารถเลือกกำหนดสิทธิ์การใช้งานให้กับตำแหน่งนี้ได้ทางด้านนอก (ทุกชมรมจะใช้ตำแหน่งร่วมกัน)
-                        </small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
-                    <button type="submit" class="btn-primary-custom">สร้างตำแหน่ง</button>
-                </div>
-            </form>
+                    foreach ($groups as $groupName => $groupConfig):
+                    ?>
+                        <tr class="table-group-header" style="background-color: rgba(11, 44, 92, 0.03);">
+                            <td colspan="<?= count($roles) + 1 ?>" class="fw-bold text-dark py-2" style="font-size: 0.9rem;">
+                                <i class="<?= $groupConfig['icon'] ?> me-2"></i><?= $groupName ?>
+                            </td>
+                        </tr>
+                        <?php 
+                        foreach ($groupConfig['keys'] as $pKey):
+                            // ค้นหาวัตถุ Permission ใน $permissions
+                            $perm = null;
+                            foreach ($permissions as $p) {
+                                if ($p['perm_key'] === $pKey) {
+                                    $perm = $p;
+                                    break;
+                                }
+                            }
+                            if (!$perm) continue;
+                        ?>
+                            <tr class="matrix-row">
+                                <td class="text-start ps-4">
+                                    <div class="fw-semibold text-dark" style="font-size: 0.88rem;"><?= e($perm['perm_name']) ?></div>
+                                    <small class="text-muted font-monospace" style="font-size: 0.72rem;"><?= e($perm['perm_key']) ?></small>
+                                </td>
+                                <?php foreach ($roles as $r): ?>
+                                    <?php 
+                                        $isAdmin = ($r['role_key'] === 'admin');
+                                        $isChecked = in_array($perm['id'], $rolePerms[$r['id']], true) || $isAdmin;
+                                    ?>
+                                    <td class="text-center align-middle">
+                                        <div class="form-check d-inline-block m-0">
+                                            <input class="form-check-input matrix-checkbox" 
+                                                   type="checkbox" 
+                                                   name="matrix[<?= $r['id'] ?>][]" 
+                                                   value="<?= $perm['id'] ?>" 
+                                                   id="chk_<?= $r['id'] ?>_<?= $perm['id'] ?>"
+                                                   <?= $isChecked ? 'checked' : '' ?>
+                                                   <?= $isAdmin ? 'disabled onclick="return false;"' : '' ?>
+                                                   style="width: 19px; height: 19px; cursor: <?= $isAdmin ? 'not-allowed' : 'pointer' ?>;">
+                                            <?php if ($isAdmin): ?>
+                                                <!-- ซ่อนฟิลด์ input เพื่อส่งค่าของแอดมินไว้ลับๆ ไปบันทึกด้วย ป้องกันสิทธิ์หลุด -->
+                                                <input type="hidden" name="matrix[<?= $r['id'] ?>][]" value="<?= $perm['id'] ?>">
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
-<?php endif; ?>
+
+    <!-- Actions Footer -->
+    <div class="card-custom p-3 border shadow-sm text-end" style="background: var(--surface); border-color: var(--border);">
+        <button type="submit" class="btn btn-academic-primary border-0 px-5 py-2.5 rounded-pill shadow-sm">
+            <i class="fa-solid fa-floppy-disk me-2"></i> บันทึกตารางสิทธิ์การใช้งานทั้งหมด (Save Matrix)
+        </button>
+    </div>
+</form>
+
+<style>
+.role-matrix-table th {
+    border-bottom: 2px solid var(--border-strong) !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+.role-matrix-table td {
+    padding: 12px 16px;
+    border-color: var(--border) !important;
+}
+.matrix-row:hover {
+    background-color: rgba(249, 168, 38, 0.02) !important;
+}
+.bg-primary-soft {
+    background-color: rgba(11, 44, 92, 0.08) !important;
+    color: var(--primary-blue) !important;
+}
+.bg-warning-soft {
+    background-color: rgba(249, 168, 38, 0.08) !important;
+    color: var(--accent-gold-deep) !important;
+}
+.btn-academic-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-soft) 100%);
+    color: #ffffff !important;
+    font-weight: 600;
+    transition: all var(--dur) var(--ease-out);
+}
+.btn-academic-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(11, 44, 92, 0.3);
+    background: linear-gradient(135deg, var(--primary-soft) 0%, #205c9e 100%);
+}
+</style>
