@@ -124,6 +124,10 @@
 </form>
 
 <style>
+.role-matrix-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
 .role-matrix-table th {
     border-bottom: 2px solid var(--border-strong) !important;
     text-transform: uppercase;
@@ -134,8 +138,26 @@
     padding: 12px 16px;
     border-color: var(--border) !important;
 }
+/* รองรับกรณีมีบทบาทเยอะ ๆ ด้วยการตรึงคอลัมน์แรกไว้ขณะเลื่อนในแนวนอน (Sticky Columns) */
+.role-matrix-table th:first-child,
+.role-matrix-table td:first-child {
+    position: sticky;
+    left: 0;
+    background-color: var(--surface) !important;
+    z-index: 10;
+    border-right: 2px solid var(--border-strong) !important;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.05);
+}
+.role-matrix-table th:first-child {
+    z-index: 11;
+    background-color: #f8fafc !important;
+}
+/* ไฮไลต์แถวเมื่อชี้เมาส์เพื่อให้ไม่หลงแถวเมื่อเลื่อนตามแนวนอน */
 .matrix-row:hover {
     background-color: rgba(249, 168, 38, 0.02) !important;
+}
+.matrix-row:hover td:first-child {
+    background-color: #fcf8f2 !important; /* เปลี่ยนสีคอลัมน์สติ๊กกี้ให้สอดคล้องกันตอน Hover */
 }
 .bg-primary-soft {
     background-color: rgba(11, 44, 92, 0.08) !important;
